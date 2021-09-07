@@ -1,0 +1,84 @@
+.info{
+    font-size: 25px;
+    width: 450px;
+    margin-left: 60px;
+    text-align: left;
+    vertical-align: middle;
+    display:-moz-inline-box;
+    display:inline-block;
+}
+.input{
+    font-size: 25px;
+    width: 400px;
+    text-align: left;
+    height: 30px;
+}
+.input_button{
+    font-size: 25px;
+    width: 300px;
+    text-align: center;
+    height: 30px;
+}
+.textarea{
+    font-size: 22px;
+    background-color: #c2e3dc;
+    color: #153cad;
+    padding: 10px;
+    height: 130px;
+    width: 300px;
+}
+.image_area{
+    font-size: 16px;
+    background-color: #c2e3dc;
+    color: #153cad;
+    padding: 10px;
+    height: 45px;
+    width: 200px;
+}
+.label{
+    margin-left: 50px;
+    background-color: #b5f1f0;
+    font-size: 25px;
+    width: 180px;
+    padding-left: 10px;
+    text-align: left;
+    vertical-align: middle;
+    display:-moz-inline-box;
+    display:inline-block;
+}
+.divPart {
+  max-width: 700px;
+  padding: 40px;
+  margin: 100px auto;
+  background-color: rgba(245,245,245,0.7);
+  border-radius: 30px;
+}
+.item_part{
+    margin-top: 20px;
+}
+.item_part_center{
+    margin-top: 20px;
+    text-align: center;
+}
+div.divPart h1{
+    text-align: center;
+}
+div.center{
+    text-align: center;
+}
+div.photo_container{
+    float: left;
+    width: 40%;
+    text-align: center;
+}
+img.image_1{
+    width: 180px;
+    height: 180px;
+}
+span button.image_area{
+    margin-top: 3px;
+}
+option:hover{
+    height: 100px;
+    font-size: 25px;
+}

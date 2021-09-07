@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block page_content %}
+
+    {% for notice in notices %}
+        {% if not notice.is_read %}
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <a href="{{ url_for('.change_read', id = notice.id) }}">
+                        {% if notice.action == ' has followed ' %}
+                            <h3 class="panel-title" style="display:inline;">Followers</h3>
+                        {% elif notice.action == ' has liked your posting ' %}
+                            <h3 class="panel-title" style="display:inline;">Likers</h3>
+                        {% elif notice.action == 'invites you to answer the question' %}
+                            <h3 class="panel-title" style="display:inline;">Invitation</h3>
+                        {% elif notice.action == 'has sent a private message to you' %}
+                            <h3 class="panel-title" style="display:inline;">Private Message</h3>
+                        {% elif notice.action == 'report the comment in' %}
+                            <h3 class="panel-title" style="display:inline;">Report</h3>
+                        {% elif notice.action == 'report the post' %}
+                            <h3 class="panel-title" style="display:inline;">Report</h3>
+                        {% elif notice.action == 's00' %}
+                            <h3 class="panel-title" style="display:inline;">Share</h3>
+                        {% else %}
+                            <h3 class="panel-title" style="display:inline;">Comments</h3>
+                        {% endif %}
+                    </a>
+
+                    <p style="float: right">{{ moment(notice.timestamp).format('L') }}</p>
+                </div>
+
+                <div class="panel-body" >
+                    {% if notice.username == 'Anonymous' %}
+                        <h5 style="float:left; display: inline; margin-right: 4px">
+                            Anonymous user
+                        </h5>
+                    {% else %}
+                        <a href="{{ url_for('.user', username=notice.username) }}" style="float:left; display: inline; margin-right: 4px">
+                            <h5>{{ notice.username }} </h5>
+                        </a>
+                    {% endif %}
+
+                    <h5 style="float:left;display: inline"> {{ notice.action }} </h5>
+                    {% if notice.action != 'has sent a private message to you' %}
+                        {% if notice.object_id %}
+                            <a href="{{ url_for('.post', id = notice.object_id) }}" style="float:left;display: inline;margin-left: 4px">
+                                 <h5>{{ notice.object }}</h5>
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('.user', username = current_user.username) }}" style="float:left;display: inline;margin-left: 4px">
+                                 <h5>{{ notice.object }}</h5>
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <button onclick="alertBoxFn()" style="margin-left: 15px; background-color: #ffffff; margin-top: 7px; border: #ffffff; color: #0b7389">(Press to see details)</button>
+                        <div id="alertBox" onclick="outside=true" style="display: none">
+                            <hr style="border: 1px #ded9d9 solid">
+                            <h5 style="color: blue"><i>{{ notice.object }}</i></h5>
+                        </div>
+                    {% endif %}
+                </div>
+
+            </div>
+        {% endif %}
+
+    {% endfor %}
+
+    <script>
+        let outside=true
+        let alertBox = document.getElementById('alertBox')
+        function alertBoxFn(e) {
+            outside=false
+            alertBox.style.display = "block";
+        }
+        document.body.addEventListener('click', function() {
+            outside=true
+        },true)
+        document.body.addEventListener('click', function() {
+            if(outside){
+                alertBox.style.display = 'none'
+            }
+        })
+    </script>
+
+{% endblock %}

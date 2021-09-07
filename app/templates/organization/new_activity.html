@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+
+{% block title %}New Organization Activity{% endblock %}
+
+
+{% block head %}
+{{ super() }}
+    <!--     Custom styles for this template -->
+    <link href="{{ url_for('static',filename='new-activity.css') }}" rel="stylesheet">
+{% endblock %}
+
+
+{% block page_content %}
+
+
+
+    <div class="container">
+        <div class="col-md-12">
+
+    <!--        左侧表单-->
+            <div class="col-md-6">
+                <form class="form-activity form-horizontal" method="post">
+                    <h1 class="form-activity-heading col-sm-offset-1">Activity</h1>
+<!--                    活动名称-->
+                    <div class="form-group">
+                        <label for="activity_name" class="col-sm-offset-1 col-sm-3">Activity Name</label>
+                        <div class="col-sm-8">
+                            <input name="activity_name" id="activity_name" type="text" class="form-control" placeholder="Activity Name">
+                        </div>
+                    </div>
+<!--                    活动时间-->
+                    <div class="form-group">
+                        <label for="activity_time" class="col-sm-offset-1 col-sm-3">Activity Time</label>
+                        <div class="col-sm-8">
+                            <input name="activity_time" id="activity_time" type="datetime-local" class="form-control" placeholder="Activity Time">
+                        </div>
+                    </div>
+<!--                    活动地点-->
+                    <div class="form-group">
+                        <label for="activity_place" class="col-sm-offset-1 col-sm-3">Activity Place</label>
+                        <div class="col-sm-8">
+                            <input name="activity_place" id="activity_place" type="text" class="form-control" placeholder="Activity Place">
+                        </div>
+                    </div>
+<!--                    活动描述-->
+                    <div class="form-group">
+                        <label for="activity_describe" class="col-sm-offset-1 col-sm-3">Activity Describe</label>
+                        <div class="col-sm-8">
+                            <textarea name="activity_describe" id="activity_describe" class="form-control describe" rows="3" placeholder="Activity Describe"></textarea>
+                        </div>
+                    </div>
+<!--                    组织者-->
+                    <div class="form-group">
+                        <label for="organizer" class="col-sm-offset-1 col-sm-3">Organizer</label>
+                        <div class="col-sm-8">
+                            <input name="organizer" id="organizer" type="text" class="form-control" placeholder="Organizer">
+                        </div>
+                    </div>
+<!--                    是否获批-->
+                    <div class="form-group">
+                        <label for="is" class="col-sm-offset-1 col-sm-3">Whether approved by the school</label>
+                        <div class="col-sm-8">
+                            <select name="is" id="is" class="form-control">
+                                        <option selected="selected" value=""></option>
+                                        <option>Yes</option>
+                                        <option>No</option>
+                            </select>
+                        </div>
+                    </div>
+<!--                    提交表单-->
+                    <div class="col-sm-offset-4 col-sm-7">
+                        <button type="submit" class="btn btn-success active-submit" id="submit" >Submit</button>
+                    </div>
+                </form>
+            </div>
+
+            <!--        右侧图片-->
+            <div class="col-md-6 decorate-photo">
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

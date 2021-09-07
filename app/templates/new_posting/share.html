@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Share the question {% endblock %}
+
+
+{%block styles%}
+{{super()}}
+    <link rel="stylesheet" href="{{url_for('static',filename='editormd/css/editormd.min.css')}}">
+    <link href="{{ url_for('static',filename='home.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static',filename='posts.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static',filename='interact.css') }}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../../static/edit_Profile.css"/>
+    <style>
+        li{
+            list-style-type:none;
+        }
+    </style>
+{%endblock%}
+
+
+{% block page_content %}
+    <form method="post">
+        <div class="special" style="text-align: center; margin-top: 40px">
+            <span class="info_"><input type="text" class="input" placeholder="Input the title" name="new_title"></span>
+            <span class="info_"><button class="input_button" type="submit">Share</button></span>
+        </div>
+    </form>
+    <div style="margin-top: 40px; padding-left: 100px; padding-right: 100px">
+    {% include "Posts/_posts.html" %}
+    </div>
+{% endblock %}

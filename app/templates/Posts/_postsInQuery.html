@@ -1,0 +1,93 @@
+
+    <li class="post" id="{{ post.id }}">
+
+        <div class="panel panel-default">
+              <div class="panel-body">
+                  <div class="post-content col-sm-12">
+        {#            标题#}
+                        <h3 class="post-title" style="margin-top: 7px">
+                            <a href="{{ url_for('.post', id=post.id) }}">
+                                {{ post.title }}
+                            </a>
+                        </h3>
+                        {% if post.is_shared %}
+                            <i style="color: blue; padding-left: 5px; font-size: 18px">Reprinted from <<a href="{{ url_for('.post', id=post.origin_post_id) }}">{{ post.shared_content }}</a>> posted by @<a href="{{ url_for('.user', username=post.shared_from) }}">{{ post.shared_from }}</a></i>
+                        {% endif %}
+        {#            摘要#}
+                        <div class="post-body">
+                        <p>
+                            {% if post.body_html %}
+                                {{ post.body_html |safe|striptags|truncate(260,killwords=Flase,leeway=0) }}
+                            {% else %}
+                                {{ post.body |truncate(200,killwords=Flase,leeway=0)}}
+                            {% endif %}
+                            <small><a href="{{ url_for('.post', id=post.id) }}"><B>Read More</B></a></small></p>
+                        </div>
+                  </div>
+              </div>
+
+
+
+              <div class="panel-footer">
+                  {% if post.is_anonymous %}
+                    <div class="post-thumbnail">
+                        <span class="head-photo">
+                            <img class="img-rounded profile-thumbnail" src="{{ url_for('static',filename='Image/anonymous.png') }}" alt="avatar" style="width: 25px; height: 25px">
+                        </span>
+
+                        <span class="post-author">
+                            <span> anonymous </span>
+                        </span>
+                        <span class="post-date"><small>{{ moment(post.timestamp).fromNow() }}</small></span>
+                    </div>
+                  {% else %}
+                   <div class="post-thumbnail">
+
+                        <a class="head-photo" href="{{ url_for('.user', username=post.author.username) }}">
+                            {% if post.author.avatar_img %}
+                                <img class="img-rounded profile-thumbnail" src="{{ post.author.avatar_img }}" alt="avatar"  style="width: 25px; height: 25px">
+                            {% else %}
+                                <img class="img-rounded profile-thumbnail" src="{{ post.author.gravatar(size=25) }}" alt="avatar">
+                            {% endif %}
+                        </a>
+
+                        <span class="post-author">
+                            <a href="{{ url_for('.user', username=post.author.username) }}">
+                                {{ post.author.username }}
+                                {% if post.author.can(Permission.ACTIVITY) %}
+                                <svg class="icon" viewBox="0 0 1024 1024" width="15" height="15" style="margin: 0">
+                                    <path d="M959.786667 148.906667l-44.330667-0.725333c-1.024 0-100.437333-2.048-203.050667-41.728-105.301333-40.789333-173.141333-87.552-173.781333-88.021333L511.872 0 485.248 18.474667C484.608 18.901333 416.768 65.706667 311.466667 106.453333 208.938667 146.218667 109.482667 148.181333 108.544 148.181333L64 148.906667l0 430.464C64 795.477333 355.328 1024 511.957333 1024 668.714667 1024 960 795.477333 960 579.370667L959.786667 148.906667zM321.877333 772.48 321.877333 355.413333 282.112 355.413333 282.112 317.482667 441.173333 317.482667l0 189.610667 200.192-189.610667 157.696 0L321.877333 772.48z" fill="#3688FF"></path>
+                                </svg>
+                                {% endif %}
+                            </a>
+                        </span>
+                        <span class="post-date"><small>{{ moment(post.timestamp).fromNow() }}</small></span>
+
+                    </div>
+                  {% endif %}
+
+                    <div class="post-footer">
+
+                    {#            评论#}
+                            <a class="icon-btn" style="float:right" href="{{ url_for('.post', id=post.id) }}#comments">
+                                <span class="glyphicon glyphicon-comment"></span>
+                                <span>{{ post.comments.count() }} comment</span>
+                            </a>
+
+                    {#            喜欢#}
+                        {% if not current_user.is_liking(post) %}
+                            <a class="icon-btn" style="float:right; margin-right: 15px" href="{{ url_for('.like', post_id=post.id) }}#{{ post.id }}">
+                                <span class="glyphicon glyphicon-heart-empty"></span>
+                                <span>{{ post.liker.count() }} likes</span>
+                            </a>
+                        {% else %}
+                            <a class="icon-btn" style="float:right; margin-right: 15px" href="{{ url_for('.dislike', post_id=post.id) }}#{{ post.id }}">
+                                <span class="glyphicon glyphicon-heart"></span>
+                                <span>{{ post.liker.count() }} likes</span>
+                            </a>
+                        {% endif %}
+                    </div>
+              </div>
+        </div>
+    </li>
+

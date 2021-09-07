@@ -1,0 +1,75 @@
+/*
+个人资料版样式
+ */
+.outer {
+    position: fixed;
+    left: 50%;
+    top: 80px;
+}
+.inner1 {
+    width: 350px;
+    box-shadow: 0 0 10px 3px #ddd;
+}
+.head {
+    margin: 30px auto;
+}
+.info {
+    color: #727070;
+}
+.follow{
+    margin-bottom: 5px;
+    border-top: 1px solid #ddd;
+}
+.follow .left-btn {
+    border-right: 1px solid #ddd;
+}
+/*
+互动功能样式
+ */
+.inner2 {
+    width: 350px;
+    margin-bottom: 20px;
+    padding: 5px;
+    position: relative;
+    background-color: #fff;
+    box-shadow: 0 0 10px 3px #ddd;
+    border-radius: 4px;
+ }
+.inner2-left {
+    margin-left: 45px;
+    float: left;
+}
+.inner2-right {
+    margin-right: 45px;
+    float: right;
+}
+.icon {
+    margin: 5px;
+}
+.icon-word {
+    margin-top: -10px;
+    font-size: 12px;
+    text-align: center;
+}
+
+/*
+热度排行样式
+ */
+.inner3 {
+    width: 350px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    position: relative;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 0 10px 3px #ddd;
+    font-size: 18px;
+}
+.inner3 .hot-post {
+    margin: 10px auto;
+    font-size: 75%;
+    line-height: 1;
+}
+.inner3 .hot-post a {
+    color: #0077e6;
+}
