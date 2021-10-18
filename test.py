@@ -1,6 +1,5 @@
 import os
 import os
-from flask_migrate import Migrate
 
 import app
 from app import create_app, db
