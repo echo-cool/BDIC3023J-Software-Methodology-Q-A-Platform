@@ -5,9 +5,9 @@
 
 
 {% block head %}
-{{ super() }}
+    {{ super() }}
     <!-- 新 Bootstrap 核心 CSS 文件 -->
-    <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
     <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
     <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
@@ -15,20 +15,23 @@
     <!-- Custom styles for this template -->
     <link href="{{ url_for('static',filename='signin.css') }}" rel="stylesheet">
     <link href="{{ url_for('static',filename='bg.css') }}" rel="stylesheet">
+    <script type="application/javascript" src="{{ url_for('static',filename='js/gt.js') }}"></script>
 {% endblock %}
 
 
 
 
 {% block body %}
-<div class="onepage">
-        <div class = "onepage-bg" id = "onepagebg">
+    <div class="onepage">
+        <div class="onepage-bg" id="onepagebg">
 
-            <nav calss="navbar navbar-inverse bg-light " role="navigation" style="background-color: rgba(245,245,245,0.7);">
+            <nav calss="navbar navbar-inverse bg-light " role="navigation"
+                 style="background-color: rgba(245,245,245,0.7);">
                 <div class="container">
-{#                    头部#}
+                    {#                    头部#}
                     <div class="navbar-header">
-                        <button type="button" class=" btn-warning navbar-toggle " data-toggle="collapse" data-target=".navbar-collapse">
+                        <button type="button" class=" btn-warning navbar-toggle " data-toggle="collapse"
+                                data-target=".navbar-collapse">
                             <span class="sr-only">Toggle navigation</span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
@@ -37,20 +40,20 @@
                         <a href="/" class="navbar-brand">Student Exchange Forum of BJUT</a>
                     </div>
 
-{#                    尾部#}
+                    {#                    尾部#}
                     <div class="collapse navbar-collapse">
 
                         <div class="nav navbar-nav navbar-right">
                             <li>
-                                 <a class="btn ref-signup chose" href="/auth/register">
-                                 Register
-                                 </a>
-                             </li>
+                                <a class="btn ref-signup chose" href="/auth/register">
+                                    Register
+                                </a>
+                            </li>
                         </div>
 
                         <div class="nav navbar-nav navbar-right">
                             <li class="chose">
-                                <a  class="btn btn-warning  disabled ref-signup chose" >
+                                <a class="btn btn-warning  disabled ref-signup chose">
                                     Signin
                                 </a>
                             </li>
@@ -76,16 +79,27 @@
                 {% endfor %}
 
                 <form role="form" class="form-signin" method="post" style="margin: 120px auto 0px auto;">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                     <h2 class="form-signin-heading">Please sign in</h2>
 
                     <label for="inputName" class="sr-only">Email address</label>
-                    <input type="text" id="inputName" class="form-control" placeholder="StudentID/OrganizationID" name="user" required autofocus>
+                    <input type="text" id="inputName" class="form-control" placeholder="StudentID/OrganizationID"
+                           name="user" required autofocus>
                     <p id="p1"></p>
 
                     <label for="inputPassword" class="sr-only">Password</label>
-                    <input type="password" id="inputPassword" class="form-control" name="pwd" placeholder="Password" required autofocus>
+                    <input type="password" id="inputPassword" class="form-control" name="pwd" placeholder="Password"
+                           required autofocus>
                     <p id="p2" class="text-danger"></p>
+
+                    <div>
+                        <label>完成验证：</label>
+                        <div id="captcha">
+                            <p id="wait" class="show">正在加载验证码......</p>
+                        </div>
+                    </div>
+                    <br>
+                    <p id="notice" class="hide">请先完成验证</p>
 
                     <div>
                         <h4><small>
@@ -100,13 +114,15 @@
                     </div>
 
 
-                    <button class="btn btn-lg btn-warning btn-block chose" id="submit" disabled="disabled" type="submit">Sign in</button>
+                    <button class="btn btn-lg btn-warning btn-block chose" id="submit" disabled="disabled"
+                            type="submit">Sign in
+                    </button>
                 </form>
             </div>
         </div>
-</div>
+    </div>
 
-<script>
+    <script>
         var stuID = document.getElementById('inputName');
         var info = document.getElementById('p1');
         var pwd = document.getElementById('inputPassword');
@@ -116,20 +132,55 @@
             var reg = /[0-9]{1,4}/;
             {#var reg = /^\d{1，8}$/;#}
             // 不符合规则的话
-            if(!reg.test(stuid)){
+            if (!reg.test(stuid)) {
                 info.innerHTML = 'Please enter StudentID or OrganizationID';
                 info.className = 'text-danger';
-                document.getElementById("submit").disabled=true;
-            }
-            else{
+                document.getElementById("submit").disabled = true;
+            } else {
                 info.innerHTML = '';
                 info.className = 'text-success';
             }
-            if(info.className == 'text-success'){
+            if (info.className == 'text-success') {
                 document.getElementById("submit").disabled = false;
             }
-         }
-</script>
+        }
+        var handler = function (captchaObj) {
+            $("#submit").click(function (e) {
+                var result = captchaObj.getValidate();
+                if (!result) {
+                    $("#notice").show();
+                    setTimeout(function () {
+                        $("#notice").hide();
+                    }, 2000);
+                    e.preventDefault();
+                }
+            });
+            // 将验证码加到id为captcha的元素里，同时会有三个input的值用于表单提交
+            captchaObj.appendTo("#captcha");
+            captchaObj.onReady(function () {
+                $("#wait").hide();
+            });
+        };
+
+        $.ajax({
+            url: "register_check?t=" + (new Date()).getTime(), // 加随机数防止缓存
+            type: "get",
+            dataType: "json",
+            success: function (data) {
+                // 调用 initGeetest 初始化参数
+                // 参数1：配置参数
+                // 参数2：回调，回调的第一个参数验证码对象，之后可以使用它调用相应的接口
+                initGeetest({
+                    gt: data.gt,
+                    challenge: data.challenge,
+                    new_captcha: data.new_captcha, // 用于宕机时表示是新验证码的宕机
+                    offline: !data.success, // 表示用户后台检测极验服务器是否宕机，一般不需要关注
+                    product: "float", // 产品形式，包括：float，popup
+                    width: "100%"
+                }, handler);
+            }
+        });
+    </script>
 
 
 {% endblock %}
