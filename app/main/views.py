@@ -13,41 +13,35 @@ from ..models import Permission, User, Post, Comment, Notification, Like, Transa
 from ..decorators import permission_required
 
 
-# 首页基本信息展示
 @main.route('/', methods=['GET', 'POST'])
 def index():
-    # ’GET‘方法跳转到首页
     if request.method == 'GET':
         page1 = request.args.get('page', 1, type=int)
         query1 = Post.query
-        # 主页的问题（帖子）根据最近最近活跃度进行排序和分页 （最近活跃度指的是最近被访问，点赞和评论的帖子（问题））
         pagination1 = query1.order_by(Post.recent_activity.desc()).paginate(
             page1, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
             error_out=False)
         posts1 = pagination1.items
-        # 首页的热门活动排序
+        # hot
         for item in query1:
             item.important = 0
-            com_num = Comment.query.filter_by(post_id=item.id).count()
-            li_num = Like.query.filter_by(liked_post_id=item.id).count()
+            com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
+            li_num = db.session.query(func.count(Like.liker_id)).filter_by(liked_post_id=item.id).scalar()
             item.important = 7 * com_num + 3 * li_num
         hot = query1.order_by(Post.important.desc())
         li = Activity.query.filter_by(is_invalid=False)
-        # 首页的热门社团活动排序
         for item in li:
             item.important = 0
-            li_num = Want.query.filter_by(wanted_Activity_id=item.id).count()
+            li_num = db.session.query(func.count(Want.wanter_id)).filter_by(wanted_Activity_id=item.id).scalar()
             item.important = li_num
         hot_activity = li.order_by(Activity.important.desc())
         return render_template('index/index_posts.html', posts1=posts1, posts5=hot,
                                pagination1=pagination1, hot_activity=hot_activity)
-    # ’POST‘方法执行查询功能
     else:
         inf = request.form["search"]
         return redirect(url_for('.query', content=inf))
 
 
-# 首页二手交易展示
 @main.route('/trans/', methods=['GET', 'POST'])
 def index_transaction():
     if request.method == 'GET':
@@ -57,24 +51,22 @@ def index_transaction():
         query1 = Post.query
         for item in query1:
             item.important = 0
-            com_num = Comment.query.filter_by(post_id=item.id).count()
-            li_num = Like.query.filter_by(liked_post_id=item.id).count()
+            com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
+            li_num = db.session.query(func.count(Like.liker_id)).filter_by(liked_post_id=item.id).scalar()
             item.important = 7 * com_num + 3 * li_num
         hot = query1.order_by(Post.important.desc())
         li = Activity.query.filter_by(is_invalid=False)
         for item in li:
             item.important = 0
-            li_num = Want.query.filter_by(wanted_Activity_id=item.id).count()
+            li_num = db.session.query(func.count(Want.wanter_id)).filter_by(wanted_Activity_id=item.id).scalar()
             item.important = li_num
         hot_activity = li.order_by(Activity.important.desc())
-        return render_template('index/index_transactions.html', transactions=transactions, posts5=hot,
-                               hot_activity=hot_activity)
+        return render_template('index/index_transactions.html', transactions=transactions, posts5=hot, hot_activity=hot_activity)
     else:
         inf = request.form["search"]
         return redirect(url_for('.query', content=inf))
 
 
-# 首页社团活动展示
 @main.route('/act/', methods=['GET', 'POST'])
 def index_activity():
     if request.method == 'GET':
@@ -89,24 +81,22 @@ def index_activity():
         query1 = Post.query
         for item in query1:
             item.important = 0
-            com_num = Comment.query.filter_by(post_id=item.id).count()
-            li_num = Like.query.filter_by(liked_post_id=item.id).count()
+            com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
+            li_num = db.session.query(func.count(Like.liker_id)).filter_by(liked_post_id=item.id).scalar()
             item.important = 7 * com_num + 3 * li_num
         hot = query1.order_by(Post.important.desc())
         li = Activity.query.filter_by(is_invalid=False)
         for item in li:
             item.important = 0
-            li_num = Want.query.filter_by(wanted_Activity_id=item.id).count()
+            li_num = db.session.query(func.count(Want.wanter_id)).filter_by(wanted_Activity_id=item.id).scalar()
             item.important = li_num
         hot_activity = li.order_by(Activity.important.desc())
-        return render_template('index/index_activities.html', activities=activities, posts5=hot,
-                               hot_activity=hot_activity)
+        return render_template('index/index_activities.html', activities=activities,  posts5=hot, hot_activity=hot_activity)
     else:
         inf = request.form["search"]
         return redirect(url_for('.query', content=inf))
 
 
-# 首页关注用户的帖子（问题）展示
 @main.route('/foll/', methods=['GET', 'POST'])
 def index_follow():
     if request.method == 'GET':
@@ -114,8 +104,8 @@ def index_follow():
         query1 = Post.query
         for item in query1:
             item.important = 0
-            com_num = Comment.query.filter_by(post_id=item.id).count()
-            li_num = Like.query.filter_by(liked_post_id=item.id).count()
+            com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
+            li_num = db.session.query(func.count(Like.liker_id)).filter_by(liked_post_id=item.id).scalar()
             item.important = 7 * com_num + 3 * li_num
         hot = query1.order_by(Post.important.desc())
         query4 = current_user.followed_posts
@@ -123,7 +113,7 @@ def index_follow():
         li = Activity.query.filter_by(is_invalid=False)
         for item in li:
             item.important = 0
-            li_num = Want.query.filter_by(wanted_Activity_id=item.id).count()
+            li_num = db.session.query(func.count(Want.wanter_id)).filter_by(wanted_Activity_id=item.id).scalar()
             item.important = li_num
         hot_activity = li.order_by(Activity.important.desc())
         return render_template('index/index_follows.html', posts4=posts4, posts5=hot, hot_activity=hot_activity)
@@ -132,7 +122,6 @@ def index_follow():
         return redirect(url_for('.query', content=inf))
 
 
-# 查询功能（默认查询帖子（问题）），以及四种不同的排序方式
 @main.route('/query/<content>', methods=['GET', 'POST'])
 def query(content):
     if request.method == 'GET':
@@ -149,7 +138,6 @@ def query(content):
                 if list1[y].find(inf) != -1:
                     counts = counts + 1
             item.important = counts
-            print(item.important)
         page = request.args.get('page', 1, type=int)
         pagination1 = result.order_by(Post.important.desc()).paginate(
             page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
@@ -161,7 +149,7 @@ def query(content):
         newest = pagination2.items
         for item in result:
             item.important = 0
-            com_num = Comment.query.filter_by(post_id=item.id).count()
+            com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
             item.important = com_num
         pagination3 = result.order_by(Post.important.desc()).paginate(
             page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
@@ -175,8 +163,8 @@ def query(content):
             for y in range(len(list1)):
                 if list1[y].find(inf) != -1:
                     counts = counts + 1
-            com_num = Comment.query.filter_by(post_id=item.id).count()
-            li_num = Like.query.filter_by(liked_post_id=item.id).count()
+            com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
+            li_num = db.session.query(func.count(Like.liker_id)).filter_by(liked_post_id=item.id).scalar()
             item.important = counts * 4 + 3 * com_num + 3 * li_num
         pagination4 = result.order_by(Post.important.desc()).paginate(
             page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
@@ -203,9 +191,7 @@ def query(content):
             for y in range(len(list1)):
                 if list1[y].find(inf) != -1:
                     counts = counts + 1
-                # print(list1[y])
             item.important = counts
-            print(inf)
         page = request.args.get('page', 1, type=int)
         pagination1 = result.order_by(Post.important.desc()).paginate(
             page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
@@ -217,7 +203,7 @@ def query(content):
         newest = pagination2.items
         for item in result:
             item.important = 0
-            com_num = Comment.query.filter_by(post_id=item.id).count()
+            com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
             item.important = com_num
         pagination3 = result.order_by(Post.important.desc()).paginate(
             page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
@@ -231,8 +217,8 @@ def query(content):
             for y in range(len(list1)):
                 if list1[y].find(inf) != -1:
                     counts = counts + 1
-            com_num = Comment.query.filter_by(post_id=item.id).count()
-            li_num = Like.query.filter_by(liked_post_id=item.id).count()
+            com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
+            li_num = db.session.query(func.count(Like.liker_id)).filter_by(liked_post_id=item.id).scalar()
             item.important = counts * 4 + 3 * com_num + 3 * li_num
         pagination4 = result.order_by(Post.important.desc()).paginate(
             page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
@@ -246,7 +232,6 @@ def query(content):
                                pagination2=pagination2, pagination3=pagination3, pagination4=pagination4)
 
 
-# 查询其他用户的功能（根据用户名和学号）
 @main.route('/query-user', methods=['GET', 'POST'])
 def query_user():
     if request.method == 'GET':
@@ -266,7 +251,6 @@ def query_user():
         return render_template('queryuser.html', query=query, title="Result of query", pagination=pagination, inf=inf)
 
 
-# 查询二手交易的功能
 @main.route('/query-transaction', methods=['GET', 'POST'])
 def query_transaction():
     if request.method == 'GET':
@@ -284,12 +268,10 @@ def query_transaction():
             page, per_page=current_app.config['FLASKY_FOLLOWERS_PER_PAGE'],
             error_out=False)
         query = pagination.items
-        return render_template('querytransaction.html', query=query, title="Result of query", pagination=pagination,
-                               inf=inf)
+        return render_template('querytransaction.html', query=query, title="Result of query", pagination=pagination, inf=inf)
 
 
-# 访问用户主页的功能
-@main.route('/user/<username>', methods=['GET', 'POST'])
+@main.route('/user/<username>')
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
     liking = Like.query.filter_by(liker_id=user.id)
@@ -297,32 +279,15 @@ def user(username):
     wanting = user.wanted_Activity
 
     posts = user.posts.order_by(Post.timestamp.desc())
-    liking_posts = [{'post': item.liked_post, 'timestamp': item.timestamp} for item in liking.order_by(Like.timestamp.
-                                                                                                       desc())]
+    liking_posts = [{'post': item.liked_post, 'timestamp': item.timestamp} for item in liking.order_by(Like.timestamp.desc())]
     transactions = user.transactions.order_by(Transaction.timestamp.desc())
     activities = user.activities.order_by(Activity.timestamp.desc())
     collects = collecting.order_by(Collect.timestamp.desc())
     wants = wanting.order_by(Want.timestamp.desc())
-    if request.method == 'GET':
-        return render_template('user.html', user=user, posts=posts, liking_posts=liking_posts, activities=activities,
-                               transactionsInProfile=transactions, collects=collects, wants=wants)
-    if request.method == 'POST':
-        message_info = request.form["message_info"]
-        if message_info == "":
-            flash("Message can not be null")
-        else:
-            n = Notification(receiver_id=user.id, timestamp=datetime.utcnow(),
-                             username=current_user.username, action="has sent a private message to you",
-                             object=message_info)
-            db.session.add(n)
-            db.session.commit()
-            flash("You have sent a private message to " + user.username)
-    return render_template('user.html', user=user, posts=posts, liking_posts=liking_posts,
-                           activities=activities,
-                           transactionsInProfile=transactions, collects=collects, wants=wants)
+    return render_template('user.html', user=user, posts=posts, liking_posts=liking_posts, activities=activities,
+                           transactionsInProfile=transactions, collects=collects, wants=wants,)
 
 
-# 显示消息提醒的功能
 @main.route('/notification')
 def notification():
     page = request.args.get('page', 1, type=int)
@@ -334,7 +299,6 @@ def notification():
                            pagination=pagination)
 
 
-# 改变消息状态（通过点击消息的抬头来实现），已读的消息将不会显示在消息列表
 @main.route('/change_read/<int:id>')
 def change_read(id):
     notice = Notification.query.filter_by(id=id).first()
@@ -352,7 +316,6 @@ def allow_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-# 上传头像的功能，上传的头像会被默认保存在本地的 static/assets/位置
 @main.route('/photo', methods=['POST'])
 def uploadPhoto():
     form = UploadPhotoForm()
@@ -367,7 +330,6 @@ def uploadPhoto():
     return redirect(url_for('.edit_profile'))
 
 
-# 编辑用户个人主页的功能
 @main.route('/edit-profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
@@ -391,11 +353,9 @@ def edit_profile():
         return redirect(url_for('.user', username=current_user.username))
 
 
-# 显示某个帖子（问题）的相关信息的功能
 @main.route('/post/<int:id>', methods=['GET', 'POST'])
 def post(id):
     post = Post.query.get_or_404(id)
-    user_list = User.query.order_by(User.username)
     form = CommentForm()
     page = request.args.get('page', 1, type=int)
     if page == -1:
@@ -450,18 +410,15 @@ def post(id):
         else:
             flash('Comment published successfully')
         return redirect(url_for('.post', id=post.id))
-    return render_template('post.html', posts=[post], form=form, comments=comments,
-                           pagination=pagination, user_list=user_list)
+    return render_template('post.html', posts=[post], form=form, comments=comments, pagination=pagination)
 
 
-# 对评论（问题）的回复功能，即多级评论
 @main.route('/reply/comment/<int:comment_id>')
 def reply_comment(comment_id):
     """作为中转函数通过URL传递被回复评论信息"""
     comment = Comment.query.get_or_404(comment_id)
     post1 = comment.post
     author = comment.author.username
-    # 更细帖子（问题）的最近活跃度
     post1.recent_activity = datetime.utcnow()
     if comment.is_anonymous:
         author = "anonymous"
@@ -469,7 +426,6 @@ def reply_comment(comment_id):
     return redirect(url_for('.post', id=comment.post.id, reply=comment_id, author=author))
 
 
-# 删除评论的功能
 @main.route('/delete_comment/<int:id>')
 @login_required
 def delete_comment(id):
@@ -486,7 +442,6 @@ def delete_comment(id):
         return redirect(url_for('.post', id=posts.id))
 
 
-# 删除帖子（问题）的功能（在个人主页删除）
 @main.route('/delete_post_profile/<post_id>')
 @login_required
 def delete_post_inProfile(post_id):
@@ -497,7 +452,6 @@ def delete_post_inProfile(post_id):
     return redirect(url_for('.user', username=current_user.username))
 
 
-# 关注其他用户的功能
 @main.route('/follow/<username>')
 @login_required
 @permission_required(Permission.FOLLOW)
@@ -515,7 +469,6 @@ def follow(username):
     return redirect(url_for('.user', username=username))
 
 
-# 取消关注其他用户的功能
 @main.route('/unfollow/<username>')
 @login_required
 @permission_required(Permission.FOLLOW)
@@ -533,7 +486,6 @@ def unfollow(username):
     return redirect(url_for('.user', username=username))
 
 
-# 对帖子（问题）的点赞功能
 @main.route('/like/<post_id>')
 @login_required
 @permission_required(Permission.FOLLOW)
@@ -572,7 +524,6 @@ def like_inpost(post_id):
     return redirect(url_for('.post', id=post_id))
 
 
-# 取消对帖子（问题）点赞的功能
 @main.route('/dislike/<post_id>')
 @login_required
 @permission_required(Permission.FOLLOW)
@@ -663,7 +614,6 @@ def liked_by(post_id):
                            liker=liker)
 
 
-# 发布一条新的帖子（问题）
 @main.route('/new_post_md', methods=['GET', 'POST'])
 @login_required
 def new_post_md():
@@ -693,113 +643,3 @@ def new_post_md():
             flash("You have just posted a posting", 'success')
         return redirect(url_for('.index'))
     return render_template('new_posting/new_mdpost.html', form=form)
-
-
-# 转发其他用户帖子的功能
-@main.route('/share_post/<post_id>', methods=['GET', 'POST'])
-@login_required
-@permission_required(Permission.FOLLOW)
-def share_post(post_id):
-    post = Post.query.filter_by(id=post_id).first_or_404()
-    if request.method == 'GET':
-        return render_template('new_posting/share.html', post=post)
-    else:
-        title = request.form["new_title"]
-        auth = User.query.filter_by(id=post.author_id).first_or_404()
-        if title == "":
-            flash("Title cannot be None!")
-            return render_template('new_posting/share.html', post=post)
-        new_post = Post(title=title,
-                        body=post.body,
-                        body_html=post.body_html,
-                        is_anonymous=False,
-                        is_shared=True,
-                        shared_from=auth.username,
-                        shared_content=post.title,
-                        origin_post_id=post_id,
-                        author=current_user._get_current_object())
-        db.session.add(new_post)
-        db.session.commit()
-        return redirect(url_for(".index"))
-
-
-# 邀请其他用户回答某个问题的功能
-@main.route('/invite/<post_id>', methods=['GET', 'POST'])
-@login_required
-@permission_required(Permission.FOLLOW)
-def invite(post_id):
-    post = Post.query.filter_by(id=post_id).first_or_404()
-    user_list = User.query.order_by(User.username)
-    if request.method == 'GET':
-        return render_template('post_invite.html', user_list=user_list, posts=[post])
-    if request.method == 'POST':
-        info = request.form["invite"]
-        user = User.query.filter_by(id=info).first_or_404()
-        n = Notification(receiver_id=user.id, timestamp=datetime.utcnow(),
-                         username=current_user.username, action="invites you to answer the question",
-                         object=post.title, object_id=post.id)
-        db.session.add(n)
-        db.session.commit()
-        flash("You have invited <" + user.username + "> to answer this question.")
-        return redirect(url_for('main.post', id=post.id))
-    return render_template('post_invite.html', user_list=user_list, posts=[post])
-
-
-# 删除帖子（问题）的功能（在首页删除）
-@main.route('/delete/<post_id>')
-@login_required
-def delete(post_id):
-    post = Post.query.filter_by(id=post_id).first()
-    db.session.delete(post)
-    db.session.commit()
-    flash('The posting has been deleted.')
-    return redirect(url_for('.index'))
-
-
-# 举报某个帖子（问题）的功能
-@main.route('/report/<post_id>')
-@login_required
-def report(post_id):
-    post = Post.query.filter_by(id=post_id).first()
-    n = Notification(receiver_id=102, timestamp=datetime.utcnow(),
-                     username=current_user.username, action="report the post",
-                     object=post.title, object_id=post.id)
-    flash("You have reported a post")
-    db.session.add(n)
-    db.session.commit()
-    return redirect(url_for('main.index'))
-
-
-# 举报某个评论（回答）的功能
-@main.route('/report_comment/<comment_id>')
-@login_required
-def report_comment(comment_id):
-    comment = Comment.query.filter_by(id=comment_id).first()
-    id = comment.post.id
-    n = Notification(receiver_id='102', timestamp=datetime.utcnow(),
-                     username=current_user.username, action="report the comment in",
-                     object=comment.post.title, object_id=id)
-    flash("You have reported a comment")
-    db.session.add(n)
-    db.session.commit()
-    return redirect(url_for('main.post', id=id))
-
-
-#分享某个评论（回答）的功能
-@main.route('/share_comment/<comment_id>', methods=['GET', 'POST'])
-@login_required
-def share_comment(comment_id):
-    comment = Comment.query.filter_by(id=comment_id).first_or_404()
-    user_list = User.query.order_by(User.username)
-    post = comment.post
-    if request.method == 'GET':
-        return render_template("comment_share.html", comment=comment, posts=[post], user_list=user_list)
-    if request.method == 'POST':
-        info = request.form["share_to"]
-        user = User.query.filter_by(id=info).first_or_404()
-        n = Notification(receiver_id=user.id, timestamp=datetime.utcnow(),
-                         username=current_user.username, action="shares an answer to you",
-                         object=post.title, object_id=post.id)
-        db.session.add(n)
-        db.session.commit()
-        return redirect(url_for(".post", id=post.id))

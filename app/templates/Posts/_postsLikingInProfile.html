@@ -7,9 +7,6 @@
                 <h3 class="post-title">
                     <a href="{{ url_for('.post', id=liking.post.id) }}">{{ liking.post.title }}</a>
                 </h3>
-                {% if liking.post.is_shared %}
-                    <i style="color: blue; padding-left: 5px; font-size: 18px">Reprinted from <<a href="{{ url_for('.post', id=liking.post.origin_post_id) }}">{{ liking.post.shared_content }}</a>> posted by @<a href="{{ url_for('.user', username=liking.post.shared_from) }}">{{ liking.post.shared_from }}</a></i>
-                {% endif %}
                 <div class="post-body">
                    <p>
                         {% if liking.post.body_html %}

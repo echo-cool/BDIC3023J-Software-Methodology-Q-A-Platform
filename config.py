@@ -3,18 +3,19 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
+# basic configuration
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
 
-    MAIL_SERVER = 'smtp.163.com'
-    MAIL_PORT = 25
+    MAIL_SERVER = 'smtp.qq.com'
+    MAIL_PORT = 587
     MAIL_USE_TLS = True
     MAIL_USE_SSL = False
-    MAIL_USERNAME = 'ou_xiao_ou@163.com'
-    MAIL_PASSWORD = 'BJXWOHPBIPNUYHRW'
+    MAIL_USERNAME = '609899054@qq.com'
+    MAIL_PASSWORD = 'hnktohctbgwhbchh'
     FLASKY_MAIL_SUBJECT_PREFIX = '[Student Exchange Forum of BJUT]'
-    FLASKY_MAIL_SENDER = 'ou_xiao_ou@163.com'
+    FLASKY_MAIL_SENDER = '609899054@qq.com'
     FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     FLASKY_POSTS_PER_PAGE = 20

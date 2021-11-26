@@ -1,6 +1,6 @@
-# **Q&A Platform**
+# **Student Exchange Forum of BJUT**
 ## **1.  Introduction**
-This project is a special Q&A Platform for students.
+This project is a special forum for the communication of students, called **Student Exchange Forum of BJUT**.
 
 
 
@@ -17,13 +17,13 @@ This project is a special Q&A Platform for students.
 * Download
 
 ```shell
-docker docker pull ouxiaoou/platform:latest
+docker pull hanhaozhi/sep_team16
 ```
 
 * Run 
 
 ```shell
-docker run -d -p 5000:5000 ouxiaoou/platform:latest
+docker run -d -p 5000:5000 hanhaozhi/sep_team16
 ```
 
 #### 2.1.2 Generate a new Docker Image
@@ -31,13 +31,13 @@ docker run -d -p 5000:5000 ouxiaoou/platform:latest
 * Generate
 
 ```shell
-docker build -t [your_image_name] .
+docker build -t team16:latest .
 ```
 
 * Run 
 
 ```shell
-docker run -d -p 5000:5000 [your_image_name]
+docker run -d -p 5000:5000 team16:latest
 ```
 
 #### 2.1.3 Open
@@ -151,3 +151,47 @@ Here is an student account for you to test.
 | --------- | -------- |
 | 84291189  | password |
 
+
+
+### 3.2 Organization Account
+
+#### 3.2.1 Organization Account Registration
+
+Organizational account registration needs to go through the administrator to review the organization  account application information. If the information is true and reliable, the administrator will click the successful application button to send an email to the applicant to represent the success of the registration. On the contrary, the application failure of the mail.
+
+**Since the project is not actually deployed online, you need to play the role of administrator on your computer.** 
+
+| Administrator Email | Password   |
+| ------------------- | ---------- |
+| sefbjut@163.com     | bjut123456 |
+
+> You need to log in to this mailbox and perform the administrator's action to complete the registration of the user account.
+
+After clicking register success, your registration email will receive an email containing your organization's account information.
+
+#### 3.2.2 A Organization Account For Test
+
+Student accounts can post and second-hand trading information. Organization accounts can post and activity information.
+
+Here is an organization account for you to test.
+
+| OrganizationID | Password |
+| -------------- | -------- |
+| 99999999       | password |
+
+
+
+## **4.**  **About Group 16**
+
+### **4.1 Group Name**
+**Debugger**
+
+### **4.2  Group Members**
+
+| UCD Student Numbers | BJUT Student Numbers |    Name    |          Email           | 中文名字 |
+| :-----------------: | :------------------: | :--------: | :----------------------: | :------: |
+|      18206155       |       18372216       | Han Haozhi | haozhi.han@ucdconnect.ie |  韩昊知  |
+|      18206178       |       18372315       | Yang Qifan | qifan.yang@ucdconnect.ie |  杨其帆  |
+|      18206187       |       18372330       | Yang Xiao  | xiao.yang1@ucdconnect.ie |   杨骁   |
+|      18206184       |       18372326       |  Ou Liwei  |  liwei.ou@ucdconnect.ie  |  欧立炜  |
+|      18206366       |       18372314       | Cai Songge | songge.cai@ucdconnect.ie |  蔡颂歌  |

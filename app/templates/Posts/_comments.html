@@ -66,7 +66,7 @@
                     <div class="footer">
                         {#按钮#}
                         {#            删除#}
-                        {% if current_user == comment.author or current_user == post.author or current_user.can(Permission.MODERATE)%}
+                        {% if current_user == comment.author or current_user == post.author %}
                          <a class="icon-btn" href="{{ url_for('.delete_comment', id=comment.id) }}">
                              <span class="glyphicon glyphicon-trash"></span>
                              <span>delete</span>
@@ -76,16 +76,6 @@
                         <a class="icon-btn" href="{{ url_for('.reply_comment', comment_id=comment.id) }}#reply">
                             <span class="glyphicon glyphicon-share"></span>
                             <span>reply</span>
-                        </a>
-
-                        <a class="icon-btn" href="{{ url_for('.share_comment', comment_id=comment.id) }}">
-                            <span class="glyphicon glyphicon-share"></span>
-                            <span>share</span>
-                        </a>
-
-                        <a class="icon-btn" href="{{ url_for('.report_comment', comment_id=comment.id) }}">
-                            <span class="glyphicon glyphicon-lock"></span>
-                            <span>report</span>
                         </a>
                     </div>
                 </div>
