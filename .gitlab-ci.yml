@@ -2,7 +2,10 @@
 # Official language image. Look for the different tagged releases at:
 # https://hub.docker.com/r/library/python/tags/
 image: python:3.9.6
-
+stages:
+- test
+- run
+- package
 # Change pip's cache directory to be inside the project directory since we can
 # only cache local items.
 variables:
@@ -26,6 +29,7 @@ before_script:
   - pip install -r requirements.txt
 
 test:
+  stage: test
   script:
       - echo "TEST"
     # - python setup.py test
@@ -33,15 +37,14 @@ test:
     # - tox -e py36,flake8
 
 run:
+  stage: run
   script:
+    - python -V  # Print out python version for debugging
+    - pip install virtualenv
+    - virtualenv venv
+    - source venv/bin/activate
+    - pip install -r requirements.txt
     - python test.py
-#  timeout: 0h 1m
-    # an alternative approach is to install and run:
-    # - pip install dist/*
-    # run the command here
-#   artifacts:
-#     paths:
-#       - dist/*.whl
 
 
 docker:
