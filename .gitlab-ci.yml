@@ -43,6 +43,23 @@ run:
 #     paths:
 #       - dist/*.whl
 
+
+docker:
+  tags:
+    - shell
+  stage: package
+  only:
+    - master
+  script:
+    - echo "package docker"
+    - docker info
+    - docker login -u echo0821 -p Lkq2mapp565688 registry.hub.docker.com
+    - docker build -t registry.hub.docker.com/echo0821/web-methodology:latest .
+    - docker push registry.hub.docker.com/echo0821/web-methodology:latest
+    - docker rmi registry.hub.docker.com/echo0821/web-methodology
+#    - docker tag registry.hub.docker.com/echo0821/web-project:latest registry.heroku.com/comp3019j-web-dev/web
+#    - docker push registry.heroku.com/comp3019j-web-dev/web
+
 # pages:
 #   script:
 #     - pip install sphinx sphinx-rtd-theme

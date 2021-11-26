@@ -28,7 +28,6 @@ login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 
 
-
 def create_app(config_name):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
@@ -45,8 +44,6 @@ def create_app(config_name):
     debug_toolbar.init_app(app)
     flask_static_digest.init_app(app)
     admin.init_app(app)
-
-
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
