@@ -2,14 +2,14 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
     name: web-methodology-deployment
-    lables:
+    labels:
         web: methodology
 spec:
     replicas: 2
     selector:
         matchLabels:
             web: methodology
-    templates:
+    template:
         metadata:
             labels:
                 web: methodology
