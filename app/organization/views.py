@@ -16,11 +16,11 @@ def register_organization():
         email_find = User.query.filter_by(email=form.email.data).first()
         if email_find is not None:
             flash("Your email has been registered, please change your email")
-            return render_template('organization/register2.html', form=form)
+            return render_template('organization/organization_register.html', form=form)
         username_find = User.query.filter_by(username=form.name.data).first()
         if username_find is not None:
             flash("Your organization name has been registered, please change your username")
-            return render_template('organization/register2.html', form=form)
+            return render_template('organization/organization_register.html', form=form)
         organization = Organization(name=form.name.data,
                                     teacher=form.teacher.data,
                                     leader_student=form.leader.data,
@@ -154,8 +154,7 @@ def delete_activity(activity_id):
     if current_user == activity.announcer:
         db.session.delete(activity)
         db.session.commit()
-        flash('你没有删评论权限')
-        # flash('The activity has been deleted.')
+        flash('The activity has been deleted.')
         return redirect(url_for('main.user', username=activity.announcer.username))
     else:
         flash('你没有删评论权限')

@@ -17,6 +17,7 @@
 
     <div class="col-sm-12">
         <form class="form-horizontal" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <div class="form-group" style="margin-top: 15px; ">
 
                 <h4 class="col-sm-3 control-label text-left" style="padding-top: 7px; text-align: right; margin-top: 0px;">

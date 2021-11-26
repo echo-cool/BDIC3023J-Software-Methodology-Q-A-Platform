@@ -31,15 +31,14 @@ def login():
     if request.method == 'GET':
         return render_template('auth/login.html')
     if request.method == 'POST':
-        # 通过Ajax获取前端数据的方法
         student_id = request.form["user"]
         password = request.form["pwd"]
         user = User.query.filter_by(student_id=student_id).first()
         if user is None:
-            flash("您的学号还没有注册")
+            flash("Your StudentID/OrganizationID has not been registered")
             return render_template('auth/login.html')
         elif user.verify_password(password) is False:
-            flash("用户名或密码错误")
+            flash("StudentID/OrganizationID or password error")
             return render_template('auth/login.html')
         if user is not None and user.verify_password(password):
             login_user(user, True)
@@ -92,8 +91,7 @@ def register():
                             student_id=request.form["BJUT_id"],
                             username=request.form["user_name"],
                             password=request.form["confirm_pwd"],
-                            role_id=student.role_id,
-                            avatar_img='/static/assets/qq.jpg'
+                            role_id=student.role_id
                             )
                 is_student.confirmed = True
                 db.session.add(is_student)
@@ -159,7 +157,7 @@ def password_reset_request():
                        user=user, token=token)
         flash('An email with instructions to reset your password has been '
               'sent to you.')
-        # return redirect(url_for('auth.login'))
+        return redirect(url_for('auth.login'))
     return render_template('auth/reset_password.html', form=form)
 
 

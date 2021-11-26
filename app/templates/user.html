@@ -84,22 +84,8 @@
                     <a href="/edit-profile">Change my information</a>
                 </button>
             </div>
-        {% else %}
-            <div class="btn-group btn-group-sm set-info" >
-                <button type="button" class="btn btn-default" onclick="alertBoxFn()">
-                    Send Private Message
-                </button>
-            </div>
         {% endif %}
     </div>
-    {% if user != current_user %}
-        <div id="alertBox" onclick="outside=false" style="background-color: #ece9e9; margin-bottom: 20px; display: none">
-            <form method="post">
-                <textarea cols="140" rows="3" name="message_info" style="margin-left: 20px"></textarea>
-                <button type="submit" class="btn btn-default" style="margin-bottom: 20px; margin-left: 20px">Send</button>
-            </form>
-        </div>
-    {% endif %}
 
     <div class="container col-sm-12 info">
         <div class="tabbable">
@@ -310,23 +296,6 @@
         btn.onmouseout = function () {
             btn.innerHTML = "Followed"
         }
-    </script>
-
-    <script>
-        var outside=true
-        let alertBox = document.getElementById('alertBox')
-        function alertBoxFn(e) {
-            outside=false
-            alertBox.style.display = "block";
-        }
-        document.body.addEventListener('click', function() {
-            outside=true
-        },true)
-        document.body.addEventListener('click', function() {
-            if(outside){
-                alertBox.style.display = 'none'
-            }
-        })
     </script>
 
 {% endblock %}

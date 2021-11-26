@@ -12,7 +12,6 @@
     <link href="{{ url_for('static', filename='editormd/css/editormd.css') }}" rel="stylesheet" />
     <link href="{{ url_for('static', filename='single_post.css') }}" rel="stylesheet" />
     <link href="{{ url_for('static', filename='comments.css') }}" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="../static/edit_Profile.css"/>
 
 {%endblock%}
 
@@ -55,9 +54,6 @@
                             {{ post.title }}
                         </a>
                     </h1>
-                    {% if post.is_shared %}
-                        <i style="color: blue; padding-left: 15px; font-size: 22px">Reprinted from <<a href="{{ url_for('.post', id=post.origin_post_id) }}">{{ post.shared_content }}</a>> posted by @<a href="{{ url_for('.user', username=post.shared_from) }}">{{ post.shared_from }}</a></i>
-                    {% endif %}
     {#                正文#}
                     <div class="content" id="fancy-content">
                                 {{ post.body_html| safe }}
@@ -126,11 +122,12 @@
 
         {#        评论区#}
         <div class="container col-sm-offset-1 col-sm-10 comment-cont">
-            <h3 id="comments">Comments </h3>
+            <h3 id="comments">Comments</h3>
             {% include 'Posts/_comments.html' %}
             {% if current_user.can(Permission.COMMENT) %}
                 <div class="comment-form">
                     <form role="form" class="form-signin"  method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                         <div class="col-md-12">
                              {% if request.args.get('reply') %}
                                 <div class="alert alert-warning alert-dismissible" id="reply" role="alert">
@@ -153,9 +150,6 @@
                             </div>
                         </div>
                     </form>
-                </div>
-                <div style="text-align: center">
-                    <button style="margin-left: 100px; font-size: 20px; background-color: #1760cd;" type="button" id="btn_invite"><a href="{{ url_for('main.invite', post_id=post.id) }}" style="color: white">Invite Others to Answer</a></button>
                 </div>
             {% endif %}
             {% if pagination %}
@@ -194,9 +188,9 @@
                 <div>All Likers</div>
             </a>
         </div>
+
         </li>
     {% endfor %}
 </ul>
-
 
 {% endblock %}

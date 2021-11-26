@@ -57,7 +57,7 @@
     <div>
         {% if current_user.can(Permission.WRITE) %}
             <form method="post">
-
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                 <div class="col-md-offset-3 col-md-8">
                     <label class="WriteIndex-titleInput Input-wrapper Input-wrapper--multiline">
                         <textarea  id="title" name="title" rows="1" class="Input" maxlength="30"
