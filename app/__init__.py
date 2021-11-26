@@ -1,5 +1,6 @@
 # The purpose of this file is to construct an application package to call factory functions
 from flask import Flask
+from flask_admin import Admin
 from flask_bootstrap import Bootstrap
 from flask_mail import Mail
 from flask_moment import Moment
@@ -21,6 +22,7 @@ csrf = CSRFProtect()
 cache = Cache()
 debug_toolbar = DebugToolbarExtension()
 flask_static_digest = FlaskStaticDigest()
+admin = Admin(template_mode='bootstrap4')
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
@@ -42,6 +44,8 @@ def create_app(config_name):
     pagedown.init_app(app)
     debug_toolbar.init_app(app)
     flask_static_digest.init_app(app)
+    admin.init_app(app)
+
 
 
     from .main import main as main_blueprint

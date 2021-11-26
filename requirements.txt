@@ -32,3 +32,5 @@ Markdown~=3.2.1
 flask_caching
 flask_debugtoolbar
 flask_static_digest
+flask-admin
+wtforms_appengine
