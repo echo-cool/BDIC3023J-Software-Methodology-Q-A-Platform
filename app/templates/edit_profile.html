@@ -36,7 +36,7 @@
 {#        更改头像的按钮#}
         <div class="col-sm-8" style="margin: 0px 45px ">
             <form action="{{ url_for('.uploadPhoto') }}" method="post" enctype="multipart/form-data">
-                {{ form.csrf_token }}
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                 <a href="javascript:;" class="file btn btn-warning" style="margin: 3px 10px">Change Avatar
                     {{ form.photo }}
                 </a>
@@ -49,6 +49,7 @@
 
         <div class="col-sm-6" style="margin-top: 25px">
             <form class="form-horizontal" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                 <div class="form-group" style="margin-top: 15px; ">
                     <label for="username" class="col-sm-3 control-label text-left">User name</label>
                     <div class="col-sm-9">

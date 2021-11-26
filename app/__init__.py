@@ -5,6 +5,8 @@ from flask_mail import Mail
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_wtf import CSRFProtect
+
 from config import config
 from flask_pagedown import PageDown
 
@@ -13,6 +15,7 @@ mail = Mail()
 moment = Moment()
 db = SQLAlchemy()
 pagedown = PageDown()
+csrf = CSRFProtect()
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
@@ -26,6 +29,7 @@ def create_app(config_name):
     bootstrap.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
+    csrf.init_app(app=app)
     db.init_app(app)
     login_manager.init_app(app)
     pagedown.init_app(app)

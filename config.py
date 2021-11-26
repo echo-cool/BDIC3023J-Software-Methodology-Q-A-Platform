@@ -6,7 +6,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # basic configuration
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'ec94cr32ffs2123ffd3fg3dsa2r39cfc6d796ae3029594d'
 
     MAIL_SERVER = 'smtp.qq.com'
     MAIL_PORT = 587

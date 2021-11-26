@@ -21,6 +21,7 @@
     <!--        左侧表单-->
             <div class="col-md-6">
                 <form class="form-activity form-horizontal" method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                     <h1 class="form-activity-heading col-sm-offset-1">Activity</h1>
 <!--                    活动名称-->
                     <div class="form-group">

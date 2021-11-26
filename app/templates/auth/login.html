@@ -76,6 +76,7 @@
                 {% endfor %}
 
                 <form role="form" class="form-signin" method="post" style="margin: 120px auto 0px auto;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                     <h2 class="form-signin-heading">Please sign in</h2>
 
                     <label for="inputName" class="sr-only">Email address</label>

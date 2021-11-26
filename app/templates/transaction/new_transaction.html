@@ -20,6 +20,7 @@
     <!--        右侧表单-->
             <div class="col-md-6">
                 <form class="form-transaction form-horizontal" method="post" style="margin: 75px auto 0 auto;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                     <h1 class="form-transaction-heading">Transaction</h1>
     <!--                商品名-->
                     <div class="form-group">

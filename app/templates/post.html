@@ -127,6 +127,7 @@
             {% if current_user.can(Permission.COMMENT) %}
                 <div class="comment-form">
                     <form role="form" class="form-signin"  method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                         <div class="col-md-12">
                              {% if request.args.get('reply') %}
                                 <div class="alert alert-warning alert-dismissible" id="reply" role="alert">
