@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Services
+metadata:
+    name: web-methodology-services
+spec:
+    selector:
+       web: methodology
+    ports:
+     - protocol: TCP
+       port: 80
+       targetPort: 8080
+
