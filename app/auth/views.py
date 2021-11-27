@@ -71,6 +71,13 @@ def login():
             return redirect(next)
         return render_template('auth/login.html')
 
+# 相册
+@auth.route('/album')
+@login_required
+def album():
+    return render_template('auth/album.html')
+
+
 
 # 登出
 @auth.route('/logout')
