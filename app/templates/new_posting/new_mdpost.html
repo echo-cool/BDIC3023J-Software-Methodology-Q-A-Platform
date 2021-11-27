@@ -29,7 +29,7 @@
         $(function(){
             testEditor=editormd("test-editormd",{
                 placeholder:'This editor supports Markdown editing, write on the left, preview on the right',
-                width:'1130px',
+                {#width:'1130px',#}
                 height:'600px',
                 syncScrolling : "single",
                 path:"{{url_for('static',filename='editormd/lib/')}}",
@@ -57,35 +57,36 @@
     <div>
         {% if current_user.can(Permission.WRITE) %}
             <form method="post">
-<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-                <div class="col-md-offset-3 col-md-8">
-                    <label class="WriteIndex-titleInput Input-wrapper Input-wrapper--multiline">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <div class="form-control col-md-12" style="margin-bottom: 20px;margin-top: 20px;width: 100%;height: auto">
+{#                    <label class="WriteIndex-titleInput Input-wrapper Input-wrapper--multiline">#}
                         <textarea  id="title" name="title" rows="1" class="Input" maxlength="30"
-                                   placeholder="        Enter Title (Max: 30 letters)"
-                                   style="-webkit-tap-highlight-color: rgba(26,26,26,0);
-                                        -webkit-box-flex: 1;
-                                        flex: 1 1;
-                                        padding: 0;
+                                   placeholder="Enter Title (Max: 30 letters)"
+                                   style="
+                                   -webkit-tap-highlight-color: rgba(26,26,26,0);
+                                   -webkit-box-flex: 1;
+                                   {#     flex: 1 1;#}
+                                   {#     padding: 0;#}
                                         font-family: inherit;
                                         resize: none;
-                                        color: #1a1a1a;
+                                   {#     color: #1a1a1a;#}
                                         overflow: hidden;
-                                        min-height: 44px;
+                                   {#     min-height: 44px;#}
                                         display: block;
-                                        width: 550px;
+                                        width: 100%;
                                         border: 0;
-                                        font-size: 32px;
-                                        line-height: 1.4;
-                                        font-weight: 600;
+                                        font-size: 24px;
+                                   {#     line-height: 1.4;#}
+                                   {#     font-weight: 600;#}
                                         outline: none;
                                         box-shadow: none;
-                                        height: 44px;"></textarea>
-                    </label>
+                                        height: 100%;"></textarea>
+{#                    </label>#}
                 </div>
 
                 {{form.hidden_tag()}}
 
-                <div id="test-editormd" class="form-control col-md-12">
+                <div id="test-editormd" class="form-control col-md-12" style="width: 100%">
                     {{form.body(class="form-control",style="display:none;",id="ts")}}
                 </div>
 
