@@ -70,17 +70,58 @@
                         </a>
 
                 {#            喜欢#}
-                    {% if not current_user.is_liking(post) %}
-                        <a class="icon-btn" style="float:right; margin-right: 15px" href="{{ url_for('.like', post_id=post.id) }}#{{ post.id }}">
+{#                    {% if not current_user.is_liking(post) %}#}
+{#                        <a class="icon-btn" style="float:right; margin-right: 15px" href="{{ url_for('.like', post_id=post.id) }}#{{ post.id }}">#}
+{#                            <span class="glyphicon glyphicon-heart-empty"></span>#}
+{#                            <span>{{ post.liker.count() }} likes</span>#}
+{#                        </a>#}
+                        <a class="icon-btn" style="float:right; margin-right: 15px" href="javascript:void (0);" onclick="{
+                            var csrftoken = $('meta[name=csrf-token]').attr('content');
+                            var _this=this;
+                            var span1=this.childNodes[1];
+                            var span2=this.childNodes[3];
+                            {#console.log(this.childNodes[3]);#}
+                            {#console.log(this.childElementCount);#}
+                                var sendData={
+                                  'csrf_token':csrftoken
+                              };
+
+                            $.ajax({
+                                url: '{{ url_for('.AJAXlike', post_id=post.id) }}',
+                                type: 'POST',
+                                {#dataType: 'json',#}
+                                {#contentType: 'application/json',#}
+                                {#data: JSON.stringify(sendData),#}
+
+                                success: function(result) {
+                                    console.log(result);
+                                    if(result.like){
+                                        span1.setAttribute('class', 'glyphicon glyphicon-heart');
+                                    }else{
+                                        span1.setAttribute('class', 'glyphicon glyphicon-heart-empty');
+                                }
+                                    span2.innerText=result.num+' likes';
+                                    {#span1.setAttribute('href', '{{ url_for('.dislike', post_id=post.id) }}');#}
+                                },
+                                error:function(msg){
+                                     console.log(msg);
+                                }
+                                })
+                        }">
+                            {% if not current_user.is_liking(post) %}
                             <span class="glyphicon glyphicon-heart-empty"></span>
-                            <span>{{ post.liker.count() }} likes</span>
-                        </a>
-                    {% else %}
-                        <a class="icon-btn" style="float:right; margin-right: 15px" href="{{ url_for('.dislike', post_id=post.id) }}#{{ post.id }}">
+                            {% else %}
                             <span class="glyphicon glyphicon-heart"></span>
+                            {% endif %}
                             <span>{{ post.liker.count() }} likes</span>
+
                         </a>
-                    {% endif %}
+{#                    {% else %}#}
+{#                        <a class="icon-btn" style="float:right; margin-right: 15px" href="{{ url_for('.dislike', post_id=post.id) }}#{{ post.id }}">#}
+{#                            <span class="glyphicon glyphicon-heart"></span>#}
+{#                            <span>{{ post.liker.count() }} likes</span>#}
+{#                        </a>#}
+{#                    {% endif %}#}
                 </div>
           </div>
     </div>

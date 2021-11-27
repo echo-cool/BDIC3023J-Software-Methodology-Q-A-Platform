@@ -2,13 +2,13 @@ import os
 from datetime import datetime
 from operator import or_
 from flask import render_template, redirect, url_for, flash, request, \
-    current_app, make_response
+    current_app, make_response, jsonify
 from flask_login import login_required, current_user
 from sqlalchemy.sql.functions import func
 from werkzeug.utils import secure_filename
 from . import main
 from .forms import UploadPhotoForm, CommentForm, PostMdForm
-from .. import db
+from .. import db, csrf
 from ..models import Permission, User, Post, Comment, Notification, Like, Transaction, Activity, Collect, Want
 from ..decorators import permission_required
 
@@ -61,7 +61,8 @@ def index_transaction():
             li_num = db.session.query(func.count(Want.wanter_id)).filter_by(wanted_Activity_id=item.id).scalar()
             item.important = li_num
         hot_activity = li.order_by(Activity.important.desc())
-        return render_template('index/index_transactions.html', transactions=transactions, posts5=hot, hot_activity=hot_activity)
+        return render_template('index/index_transactions.html', transactions=transactions, posts5=hot,
+                               hot_activity=hot_activity)
     else:
         inf = request.form["search"]
         return redirect(url_for('.query', content=inf))
@@ -91,7 +92,8 @@ def index_activity():
             li_num = db.session.query(func.count(Want.wanter_id)).filter_by(wanted_Activity_id=item.id).scalar()
             item.important = li_num
         hot_activity = li.order_by(Activity.important.desc())
-        return render_template('index/index_activities.html', activities=activities,  posts5=hot, hot_activity=hot_activity)
+        return render_template('index/index_activities.html', activities=activities, posts5=hot,
+                               hot_activity=hot_activity)
     else:
         inf = request.form["search"]
         return redirect(url_for('.query', content=inf))
@@ -268,7 +270,8 @@ def query_transaction():
             page, per_page=current_app.config['FLASKY_FOLLOWERS_PER_PAGE'],
             error_out=False)
         query = pagination.items
-        return render_template('querytransaction.html', query=query, title="Result of query", pagination=pagination, inf=inf)
+        return render_template('querytransaction.html', query=query, title="Result of query", pagination=pagination,
+                               inf=inf)
 
 
 @main.route('/user/<username>')
@@ -279,13 +282,14 @@ def user(username):
     wanting = user.wanted_Activity
 
     posts = user.posts.order_by(Post.timestamp.desc())
-    liking_posts = [{'post': item.liked_post, 'timestamp': item.timestamp} for item in liking.order_by(Like.timestamp.desc())]
+    liking_posts = [{'post': item.liked_post, 'timestamp': item.timestamp} for item in
+                    liking.order_by(Like.timestamp.desc())]
     transactions = user.transactions.order_by(Transaction.timestamp.desc())
     activities = user.activities.order_by(Activity.timestamp.desc())
     collects = collecting.order_by(Collect.timestamp.desc())
     wants = wanting.order_by(Want.timestamp.desc())
     return render_template('user.html', user=user, posts=posts, liking_posts=liking_posts, activities=activities,
-                           transactionsInProfile=transactions, collects=collects, wants=wants,)
+                           transactionsInProfile=transactions, collects=collects, wants=wants, )
 
 
 @main.route('/notification')
@@ -503,6 +507,30 @@ def like(post_id):
     db.session.commit()
     flash('You are now liking this post')
     return redirect(url_for('.index', id=post_id))
+
+
+@main.route('/AJAXlike/<post_id>',methods=['POST'], strict_slashes=False)
+@login_required
+@csrf.exempt
+@permission_required(Permission.FOLLOW)
+def AJAXlike(post_id):
+    post = Post.query.filter_by(id=post_id).first()
+
+    if post is not None:
+        if(current_user.is_liking(post)):
+            current_user.dislike(post)
+            post.dislike(current_user)
+            db.session.commit()
+            return jsonify({'code': 200, 'like': False, 'num':post.liker.count()})
+        else:
+            current_user.like(post)
+            post.like(current_user)
+            post.recent_activity = datetime.utcnow()
+            db.session.commit()
+            return jsonify({'code': 200, 'like': True, 'num':post.liker.count()})
+
+
+
 
 
 @main.route('/likeinpost/<post_id>')

@@ -462,6 +462,7 @@ class Like(db.Model):
     liked_post = db.relationship('Post', back_populates='liker', lazy='joined')
 
 
+
 class Collect(db.Model):
     __tablename__ = 'collect'
     collecter_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
