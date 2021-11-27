@@ -297,7 +297,8 @@
 
                           <div class="follow btn-group btn-group-justified" role="group">
                               <a href="{{ url_for('.followers', username=current_user.username) }}" class="btn left-btn" role="button">{{ current_user.followers.count() - 1 }} Followers</a>
-                              <a href="{{ url_for('.followed_by', username=current_user.username) }}" class="btn" role="button">{{ current_user.following.count() - 1 }} Following</a>
+                              <a href="{{ url_for('.followed_by', username=current_user.username) }}" class="btn left-btn" role="button">{{ current_user.following.count() - 1 }} Following</a>
+                              <a href="{{ url_for('auth.album') }}" class="btn" role="button">My Album</a>
                           </div>
 
                       </div>
@@ -367,6 +368,11 @@
                                     <h4>Visitor</h4>
                                 </a>
                                 <p class="info"> After login, you can...</p>
+                          </div>
+                          <div>
+                              <a href="{{ url_for('auth.album') }}">
+                                  <img src="../../static/Image/album.png" alt="">
+                              </a>
                           </div>
 
 {#                          <div class="follow btn-group btn-group-justified" role="group">#}
