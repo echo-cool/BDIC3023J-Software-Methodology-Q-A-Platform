@@ -510,12 +510,13 @@ def like(post_id):
 
 
 @main.route('/AJAXlike/<post_id>',methods=['POST'], strict_slashes=False)
-@login_required
+# @login_required
 @csrf.exempt
 @permission_required(Permission.FOLLOW)
 def AJAXlike(post_id):
+    if(current_user is None):
+        return redirect(url_for("/"))
     post = Post.query.filter_by(id=post_id).first()
-
     if post is not None:
         if(current_user.is_liking(post)):
             current_user.dislike(post)
