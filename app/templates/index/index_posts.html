@@ -230,18 +230,18 @@
 {#            导航栏#}
                 <ul class="nav post-nav">
                     <li class="active" id="btn-1">
-                         <a>Posts</a>
+                         <a class="glyphicon glyphicon-book"> Posts</a>
                     </li>
                     <li id="btn-2">
-                        <a href="{{ url_for('.index_transaction') }}">Transactions</a>
+                        <a href="{{ url_for('.index_transaction') }}" class="glyphicon glyphicon-credit-card"> Transactions</a>
                     </li>
                     <li id="btn-3">
-                        <a href="{{ url_for('.index_activity') }}">Announcements</a>
+                        <a href="{{ url_for('.index_activity') }}" class="glyphicon glyphicon-bell"> Announcements</a>
                     </li>
 
                     {% if current_user.is_authenticated %}
                     <li id="btn-4">
-                         <a href="{{ url_for('.index_follow') }}">Follows</a>
+                         <a href="{{ url_for('.index_follow') }}" class="glyphicon glyphicon-flag"> Follows</a>
                     </li>
                     {% endif %}
                 </ul>
