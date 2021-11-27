@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+
+{% block title %}Login{% endblock %}
+
+
+{% block head %}
+    {{ super() }}
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="{{ url_for('static',filename='login-and-register.css') }}">
+    <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- Custom styles for this template -->
+    <link href="{{ url_for('static',filename='signin.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static',filename='bg.css') }}" rel="stylesheet">
+    <script type="application/javascript" src="{{ url_for('static',filename='js/gt.js') }}"></script>
+{% endblock %}
+
+
+
+
+{% block body %}
+    <div id="onepagebg" class="onepage-bg" style="width: 100%;height: 100%;text-align: center">
+        <div class="mainbox" id="mainbox">
+        <div class="form-container sign-up-container" style="overflow:scroll">
+<form class="form-signin" method="post" style="margin: 75px auto 0 auto;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <h1 class="form-signin-heading">Register</h1>
+
+<!--                    {#                    前两个信息是用来验证的（学号，身份证号）#}-->
+<!--                    {#                    您的学号#}-->
+                    <label for="BJUT_id" class="sr-only">Student number</label>
+                    <input name="BJUT_id" id="BJUT_id" type="text" class="form-control student-num" placeholder="BJUT Number">
+                    <p id="stuid"></p>
+<!--                    {#                    您的身份证号#}-->
+                    <label for="id_num" class="sr-only">ID card number</label>
+                    <input name="id_num" id="id_num" type="text" class="form-control" placeholder="Your ID number">
+                    <p id="id"></p>
+
+                    <h5><small>The above information is only used to confirm you are the student of BJUT</small></h5>
+
+<!--                    {#                    您想要设置的用户名#}-->
+                    <label for="user_name" class="sr-only">User name</label>
+                    <input name="user_name" id="user_name" type="text" class="form-control" placeholder="User name">
+                    <p id="user"></p>
+<!--                    {#                    您的邮箱#}-->
+                    <label for="email" class="sr-only">Email</label>
+                    <input name="email" id="email" type="text" class="form-control" placeholder="Email">
+                    <p id="emailp"></p>
+
+<!--                    {#                    第一次密码#}-->
+                    <label for="password" class="sr-only">Password</label>
+                    <input name="pwd" id="password" type="password" class="form-control" placeholder="Password">
+
+<!--                    {#                    第二次密码#}-->
+                    <label for="confirm_pwd" class="sr-only">Confirm password</label>
+                    <input name="confirm_pwd" id="confirm_pwd" type="password" class="form-control" placeholder="Confirm password">
+                    <p id="pwd"></p>
+
+                    <button class="btn btn-lg btn-warning btn-block chose" disabled="disabled" id="submit" type="submit">Submit</button>
+                </form>
+        </div>
+        <div class="form-container sign-in-container">
+                <form role="form" class="form-signin" method="post" style="margin: 0px auto 0px auto;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <h1 class="form-signin-heading">Login</h1>
+
+                    <label for="inputName" class="sr-only">Email address</label>
+                    <input type="text" id="inputName" class="form-control" placeholder="StudentID/OrganizationID"
+                           name="user" required autofocus>
+                    <p id="p1"></p>
+
+                    <label for="inputPassword" class="sr-only">Password</label>
+                    <input type="password" id="inputPassword" class="form-control" name="pwd" placeholder="Password"
+                           required autofocus>
+                    <p id="p2" class="text-danger"></p>
+
+                    <div>
+{#                        <label>完成验证：</label>#}
+                        <div id="captcha">
+{#                            <p id="wait" class="show"></p>#}
+                        </div>
+                    </div>
+                    <br>
+                    <p id="notice" class="hide">请先完成验证</p>
+
+
+                    <button class="btn btn-lg btn-warning btn-block chose" id="submit" disabled="disabled"
+                            type="submit">Sign in
+                    </button>
+
+
+                    <div >
+                        <p>
+                            Forgot your password?
+                            <a href="/auth/reset">reset</a><br>
+                        </p>
+                    </div>
+
+                </form>
+        </div>
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Existing account?</h1>
+                    <p>Go to Sign In</p>
+                    <button class="ghost" id="signIn">Sign In</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>No Account?</h1>
+                    <p>Join us Now</p>
+                    <button class="ghost" id="signUp">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src={{ url_for('static',filename='js/login-and-register.js') }}></script>
+
+    <script>
+        var stuID = document.getElementById('inputName');
+        var info = document.getElementById('p1');
+        var pwd = document.getElementById('inputPassword');
+        //学号
+        {#stuID.onblur = function () {#}
+        {#    var stuid = this.value;#}
+        {#    var reg = /[0-9]{1,4}/;#}
+            {#var reg = /^\d{1，8}$/;#}
+        {#    // 不符合规则的话#}
+        {#    if (!reg.test(stuid)) {#}
+        {#        info.innerHTML = 'Please enter StudentID or OrganizationID';#}
+        {#        info.className = 'text-danger';#}
+        {#        document.getElementById("submit").disabled = true;#}
+        {#    } else {#}
+        {#        info.innerHTML = '';#}
+        {#        info.className = 'text-success';#}
+        {#    }#}
+        {#    if (info.className == 'text-success') {#}
+        {#        document.getElementById("submit").disabled = false;#}
+        {#    }#}
+        {#}#}
+        var handler = function (captchaObj) {
+            $("#submit").click(function (e) {
+                var result = captchaObj.getValidate();
+                if (!result) {
+                    $("#notice").show();
+                    setTimeout(function () {
+                        $("#notice").hide();
+                    }, 2000);
+                    e.preventDefault();
+                }
+            });
+            // 将验证码加到id为captcha的元素里，同时会有三个input的值用于表单提交
+            captchaObj.appendTo("#captcha");
+            captchaObj.onReady(function () {
+                $("#wait").hide();
+            });
+        };
+
+        $.ajax({
+            url: "register_check?t=" + (new Date()).getTime(), // 加随机数防止缓存
+            type: "get",
+            dataType: "json",
+            success: function (data) {
+                // 调用 initGeetest 初始化参数
+                // 参数1：配置参数
+                // 参数2：回调，回调的第一个参数验证码对象，之后可以使用它调用相应的接口
+                initGeetest({
+                    gt: data.gt,
+                    challenge: data.challenge,
+                    new_captcha: data.new_captcha, // 用于宕机时表示是新验证码的宕机
+                    offline: !data.success, // 表示用户后台检测极验服务器是否宕机，一般不需要关注
+                    product: "float", // 产品形式，包括：float，popup
+                    width: "100%"
+                }, handler);
+            }
+        });
+    </script>
+    </div>
+
+
+{% endblock %}
