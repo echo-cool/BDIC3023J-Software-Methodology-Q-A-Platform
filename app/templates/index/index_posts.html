@@ -269,9 +269,10 @@
 
 
 {#    登录用户的个人资料卡及互动功能#}
-            {% if current_user.is_authenticated %}
+
                   <div class="col-md-offset-2 outer">
 {#                  个人资料卡#}
+                  {% if current_user.is_authenticated %}
                       <div class="thumbnail inner1 col-sm-12">
                           <div class="col-sm-3">
                             {% if current_user.avatar_img %}
@@ -354,7 +355,29 @@
                               </div>
                           {% endif %}
                       </div>
-{#                  hottest #}
+                      {% else %}
+                      <div class="thumbnail inner1 col-sm-12">
+                          <div class="col-sm-3">
+
+                         <img class="img-rounded profile-thumbnail head" src="{{ url_for('static',filename='image/defaultProfile.png') }}" alt="avatar" style="width: 50px; height: 50px">
+                          </div>
+
+                        <div class="col-sm-8 caption" style="">
+                                <a href="{{ url_for('auth.login') }}">
+                                    <h4>Visitor</h4>
+                                </a>
+                                <p class="info"> After login, you can...</p>
+                          </div>
+
+{#                          <div class="follow btn-group btn-group-justified" role="group">#}
+{##}
+{##}
+{#                          </div>#}
+
+                      </div>
+
+                  {% endif %}
+                  {#                  hottest #}
                       <div class="col-sm-12 inner3">
                           <h4>Hottest Posts</h4>
                           <ul class="posts list-unstyled">
@@ -395,7 +418,7 @@
                         </ul>
                       </div>
                   </div>
-            {% endif %}
+
 </div>
 {% endblock %}
 
