@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: web-methodology-deployment
+    labels:
+        web: methodology
+spec:
+    replicas: 2
+    selector:
+        matchLabels:
+            web: methodology
+    template:
+        metadata:
+            labels:
+                web: methodology
+        spec:
+            containers:
+            - name: web-methodology
+              image: echo0821/web-methodology
+              ports:
+              - containerPort: 5000
+

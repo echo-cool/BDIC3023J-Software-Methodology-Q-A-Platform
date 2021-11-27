@@ -14,6 +14,18 @@
         background-color: #f5f5f5;
     }
 </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+{#    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>#}
+{#    <script>#}
+        {#var csrftoken = $('meta[name=csrf-token]').attr('content');#}
+        {#$.ajaxSetup({#}
+        {#    beforeSend: function(xhr, settings) {#}
+        {#        if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {#}
+        {#            xhr.setRequestHeader('X-CSRFToken', csrftoken)#}
+        {#        }#}
+        {#    }#}
+        {#})#}
+{#    </script>#}
 {% endblock %}
 
 

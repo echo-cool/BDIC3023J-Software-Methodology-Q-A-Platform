@@ -24,11 +24,17 @@
                             {{ moment(post.timestamp).fromNow() }}
                         </span>
                         {% if current_user == post.author %}
+
                             {#            删除#}
                                 <a class="icon-btn" href="{{ url_for('main.delete_post_inProfile', post_id=post.id)}}">
                                     <span class="glyphicon glyphicon-trash"></span>
                                     <span>delete</span>
                                 </a>
+                            {# 修改 #}
+                            <a class="icon-btn" href="#">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                            <span>modification</span>
+                            </a>
                         {% endif %}
                     </div>
                 </div>
