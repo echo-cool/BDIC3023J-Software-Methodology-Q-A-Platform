@@ -1,75 +1,46 @@
-# This file is a template, and might need editing before it works on your project.
-# Official language image. Look for the different tagged releases at:
-# https://hub.docker.com/r/library/python/tags/
+# You can override the included template(s) by including variable overrides
+# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
+# Note that environment variables can be set in several places
+# See https://docs.gitlab.com/ee/ci/variables/#priority-of-environment-variables
 image: python:3.9.6
 stages:
 - test
 - run
 - package
-# Change pip's cache directory to be inside the project directory since we can
-# only cache local items.
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
-
-# Pip's cache doesn't store the python packages
-# https://pip.pypa.io/en/stable/reference/pip_install/#caching
-#
-# If you want to also cache the installed packages, you have to install
-# them in a virtualenv and cache it as well.
 cache:
   paths:
-    - .cache/pip
-    - venv/
-
-#before_script:
-#  - python -V  # Print out python version for debugging
-#  - pip install virtualenv
-#  - virtualenv venv
-#  - source venv/bin/activate
-#  - pip install -r requirements.txt
-
+  - ".cache/pip"
+  - venv/
 test:
   stage: test
   script:
-      - echo "TEST"
-    # - python setup.py test
-    # - pip install tox flake8  # you can also use tox
-    # - tox -e py36,flake8
-
+  - echo "TEST"
 run:
   stage: run
   script:
-    - python -V  # Print out python version for debugging
-    - pip install virtualenv
-    - virtualenv venv
-    - source venv/bin/activate
-    - pip install -r requirements.txt
-    - python test.py
-
-
+  - python -V
+  - pip install virtualenv
+  - virtualenv venv
+  - source venv/bin/activate
+  - pip install -r requirements.txt
+  - python test.py
 docker:
   tags:
-    - shell
+  - shell
   stage: package
   only:
-    - master
+  - master
   script:
-    - echo "package docker"
-    - docker info
-    - docker login -u echo0821 -p Lkq2mapp565688 registry.hub.docker.com
-    - docker build -t registry.hub.docker.com/echo0821/web-methodology:latest .
-    - docker push registry.hub.docker.com/echo0821/web-methodology:latest
-    - docker rmi registry.hub.docker.com/echo0821/web-methodology
-#    - docker tag registry.hub.docker.com/echo0821/web-project:latest registry.heroku.com/comp3019j-web-dev/web
-#    - docker push registry.heroku.com/comp3019j-web-dev/web
-
-# pages:
-#   script:
-#     - pip install sphinx sphinx-rtd-theme
-#     - cd doc ; make html
-#     - mv build/html/ ../public/
-#   artifacts:
-#     paths:
-#       - public
-#   rules:
-#     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  - echo "package docker"
+  - docker info
+  - docker login -u echo0821 -p Lkq2mapp565688 registry.hub.docker.com
+  - docker build -t registry.hub.docker.com/echo0821/web-methodology:latest .
+  - docker push registry.hub.docker.com/echo0821/web-methodology:latest
+  - docker rmi registry.hub.docker.com/echo0821/web-methodology
+sast:
+  stage: test
+include:
+- template: Security/SAST.gitlab-ci.yml
