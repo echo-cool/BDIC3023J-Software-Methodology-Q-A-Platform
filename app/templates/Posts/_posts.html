@@ -94,7 +94,7 @@
                                 {#data: JSON.stringify(sendData),#}
 
                                 success: function(result) {
-                                    console.log(result);
+                                    console.log('success\n'+result);
                                     if(result.like){
                                         span1.setAttribute('class', 'glyphicon glyphicon-heart');
                                     }else{
@@ -105,6 +105,9 @@
                                 },
                                 error:function(msg){
                                      console.log(msg);
+                                     if(msg.status===403){
+                                         window.location.href='{{ url_for('auth.login') }}'
+                                }
                                 }
                                 })
                         }">
