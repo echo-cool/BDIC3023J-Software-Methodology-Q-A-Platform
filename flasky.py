@@ -40,7 +40,6 @@ def check_bypass_status():
         bypass_status = "fail"
         geetest_dict[GEETEST_BYPASS_STATUS_KEY] = bypass_status
     print("bypass状态已经获取并存入redis，当前状态为-{}".format(bypass_status))
-    time.sleep(CYCLE_TIME)
 
 check_bypass_status()
 
