@@ -49,13 +49,14 @@
 
                 <div class="post-content col-sm-offset-1 col-sm-10">
     {#                标题#}
-                    <h1 class="post-title text-center">
+                    <h1 class="post-title text-center" style="margin: 30px">
                         <a href="{{ url_for('.post', id=post.id) }}">
                             {{ post.title }}
                         </a>
                     </h1>
     {#                正文#}
-                    <div class="content" id="fancy-content">
+                    <div class="content" id="fancy-content" style="padding-bottom:20px;
+    border-bottom: 1px solid #ddd;margin: 30px;">
                                 {{ post.body_html| safe }}
                     </div>
                 </div>
