@@ -6,11 +6,13 @@ from flask import render_template, redirect, url_for, flash, request, \
 from flask_login import login_required, current_user
 from sqlalchemy.sql.functions import func
 from werkzeug.utils import secure_filename
+
 from . import main
 from .forms import UploadPhotoForm, CommentForm, PostMdForm
 from .. import db, csrf
 from ..models import Permission, User, Post, Comment, Notification, Like, Transaction, Activity, Collect, Want, Question
 from ..decorators import permission_required
+from ..util import check_text
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -467,6 +469,13 @@ def send_message(username, message):
     if user is None:
         flash('Invalid user.')
         return redirect(url_for('.index'))
+    check = check_text(message)
+    print(check)
+    if check["conclusionType"] != 1:
+        data = check['data'][0]["msg"]
+        flash('Your message violated the rule of our web site. ' + data)
+        return redirect(url_for('.user', username=username))
+
     currentUserObj.send_message(user, message)
     db.session.commit()
     flash('You have sent:' + message + " To: " + username)
