@@ -115,6 +115,7 @@ class User(UserMixin, db.Model):
 
     # 发帖、评论与点赞
     posts = db.relationship('Post', backref='author', lazy='dynamic', cascade='all, delete-orphan')
+    questions = db.relationship('Question', backref='author', lazy='dynamic', cascade='all, delete-orphan')
     comments = db.relationship('Comment', backref='author', lazy='dynamic', cascade='all, delete-orphan')
 
     # 关注
@@ -384,7 +385,18 @@ login_manager.anonymous_user = AnonymousUser
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-
+class Question(db.Model):
+    __tablename__='questions'
+    id=db.Column(db.Integer,primary_key=True)
+    title = db.Column(db.Text)
+    body = db.Column(db.Text)
+    body_html = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    important = db.Column(db.INT, default=0)
+    recent_activity = db.Column(db.DateTime, index=True, default=datetime.utcnow())
+    answers = db.relationship('Post', back_populates='question', cascade='all, delete-orphan', lazy='dynamic')
+    is_anonymous = db.Column(db.Boolean, default=False)
 
 class Post(db.Model):
     __tablename__ = 'posts'
@@ -397,6 +409,8 @@ class Post(db.Model):
     important = db.Column(db.INT, default=0)
     recent_activity = db.Column(db.DateTime, index=True, default=datetime.utcnow())
     comments = db.relationship('Comment', back_populates='post', cascade='all, delete-orphan', lazy='dynamic')
+    question = db.relationship('Question', back_populates='answers', lazy='joined')
+    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'))
     liker = db.relationship('Like', back_populates='liked_post', lazy='dynamic', cascade='all')
     is_anonymous = db.Column(db.Boolean, default=False)
 
