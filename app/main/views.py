@@ -718,9 +718,9 @@ def new_answer_md(question_id):
             is_anonymous = True
         else:
             is_anonymous = False
-        if title == "":
-            flash("Title cannot be None!")
-            return render_template('new_posting/new_mdpost.html', form=form)
+        # if title == "":
+        #     flash("Title cannot be None!")
+        #     return render_template('new_posting/new_mdanswer.html', form=form)
         body_html = request.form['test-editormd-html-code']
         post = Post(title=title,
                     body=body,
@@ -736,7 +736,7 @@ def new_answer_md(question_id):
         else:
             flash("You have just posted a posting", 'success')
         return redirect(url_for('.view_question',question_id=question_id))
-    return render_template('new_posting/new_mdpost.html', form=form)
+    return render_template('new_posting/new_mdanswer.html', form=form)
 
 @main.route('/questions/<question_id>', methods=['GET', 'POST'])
 def view_question(question_id):
