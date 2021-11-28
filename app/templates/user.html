@@ -91,7 +91,10 @@
         <div class="tabbable">
 				<ul class="nav post-nav">
 					<li class="active" id="btn-1">
-						 <a href="#panel-1" data-toggle="tab">MyPosts</a>
+						 <a href="#panel-1" data-toggle="tab">My answers</a>
+					</li>
+                    <li id="btn-7">
+						 <a href="#panel-7" data-toggle="tab">My questions</a>
 					</li>
 					<li id="btn-2">
 						 <a href="#panel-2" data-toggle="tab">Likes</a>
@@ -117,6 +120,11 @@
 					<div class="tab-pane active" id="panel-1">
                         <ul class="posts list-unstyled">
 						    {% include 'Posts/_postsInProfile.html' %}
+                        </ul>
+					</div>
+                    <div class="tab-pane active" id="panel-7">
+                        <ul class="posts list-unstyled">
+						    {% include 'Posts/_answersInProfile.html' %}
                         </ul>
 					</div>
 					<div class="tab-pane" id="panel-2">
@@ -164,18 +172,23 @@
         var l4 = document.getElementById('btn-4')
         var l5 = document.getElementById('btn-5')
         var l6 = document.getElementById('btn-6')
+        var l7 = document.getElementById('btn-7')
         var content1 = document.getElementById('panel-1')
         var content2 = document.getElementById('panel-2')
         var content3 = document.getElementById('panel-3')
         var content4 = document.getElementById('panel-4')
         var content5 = document.getElementById('panel-5')
         var content6 = document.getElementById('panel-6')
+        var content7 = document.getElementById('panel-7')
 
         l1.onclick = function () {
-            this.className = 'active'
+            {#this.className = 'active'#}
+            content7.className=''
             content1.className = 'active'
 
+            l7.className=''
             l2.className = ''
+        content7.className='tab-pane'
             content2.className = 'tab-pane'
             l5.className = ''
             content5.className = 'tab-pane'
@@ -190,6 +203,29 @@
                 content6.className = 'tab-pane'
             {% endif %}
 
+        }
+
+        l7.onclick = function () {
+            {#this.className = 'active'#}
+        {#content1.className=''#}
+            content7.className = 'active'
+
+            l1.className=''
+            l2.className = ''
+            content2.className = 'tab-pane'
+        content1.className='tab-pane'
+            l5.className = ''
+            content5.className = 'tab-pane'
+
+            {% if user.can(Permission.ACTIVITY) %}
+                l4.className = ''
+                content4.className = 'tab-pane'
+            {% else %}
+                l3.className = ''
+                content3.className = 'tab-pane'
+                l6.className = ''
+                content6.className = 'tab-pane'
+            {% endif %}
         }
 
         l2.onclick = function () {

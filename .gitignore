@@ -14,7 +14,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+
 lib64/
 parts/
 sdist/
@@ -140,4 +140,8 @@ cython_debug/
 
 .idea
 
+<<<<<<< HEAD
 data-dev.sqlite
+=======
+#data-dev.sqlite
+>>>>>>> fef3cd9ced83484c0a107af79adc13a4c5d712e3

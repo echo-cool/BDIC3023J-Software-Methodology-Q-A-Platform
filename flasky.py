@@ -40,7 +40,6 @@ def check_bypass_status():
         bypass_status = "fail"
         geetest_dict[GEETEST_BYPASS_STATUS_KEY] = bypass_status
     print("bypass状态已经获取并存入redis，当前状态为-{}".format(bypass_status))
-    time.sleep(CYCLE_TIME)
 
 check_bypass_status()
 
@@ -92,17 +91,17 @@ def favicon():
 # app.secret_key = GeetestLib.VERSION
 
 # User, Role, Students, Permission, Post, Comment, Like, Notification, Transaction, Activity
-admin.add_view(ModelView(User, db.session, name="Users", endpoint="users"))
-admin.add_view(ModelView(Role, db.session, name="roles", endpoint="roles"))
-admin.add_view(ModelView(Students, db.session, name="Studentss", endpoint="Studentss"))
-# admin.add_view(ModelView(Permission, db.session, name="Permissions", endpoint="Permissions"))
-admin.add_view(ModelView(Post, db.session, name="Posts", endpoint="Posts"))
-admin.add_view(ModelView(Comment, db.session, name="Comments", endpoint="Comments"))
-admin.add_view(ModelView(Like, db.session, name="Likes", endpoint="Likes"))
-admin.add_view(ModelView(Notification, db.session, name="Notifications", endpoint="Notifications"))
-admin.add_view(ModelView(Transaction, db.session, name="Transactions", endpoint="Transactions"))
-admin.add_view(ModelView(Activity, db.session, name="Activities", endpoint="Activities"))
-admin.add_view(FileAdmin("."))
+# admin.add_view(ModelView(User, db.session, name="Users", endpoint="users"))
+# admin.add_view(ModelView(Role, db.session, name="roles", endpoint="roles"))
+# admin.add_view(ModelView(Students, db.session, name="Studentss", endpoint="Studentss"))
+# # admin.add_view(ModelView(Permission, db.session, name="Permissions", endpoint="Permissions"))
+# admin.add_view(ModelView(Post, db.session, name="Posts", endpoint="Posts"))
+# admin.add_view(ModelView(Comment, db.session, name="Comments", endpoint="Comments"))
+# admin.add_view(ModelView(Like, db.session, name="Likes", endpoint="Likes"))
+# admin.add_view(ModelView(Notification, db.session, name="Notifications", endpoint="Notifications"))
+# admin.add_view(ModelView(Transaction, db.session, name="Transactions", endpoint="Transactions"))
+# admin.add_view(ModelView(Activity, db.session, name="Activities", endpoint="Activities"))
+# admin.add_view(FileAdmin("."))
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')

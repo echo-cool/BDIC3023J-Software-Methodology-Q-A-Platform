@@ -1,0 +1,204 @@
+/*Reference: http://www.internetke.com/effects/css3/2013/1117/211.html*/
+
+/*科e互联特效基本框架CSS*/
+body, ul, dl, dd, dt, ol, li, p, h1, h2, h3, h4, h5, h6, textarea, form, select, fieldset, table, td, div, input {
+    margin: 0;
+    padding: 0;
+    -webkit-text-size-adjust: none
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-size: 12px;
+    font-weight: normal
+}
+
+body > div {
+    margin: 0 auto
+}
+
+div {
+    text-align: left
+}
+
+a img {
+    border: 0
+}
+
+body {
+    color: #333;
+    text-align: center;
+    font: 12px "宋体";
+}
+
+ul, ol, li {
+    list-style-type: none;
+    vertical-align: 0
+}
+
+a {
+    outline-style: none;
+    color: #535353;
+    text-decoration: none
+}
+
+a:hover {
+    color: #D40000;
+    text-decoration: none
+}
+
+.button {
+    display: inline-block;
+    zoom: 1;
+    *display: inline;
+    vertical-align: baseline;
+    margin: 0 2px;
+    outline: none;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    font: 14px/100% Arial, Helvetica, sans-serif;
+    padding: 0.25em 0.6em 0.3em;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .3);
+    -webkit-border-radius: .5em;
+    -moz-border-radius: .5em;
+    border-radius: .5em;
+    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+}
+
+.red {
+    color: #faddde;
+    border: solid 1px #980c10;
+    background: #d81b21;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ed1c24), to(#A51715));
+    background: -moz-linear-gradient(top, #ed1c24, #A51715);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ed1c24', endColorstr='#aa1317');
+}
+
+.red:hover {
+    background: #b61318;
+    background: -webkit-gradient(linear, left top, left bottom, from(#c9151b), to(#a11115));
+    background: -moz-linear-gradient(top, #c9151b, #a11115);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#c9151b', endColorstr='#a11115');
+    color: #fff;
+}
+
+.red:active {
+    color: #de898c;
+    background: -webkit-gradient(linear, left top, left bottom, from(#aa1317), to(#ed1c24));
+    background: -moz-linear-gradient(top, #aa1317, #ed1c24);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#aa1317', endColorstr='#ed1c24');
+}
+
+.cor_bs, .cor_bs:hover {
+    color: #ffffff;
+}
+
+/*科e互联特效基本框架CSS结束，应用特效时，以上样式可删除*/
+/* 效果CSS开始 */
+body {
+    font-family: Georgia;
+    font-size: 14px;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, .50);
+    color: #262626;
+}
+
+h1 img {
+    float: left;
+    margin-right: 5px;
+}
+
+h1 {
+    line-height: 56px;
+}
+
+h1, h2 {
+    font-weight: normal;
+}
+
+#wrapper {
+    width: 900px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.ads {
+    position: absolute;
+    top: 30px;
+    right: 0;
+}
+
+
+.lavalamp {
+    position: relative;
+    border: 1px solid #d6d6d6;
+    background: #fff;
+    padding: 15px;
+    -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, .25);
+    -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, .25);
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    background: -webkit-gradient(linear, left top, left bottom, from(rgb(240, 240, 240)), to(rgb(204, 204, 204)));
+    height: 18px;
+}
+
+
+.cyan {
+    background: rgb(64, 181, 197);
+    background: -webkit-gradient(linear, left top, left bottom, from(rgb(64, 181, 197)), to(rgb(7, 165, 187)));
+    border: 1px solid #2f8893;
+
+}
+
+
+.magenta li a, .cyan li a, .yellow li a, .orange li a, .dark li a {
+    color: #fff;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, .40);
+
+}
+
+
+a {
+    text-decoration: none;
+    color: #262626;
+    line-height: 20px;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+    z-index: 300;
+    position: absolute;
+}
+
+ul li {
+    list-style: none;
+    float: left;
+
+    text-align: center;
+}
+
+ul li a {
+    padding: 0 20px;
+    text-align: center;
+}
+
+.floatr {
+    position: absolute;
+    top: 10px;
+    z-index: 50;
+    width: 70px;
+    height: 30px;
+    border-radius: 8px;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    background: rgba(0, 0, 0, .20);
+    -webkit-transition: all .4s ease-in-out;
+    -moz-transition: all .4s ease-in-out;
+}
+
+/* 效果CSS结束 */
+
+

@@ -9,7 +9,7 @@ from werkzeug.utils import secure_filename
 from . import main
 from .forms import UploadPhotoForm, CommentForm, PostMdForm
 from .. import db, csrf
-from ..models import Permission, User, Post, Comment, Notification, Like, Transaction, Activity, Collect, Want
+from ..models import Permission, User, Post, Comment, Notification, Like, Transaction, Activity, Collect, Want, Question
 from ..decorators import permission_required
 
 
@@ -282,13 +282,14 @@ def user(username):
     wanting = user.wanted_Activity
 
     posts = user.posts.order_by(Post.timestamp.desc())
+    questions=user.questions.order_by(Question.timestamp.desc())
     liking_posts = [{'post': item.liked_post, 'timestamp': item.timestamp} for item in
                     liking.order_by(Like.timestamp.desc())]
     transactions = user.transactions.order_by(Transaction.timestamp.desc())
     activities = user.activities.order_by(Activity.timestamp.desc())
     collects = collecting.order_by(Collect.timestamp.desc())
     wants = wanting.order_by(Want.timestamp.desc())
-    return render_template('user.html', user=user, posts=posts, liking_posts=liking_posts, activities=activities,
+    return render_template('user.html', user=user, posts=posts, questions=questions,liking_posts=liking_posts, activities=activities,
                            transactionsInProfile=transactions, collects=collects, wants=wants, )
 
 
@@ -414,6 +415,7 @@ def post(id):
         else:
             flash('Comment published successfully')
         return redirect(url_for('.post', id=post.id))
+    # return render_template('answer.html', posts=[post], form=form, comments=comments, pagination=pagination)
     return render_template('post.html', posts=[post], form=form, comments=comments, pagination=pagination)
 
 
@@ -442,7 +444,7 @@ def delete_comment(id):
         flash('The comment has been deleted.')
         return redirect(url_for('.post', id=posts.id))
     else:
-        flash('你没有删评论权限')
+        flash('You do not have the rights to delete this comment')
         return redirect(url_for('.post', id=posts.id))
 
 
@@ -465,7 +467,7 @@ def follow(username):
         flash('Invalid user.')
         return redirect(url_for('.index'))
     if current_user.is_following(user):
-        flash('You are already following this user.')
+        flash('You have already followed this user.')
         return redirect(url_for('.user', username=username))
     current_user.follow(user)
     db.session.commit()
@@ -486,7 +488,7 @@ def unfollow(username):
         return redirect(url_for('.user', username=username))
     current_user.unfollow(user)
     db.session.commit()
-    flash('You are not following %s anymore.' % username)
+    flash('You do not follow %s anymore.' % username)
     return redirect(url_for('.user', username=username))
 
 
@@ -499,23 +501,24 @@ def like(post_id):
         flash('Invalid post.')
         return redirect(url_for('.index'))
     if current_user.is_liking(post):
-        flash('You are already liking this post.')
+        flash('You have already gave a like to this post.')
         return redirect(url_for('.post', id=post_id))
     current_user.like(post)
     post.like(current_user)
     post.recent_activity = datetime.utcnow()
     db.session.commit()
-    flash('You are now liking this post')
+    flash('You give a like to this answer')
     return redirect(url_for('.index', id=post_id))
 
 
-@main.route('/AJAXlike/<post_id>',methods=['POST'], strict_slashes=False)
-@login_required
+@main.route('/AJAXlike/<post_id>', methods=['POST'], strict_slashes=False)
+# @login_required
 @csrf.exempt
 @permission_required(Permission.FOLLOW)
 def AJAXlike(post_id):
+    if(current_user is None):
+        return redirect(url_for("/"))
     post = Post.query.filter_by(id=post_id).first()
-
     if post is not None:
         if(current_user.is_liking(post)):
             current_user.dislike(post)
@@ -671,3 +674,95 @@ def new_post_md():
             flash("You have just posted a posting", 'success')
         return redirect(url_for('.index'))
     return render_template('new_posting/new_mdpost.html', form=form)
+
+
+@main.route('/new_question_md', methods=['GET', 'POST'])
+@login_required
+def new_question_md():
+    form = PostMdForm()
+    if current_user.can(Permission.WRITE) and form.validate_on_submit():
+        title = request.form.get('title')
+        body = form.body.data
+        if request.form.get('anonymous') == "on":
+            is_anonymous = True
+        else:
+            is_anonymous = False
+        if title == "":
+            flash("Title cannot be None!")
+            return render_template('new_posting/new_mdpost.html', form=form)
+        body_html = request.form['test-editormd-html-code']
+        question = Question(title=title,
+                    body=body,
+                    body_html=body_html,
+                    is_anonymous=is_anonymous,
+                    author=current_user._get_current_object())
+        question.recent_activity = datetime.utcnow()
+        db.session.add(question)
+        db.session.commit()
+        if question.is_anonymous:
+            flash("You have just posted a posting anonymously", 'success')
+        else:
+            flash("You have just posted a posting", 'success')
+        return redirect(url_for('.index'))
+    return render_template('new_posting/new_mdquestion.html', form=form)
+
+
+@main.route('/new_answer_md/<question_id>', methods=['GET', 'POST'])
+@login_required
+def new_answer_md(question_id):
+    form = PostMdForm()
+    if current_user.can(Permission.WRITE) and form.validate_on_submit():
+        title = request.form.get('title')
+        body = form.body.data
+        if request.form.get('anonymous') == "on":
+            is_anonymous = True
+        else:
+            is_anonymous = False
+        # if title == "":
+        #     flash("Title cannot be None!")
+        #     return render_template('new_posting/new_mdanswer.html', form=form)
+        body_html = request.form['test-editormd-html-code']
+        post = Post(title=title,
+                    body=body,
+                    body_html=body_html,
+                    is_anonymous=is_anonymous,
+                    author=current_user._get_current_object(),
+                    question_id=question_id)
+        post.recent_activity = datetime.utcnow()
+        db.session.add(post)
+        db.session.commit()
+        if post.is_anonymous:
+            flash("You have just posted a posting anonymously", 'success')
+        else:
+            flash("You have just posted a posting", 'success')
+        return redirect(url_for('.view_question',question_id=question_id))
+    return render_template('new_posting/new_mdanswer.html', form=form)
+
+@main.route('/questions/<question_id>', methods=['GET', 'POST'])
+def view_question(question_id):
+    if request.method == 'GET':
+        question = Question.query.get_or_404(question_id)
+        page1 = request.args.get('page', 1, type=int)
+        query1 = Post.query
+        pagination1 = query1.with_parent(question).order_by(Post.timestamp.asc()).paginate(
+            page1, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
+            error_out=False)
+        posts1 = pagination1.items
+        # hot
+        for item in query1:
+            item.important = 0
+            com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
+            li_num = db.session.query(func.count(Like.liker_id)).filter_by(liked_post_id=item.id).scalar()
+            item.important = 7 * com_num + 3 * li_num
+        hot = query1.order_by(Post.important.desc())
+        li = Activity.query.filter_by(is_invalid=False)
+        for item in li:
+            item.important = 0
+            li_num = db.session.query(func.count(Want.wanter_id)).filter_by(wanted_Activity_id=item.id).scalar()
+            item.important = li_num
+        hot_activity = li.order_by(Activity.important.desc())
+        return render_template('Posts/question.html', posts1=posts1, posts5=hot,
+                               pagination1=pagination1, hot_activity=hot_activity, question=question,question_id=question_id)
+    else:
+        inf = request.form["search"]
+        return redirect(url_for('.query', content=inf))

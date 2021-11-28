@@ -113,8 +113,9 @@ class User(UserMixin, db.Model):
     avatar_hash = db.Column(db.String(32))
     avatar_img = db.Column(db.String(120), nullable=True)
 
-    # 发帖、评论与点赞
+    # 写问题、回答、评论与点赞
     posts = db.relationship('Post', backref='author', lazy='dynamic', cascade='all, delete-orphan')
+    questions = db.relationship('Question', backref='author', lazy='dynamic', cascade='all, delete-orphan')
     comments = db.relationship('Comment', backref='author', lazy='dynamic', cascade='all, delete-orphan')
 
     # 关注
@@ -139,6 +140,9 @@ class User(UserMixin, db.Model):
     # collect
     collected_transaction = db.relationship('Collect', back_populates='collecter',
                                             lazy='dynamic', cascade='all, delete-orphan')
+    # # # # save
+    # saved_by_post = db.relationship('Save_post', back_populates='saver', lazy='dynamic', cascade='all, delete-orphan')
+
 
     @staticmethod
     def add_self_follows():
@@ -385,6 +389,19 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+class Question(db.Model):
+    __tablename__ = 'questions'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.Text)
+    body = db.Column(db.Text)
+    body_html = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    important = db.Column(db.Integer, default=0)
+    recent_activity = db.Column(db.DateTime, index=True, default=datetime.utcnow())
+    answers = db.relationship('Post', back_populates='question', cascade='all, delete-orphan', lazy='dynamic')
+    is_anonymous = db.Column(db.Boolean, default=False)
+
 class Post(db.Model):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True)
@@ -396,8 +413,11 @@ class Post(db.Model):
     important = db.Column(db.INT, default=0)
     recent_activity = db.Column(db.DateTime, index=True, default=datetime.utcnow())
     comments = db.relationship('Comment', back_populates='post', cascade='all, delete-orphan', lazy='dynamic')
+    question = db.relationship('Question', back_populates='answers', lazy='joined')
+    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'))
     liker = db.relationship('Like', back_populates='liked_post', lazy='dynamic', cascade='all')
     is_anonymous = db.Column(db.Boolean, default=False)
+    # saver = db.relationship('Save_post', back_populates='saved_post', lazy='dynamic', cascade='all')
 
     def like(self, user):
         if not self.is_liked_by(user):
@@ -461,6 +481,14 @@ class Like(db.Model):
     liker = db.relationship('User', back_populates='liked_post', lazy='joined')
     liked_post = db.relationship('Post', back_populates='liker', lazy='joined')
 
+# class Save_post(db.Model):
+#     __tablename__ = 'save_posts'
+#     save_post_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+#     save_post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), primary_key=True)
+#     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+#     saver = db.relationship('User', back_populates='saved_poster', lazy='joined')
+#     saved_post = db.relationship('Post', back_populates='saver', lazy='joined')
+# #
 
 
 class Collect(db.Model):

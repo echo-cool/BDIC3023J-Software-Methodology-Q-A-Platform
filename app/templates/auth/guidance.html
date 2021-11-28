@@ -1,0 +1,206 @@
+{#Reference: http://www.internetke.com/effects/list_2_11.html#}
+
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Student Exchange Forum of BJUT{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <!--     Custom styles for this template -->
+    <link rel='stylesheet' type='text/css' href='../../static/guidance.css'/>
+    <script type="text/javascript" src="../../static/js/jquery-1.8.2.js"></script>
+    <script type="text/javascript" src="../../static/js/base.js"></script>
+{% endblock %}
+
+{#主导航#}
+{% block navbar %}
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{ url_for('main.index') }}">Student Exchange Forum of BJUT</a>
+            </div>
+
+            <div class="navbar-collapse collapse">
+
+                <ul class="nav navbar-nav">
+                    <li><a href="{{ url_for('auth.guidance') }}">Guidance</a></li>
+
+                    <form class="navbar-form navbar-left" role="search" method="post">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <div class="form-group">
+                            <input name="search" value=" " style="width: 420px;margin-left: 20px;" type="text"
+                                   class="form-control" placeholder="Search">
+                        </div>
+                        <button type="submit" class="btn btn-default">Submit</button>
+                    </form>
+
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+
+                    {% if current_user.is_authenticated %}
+                        {#                            通知#}
+                        <li>
+                            <a href="{{ url_for('main.notification') }}">
+                                <svg viewBox="0 0 1024 1024" width="20" height="20">
+                                    <defs>
+                                        <style type="text/css"></style>
+                                    </defs>
+                                    <path d="M892.343 738.743c7.314 0 21.943 0 29.257 7.314-29.257-21.943-51.2-58.514-51.2-95.086V424.23c0-168.229-117.029-307.2-285.257-343.772v-7.314C585.143 36.57 548.57 0 512 0s-80.457 36.571-80.457 73.143v7.314C270.629 117.03 153.6 256 153.6 424.23V650.97c0 36.572-21.943 73.143-51.2 95.086 7.314-7.314 14.629-7.314 29.257-7.314-29.257 0-51.2 21.943-51.2 51.2s21.943 51.2 51.2 51.2h768c29.257 0 51.2-21.943 51.2-51.2-7.314-21.943-29.257-43.886-58.514-51.2zM512 1024c73.143 0 131.657-58.514 131.657-131.657H380.343C380.343 965.486 438.857 1024 512 1024z"
+                                          fill="#3BA9F6" p-id="1699">
+                                    </path>
+                                </svg>
+                                <span class="badge" style="margin-bottom: 10px"></span>
+                            </a>
+                        </li>
+                        {#                            下拉菜单#}
+                        <li class="dropdown">
+                            <a href="{{ url_for('main.notification') }}" class="dropdown-toggle" data-toggle="dropdown">Account<b
+                                    class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{{ url_for('main.user', username=current_user.username) }}">MY Profile</a>
+                                </li>
+                                <li><a href="{{ url_for('auth.change_password') }}">MY Account</a></li>
+                                <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block content %}
+
+{#<body class="keBody">#}
+<h1 class="keTitle"></h1>
+<div class="kePublic">
+<!--效果html开始-->
+<div class="item_box box10">
+	<div class="item_box_wp">
+		<div class="voice_2">
+			<ul>
+				<li class="li1" id="li1">
+					<div class="fold" style="display:none;">
+						<span class="img"></span>
+                        <span class="txt_another_another">View</span>
+					</div>
+					<div class="unfold" style="display:block">
+						<dl>
+							<dt><img src="../../static/Image/img10.png" /></dt>
+							<dd>
+								<b>View Questions<a href="{{ url_for('main.index') }}">click here>></a></b>
+							</dd>
+							<dd>
+                                You can read more about a particular question displayed in the main page
+                                by clicking "Read More".
+                            </dd>
+						</dl>
+					</div>
+				</li>
+				<li class="li2">
+					<div class="fold">
+						<span class="img"></span>
+						<span class="txt_another_another">Post</span>
+					</div>
+					<div class="unfold">
+						<dl>
+							<dt><img src="../../static/Image/img42.png" /></dt>
+							<dd>
+								<b>Post Question<a href="{{ url_for('main.index') }}">click here>></a></b>
+							</dd>
+							<dd>
+                                Logged-in users can post a question that they are curious about.
+                            </dd>
+						</dl>
+					</div>
+				</li>
+				<li class="li3">
+					<div class="fold">
+						<span class="img"></span>
+						<span class="txt_another_another">Answer</span>
+					</div>
+					<div class="unfold">
+						<dl>
+							<dt><img src="../../static/Image/img49.png" /></dt>
+							<dd>
+								<b>Answer Question<a href="{{ url_for('main.index') }}">click here>></a></b>
+							</dd>
+							<dd>
+                                Logged-in users can answer a question to help other students from BJUT.
+                            </dd>
+						</dl>
+					</div>
+				</li>
+				<li class="li4">
+					<div class="fold">
+						<span class="img"></span>
+						<span class="txt">Like&Save</span>
+					</div>
+					<div class="unfold">
+						<dl>
+							<dt><img src="../../static/Image/img50.png" /></dt>
+							<dd>
+								<b>Like & Save Answer<a href="{{ url_for('main.index') }}">click here>></a></b>
+							</dd>
+							<dd>
+                                Logged-in users can give a like or save answers that they think of helpful.
+                            </dd>
+						</dl>
+					</div>
+				</li>
+				<li class="li5">
+					<div class="fold">
+						<span class="img"></span>
+						<span class="txt_another_another">Files</span>
+					</div>
+					<div class="unfold">
+						<dl>
+							<dt><img src="../../static/Image/img51.png" /></dt>
+							<dd>
+								<b>Share Files<a href="{{ url_for('main.index') }}">click here>></a></b>
+							</dd>
+							<dd>
+                                Logged-in users can share (send or download) files with other students from BJUT.
+                            </dd>
+						</dl>
+					</div>
+				</li>
+				<li class="li6">
+					<div class="fold">
+						<span class="img"></span>
+						<span class="txt_another">Backend</span>
+					</div>
+					<div class="unfold">
+						<dl>
+							<dt><img src="../../static/Image/img52.png" /></dt>
+							<dd>
+								<b>Powerful Backend<a href="{{ url_for('main.index') }}">click here>></a></b>
+							</dd>
+							<dd>
+                                This platform is equipped with many powerful backend characteristics.
+                            </dd>
+						</dl>
+					</div>
+				</li>
+			</ul>         
+		</div>
+	</div>
+</div>
+<!--效果html结束-->
+<div class="clear"></div>
+</div>
+{#</body>#}
+
+{% endblock %}
