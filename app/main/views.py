@@ -9,7 +9,7 @@ from werkzeug.utils import secure_filename
 from . import main
 from .forms import UploadPhotoForm, CommentForm, PostMdForm
 from .. import db, csrf
-from ..models import Permission, User, Post, Comment, Notification, Like, Transaction, Activity, Collect, Want
+from ..models import Permission, User, Post, Comment, Notification, Like, Transaction, Activity, Collect, Want, Question
 from ..decorators import permission_required
 
 
@@ -282,13 +282,14 @@ def user(username):
     wanting = user.wanted_Activity
 
     posts = user.posts.order_by(Post.timestamp.desc())
+    questions=user.questions.order_by(Question.timestamp.desc())
     liking_posts = [{'post': item.liked_post, 'timestamp': item.timestamp} for item in
                     liking.order_by(Like.timestamp.desc())]
     transactions = user.transactions.order_by(Transaction.timestamp.desc())
     activities = user.activities.order_by(Activity.timestamp.desc())
     collects = collecting.order_by(Collect.timestamp.desc())
     wants = wanting.order_by(Want.timestamp.desc())
-    return render_template('user.html', user=user, posts=posts, liking_posts=liking_posts, activities=activities,
+    return render_template('user.html', user=user, posts=posts, questions=questions,liking_posts=liking_posts, activities=activities,
                            transactionsInProfile=transactions, collects=collects, wants=wants, )
 
 
@@ -672,3 +673,35 @@ def new_post_md():
             flash("You have just posted a posting", 'success')
         return redirect(url_for('.index'))
     return render_template('new_posting/new_mdpost.html', form=form)
+
+
+@main.route('/new_question_md', methods=['GET', 'POST'])
+@login_required
+def new_question_md():
+    form = PostMdForm()
+    if current_user.can(Permission.WRITE) and form.validate_on_submit():
+        title = request.form.get('title')
+        body = form.body.data
+        if request.form.get('anonymous') == "on":
+            is_anonymous = True
+        else:
+            is_anonymous = False
+        if title == "":
+            flash("Title cannot be None!")
+            return render_template('new_posting/new_mdpost.html', form=form)
+        body_html = request.form['test-editormd-html-code']
+        question = Question(title=title,
+                    body=body,
+                    body_html=body_html,
+                    is_anonymous=is_anonymous,
+                    author=current_user._get_current_object())
+        question.recent_activity = datetime.utcnow()
+        db.session.add(question)
+        db.session.commit()
+        if question.is_anonymous:
+            flash("You have just posted a posting anonymously", 'success')
+        else:
+            flash("You have just posted a posting", 'success')
+        return redirect(url_for('.index'))
+    return render_template('new_posting/new_mdquestion.html', form=form)
+
