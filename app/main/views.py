@@ -738,6 +738,7 @@ def new_answer_md(question_id):
         return redirect(url_for('.view_question',question_id=question_id))
     return render_template('new_posting/new_mdanswer.html', form=form)
 
+
 @main.route('/questions/<question_id>', methods=['GET', 'POST'])
 def view_question(question_id):
     if request.method == 'GET':
@@ -766,3 +767,18 @@ def view_question(question_id):
     else:
         inf = request.form["search"]
         return redirect(url_for('.query', content=inf))
+
+
+@main.route('/savequestions/<question_id>')
+def save_question(question_id):
+    question = Question.query.filter_by(id=question_id).first()
+    if question is None:
+        flash('Invalid post.')
+        return redirect(url_for('.index'))
+    if current_user.is_savingquestion(question):
+        flash('You are already liking this post.')
+        return redirect(url_for('.post', id=question_id))
+    current_user.savequestion(question)
+    db.session.commit()
+    flash('You are now liking this post')
+    return redirect(url_for('.view_question', question_id=question_id))
