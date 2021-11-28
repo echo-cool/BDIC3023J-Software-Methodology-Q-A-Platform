@@ -707,8 +707,39 @@ def new_question_md():
     return render_template('new_posting/new_mdquestion.html', form=form)
 
 
+@main.route('/new_answer_md/<question_id>', methods=['GET', 'POST'])
+@login_required
+def new_answer_md(question_id):
+    form = PostMdForm()
+    if current_user.can(Permission.WRITE) and form.validate_on_submit():
+        title = request.form.get('title')
+        body = form.body.data
+        if request.form.get('anonymous') == "on":
+            is_anonymous = True
+        else:
+            is_anonymous = False
+        if title == "":
+            flash("Title cannot be None!")
+            return render_template('new_posting/new_mdpost.html', form=form)
+        body_html = request.form['test-editormd-html-code']
+        post = Post(title=title,
+                    body=body,
+                    body_html=body_html,
+                    is_anonymous=is_anonymous,
+                    author=current_user._get_current_object(),
+                    question_id=question_id)
+        post.recent_activity = datetime.utcnow()
+        db.session.add(post)
+        db.session.commit()
+        if post.is_anonymous:
+            flash("You have just posted a posting anonymously", 'success')
+        else:
+            flash("You have just posted a posting", 'success')
+        return redirect(url_for('.view_question',question_id=question_id))
+    return render_template('new_posting/new_mdpost.html', form=form)
+
 @main.route('/questions/<question_id>', methods=['GET', 'POST'])
-def view_quesiton(question_id):
+def view_question(question_id):
     if request.method == 'GET':
         question = Question.query.get_or_404(question_id)
         page1 = request.args.get('page', 1, type=int)
@@ -731,7 +762,7 @@ def view_quesiton(question_id):
             item.important = li_num
         hot_activity = li.order_by(Activity.important.desc())
         return render_template('Posts/question.html', posts1=posts1, posts5=hot,
-                               pagination1=pagination1, hot_activity=hot_activity, question=question)
+                               pagination1=pagination1, hot_activity=hot_activity, question=question,question_id=question_id)
     else:
         inf = request.form["search"]
         return redirect(url_for('.query', content=inf))
