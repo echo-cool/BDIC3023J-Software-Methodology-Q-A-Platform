@@ -290,7 +290,7 @@ def user(username):
     collects = collecting.order_by(Collect.timestamp.desc())
     wants = wanting.order_by(Want.timestamp.desc())
     return render_template('user.html', user=user, posts=posts, questions=questions,liking_posts=liking_posts, activities=activities,
-                           transactionsInProfile=transactions, collects=collects, wants=wants, )
+                           transactionsInProfile=transactions, collects=collects, wants=wants, concernQuestions=questions,concernAnswers=posts )
 
 
 @main.route('/notification')
