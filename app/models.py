@@ -385,15 +385,16 @@ login_manager.anonymous_user = AnonymousUser
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+
 class Question(db.Model):
-    __tablename__='questions'
-    id=db.Column(db.Integer,primary_key=True)
+    __tablename__ = 'questions'
+    id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.Text)
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    important = db.Column(db.INT, default=0)
+    important = db.Column(db.Integer, default=0)
     recent_activity = db.Column(db.DateTime, index=True, default=datetime.utcnow())
     answers = db.relationship('Post', back_populates='question', cascade='all, delete-orphan', lazy='dynamic')
     is_anonymous = db.Column(db.Boolean, default=False)

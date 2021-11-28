@@ -672,3 +672,32 @@ def new_post_md():
             flash("You have just posted a posting", 'success')
         return redirect(url_for('.index'))
     return render_template('new_posting/new_mdpost.html', form=form)
+
+
+@main.route('/questions', methods=['GET', 'POST'])
+def view_quesiton():
+    if request.method == 'GET':
+        page1 = request.args.get('page', 1, type=int)
+        query1 = Post.query
+        pagination1 = query1.order_by(Post.recent_activity.desc()).paginate(
+            page1, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
+            error_out=False)
+        posts1 = pagination1.items
+        # hot
+        for item in query1:
+            item.important = 0
+            com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
+            li_num = db.session.query(func.count(Like.liker_id)).filter_by(liked_post_id=item.id).scalar()
+            item.important = 7 * com_num + 3 * li_num
+        hot = query1.order_by(Post.important.desc())
+        li = Activity.query.filter_by(is_invalid=False)
+        for item in li:
+            item.important = 0
+            li_num = db.session.query(func.count(Want.wanter_id)).filter_by(wanted_Activity_id=item.id).scalar()
+            item.important = li_num
+        hot_activity = li.order_by(Activity.important.desc())
+        return render_template('POsts/question.html', posts1=posts1, posts5=hot,
+                               pagination1=pagination1, hot_activity=hot_activity)
+    else:
+        inf = request.form["search"]
+        return redirect(url_for('.query', content=inf))
