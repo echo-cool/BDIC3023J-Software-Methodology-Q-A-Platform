@@ -707,7 +707,7 @@ def new_question_md():
 @main.route('/questions/<question_id>', methods=['GET', 'POST'])
 def view_quesiton(question_id):
     if request.method == 'GET':
-        question = Question.query.get_or_404(id)
+        question = Question.query.get_or_404(question_id)
         page1 = request.args.get('page', 1, type=int)
         query1 = Post.query
         pagination1 = query1.with_parent(question).order_by(Post.timestamp.asc()).paginate(
