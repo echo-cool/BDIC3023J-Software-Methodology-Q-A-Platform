@@ -414,6 +414,7 @@ def post(id):
         else:
             flash('Comment published successfully')
         return redirect(url_for('.post', id=post.id))
+    # return render_template('answer.html', posts=[post], form=form, comments=comments, pagination=pagination)
     return render_template('post.html', posts=[post], form=form, comments=comments, pagination=pagination)
 
 
