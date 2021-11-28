@@ -77,7 +77,11 @@ def login():
 def album():
     return render_template('auth/album.html')
 
-
+# guidance
+@auth.route('/guidance')
+@login_required
+def guidance():
+    return render_template('auth/guidance.html')
 
 # 登出
 @auth.route('/logout')
