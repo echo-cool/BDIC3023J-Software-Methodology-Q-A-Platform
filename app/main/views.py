@@ -9,7 +9,7 @@ from werkzeug.utils import secure_filename
 from . import main
 from .forms import UploadPhotoForm, CommentForm, PostMdForm
 from .. import db, csrf
-from ..models import Permission, User, Post, Comment, Notification, Like, Transaction, Activity, Collect, Want
+from ..models import Permission, User, Post, Comment, Notification, Like, Transaction, Activity, Collect, Want, Question
 from ..decorators import permission_required
 
 
@@ -671,12 +671,45 @@ def new_post_md():
     return render_template('new_posting/new_mdpost.html', form=form)
 
 
-@main.route('/questions', methods=['GET', 'POST'])
-def view_quesiton():
+@main.route('/new_question_md', methods=['GET', 'POST'])
+@login_required
+def new_question_md():
+    form = PostMdForm()
+    if current_user.can(Permission.WRITE) and form.validate_on_submit():
+        title = request.form.get('title')
+        body = form.body.data
+        if request.form.get('anonymous') == "on":
+            is_anonymous = True
+        else:
+            is_anonymous = False
+        if title == "":
+            flash("Title cannot be None!")
+            return render_template('new_posting/new_mdpost.html', form=form)
+        body_html = request.form['test-editormd-html-code']
+        question = Question(title=title,
+                    body=body,
+                    body_html=body_html,
+                    is_anonymous=is_anonymous,
+                    author=current_user._get_current_object())
+        question.recent_activity = datetime.utcnow()
+        db.session.add(question)
+        db.session.commit()
+        if question.is_anonymous:
+            flash("You have just posted a posting anonymously", 'success')
+        else:
+            flash("You have just posted a posting", 'success')
+
+        return redirect(url_for('main.user', username=current_user.username))
+    return render_template('new_posting/new_mdpost.html', form=form)
+
+
+@main.route('/questions/<question_id>', methods=['GET', 'POST'])
+def view_quesiton(question_id):
     if request.method == 'GET':
+        question = Question.query.get_or_404(id)
         page1 = request.args.get('page', 1, type=int)
         query1 = Post.query
-        pagination1 = query1.order_by(Post.recent_activity.desc()).paginate(
+        pagination1 = query1.with_parent(question).order_by(Post.timestamp.asc()).paginate(
             page1, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
             error_out=False)
         posts1 = pagination1.items
@@ -693,8 +726,8 @@ def view_quesiton():
             li_num = db.session.query(func.count(Want.wanter_id)).filter_by(wanted_Activity_id=item.id).scalar()
             item.important = li_num
         hot_activity = li.order_by(Activity.important.desc())
-        return render_template('POsts/question.html', posts1=posts1, posts5=hot,
-                               pagination1=pagination1, hot_activity=hot_activity)
+        return render_template('Posts/question.html', posts1=posts1, posts5=hot,
+                               pagination1=pagination1, hot_activity=hot_activity, question=question)
     else:
         inf = request.form["search"]
         return redirect(url_for('.query', content=inf))

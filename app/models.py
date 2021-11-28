@@ -113,7 +113,7 @@ class User(UserMixin, db.Model):
     avatar_hash = db.Column(db.String(32))
     avatar_img = db.Column(db.String(120), nullable=True)
 
-    # 发帖、评论与点赞
+    # 写问题、回答、评论与点赞
     posts = db.relationship('Post', backref='author', lazy='dynamic', cascade='all, delete-orphan')
     questions = db.relationship('Question', backref='author', lazy='dynamic', cascade='all, delete-orphan')
     comments = db.relationship('Comment', backref='author', lazy='dynamic', cascade='all, delete-orphan')
