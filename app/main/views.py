@@ -282,14 +282,15 @@ def user(username):
     wanting = user.wanted_Activity
 
     posts = user.posts.order_by(Post.timestamp.desc())
-    questions=user.questions.order_by(Question.timestamp.desc())
+    questions = user.questions.order_by(Question.timestamp.desc())
     liking_posts = [{'post': item.liked_post, 'timestamp': item.timestamp} for item in
                     liking.order_by(Like.timestamp.desc())]
     transactions = user.transactions.order_by(Transaction.timestamp.desc())
     activities = user.activities.order_by(Activity.timestamp.desc())
     collects = collecting.order_by(Collect.timestamp.desc())
     wants = wanting.order_by(Want.timestamp.desc())
-    return render_template('user.html', user=user, posts=posts, questions=questions,liking_posts=liking_posts, activities=activities,
+    return render_template('user.html', user=user, posts=posts, questions=questions, liking_posts=liking_posts,
+                           activities=activities,
                            transactionsInProfile=transactions, collects=collects, wants=wants, )
 
 
@@ -458,6 +459,20 @@ def delete_post_inProfile(post_id):
     return redirect(url_for('.user', username=current_user.username))
 
 
+@main.route('/send_message/<username>/<message>')
+@login_required
+def send_message(username, message):
+    currentUserObj: User = current_user
+    user: User = User.query.filter_by(username=username).first()
+    if user is None:
+        flash('Invalid user.')
+        return redirect(url_for('.index'))
+    currentUserObj.send_message(user, message)
+    db.session.commit()
+    flash('You have sent:' + message + " To: " + username)
+    return redirect(url_for('.user', username=username))
+
+
 @main.route('/follow/<username>')
 @login_required
 @permission_required(Permission.FOLLOW)
@@ -516,24 +531,21 @@ def like(post_id):
 @csrf.exempt
 @permission_required(Permission.FOLLOW)
 def AJAXlike(post_id):
-    if(current_user is None):
+    if (current_user is None):
         return redirect(url_for("/"))
     post = Post.query.filter_by(id=post_id).first()
     if post is not None:
-        if(current_user.is_liking(post)):
+        if (current_user.is_liking(post)):
             current_user.dislike(post)
             post.dislike(current_user)
             db.session.commit()
-            return jsonify({'code': 200, 'like': False, 'num':post.liker.count()})
+            return jsonify({'code': 200, 'like': False, 'num': post.liker.count()})
         else:
             current_user.like(post)
             post.like(current_user)
             post.recent_activity = datetime.utcnow()
             db.session.commit()
-            return jsonify({'code': 200, 'like': True, 'num':post.liker.count()})
-
-
-
+            return jsonify({'code': 200, 'like': True, 'num': post.liker.count()})
 
 
 @main.route('/likeinpost/<post_id>')
@@ -692,10 +704,10 @@ def new_question_md():
             return render_template('new_posting/new_mdpost.html', form=form)
         body_html = request.form['test-editormd-html-code']
         question = Question(title=title,
-                    body=body,
-                    body_html=body_html,
-                    is_anonymous=is_anonymous,
-                    author=current_user._get_current_object())
+                            body=body,
+                            body_html=body_html,
+                            is_anonymous=is_anonymous,
+                            author=current_user._get_current_object())
         question.recent_activity = datetime.utcnow()
         db.session.add(question)
         db.session.commit()
@@ -735,8 +747,9 @@ def new_answer_md(question_id):
             flash("You have just posted a posting anonymously", 'success')
         else:
             flash("You have just posted a posting", 'success')
-        return redirect(url_for('.view_question',question_id=question_id))
+        return redirect(url_for('.view_question', question_id=question_id))
     return render_template('new_posting/new_mdanswer.html', form=form)
+
 
 @main.route('/questions/<question_id>', methods=['GET', 'POST'])
 def view_question(question_id):
@@ -762,7 +775,8 @@ def view_question(question_id):
             item.important = li_num
         hot_activity = li.order_by(Activity.important.desc())
         return render_template('Posts/question.html', posts1=posts1, posts5=hot,
-                               pagination1=pagination1, hot_activity=hot_activity, question=question,question_id=question_id)
+                               pagination1=pagination1, hot_activity=hot_activity, question=question,
+                               question_id=question_id)
     else:
         inf = request.form["search"]
         return redirect(url_for('.query', content=inf))

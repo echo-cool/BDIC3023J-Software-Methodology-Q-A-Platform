@@ -258,6 +258,13 @@ class User(UserMixin, db.Model):
         return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(
             url=url, hash=hash, size=size, default=default, rating=rating)
 
+    def send_message(self, user, message):
+        n = Notification(receiver_id=user.id, timestamp=datetime.utcnow(),
+                         username=self.username, action=" has sent you a message: " + message + " ｜ ",
+                         object="you")
+        db.session.add(n)
+        db.session.commit()
+
     def follow(self, user):
         if not self.is_following(user):
             f = Follow(follower=self, followed=user)
