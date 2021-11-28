@@ -341,6 +341,7 @@ html, body {
     height: 150px;
     position: relative;
     padding-left: 140px;
+    z-index: 100;
 }
 
 .grid-music-container .u-cover {

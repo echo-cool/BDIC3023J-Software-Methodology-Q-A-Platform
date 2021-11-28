@@ -11,6 +11,7 @@ html, body {
     height: 100%;
     background: url(Image/poster-about.jpg) no-repeat center;
     background-size: cover;
+    z-index: 90;
 }
 
 .dynamic-area1 {
@@ -22,6 +23,7 @@ html, body {
     background: url(Image/poster-drop-animate2.png) repeat-x 0px 0px;
     background-size: cover;
     animation: posterDrop1 6000s linear infinite;
+    z-index: -95;
 }
 
 @keyframes posterDrop1 {
@@ -42,6 +44,7 @@ html, body {
     background: url(Image/poster-drop-animate1.png) repeat-x 0px 0px;
     background-size: cover;
     animation: posterDrop2 8000s linear infinite;
+    z-index: -95;
 }
 
 @keyframes posterDrop2 {
