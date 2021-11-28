@@ -1,5 +1,7 @@
 // JavaScript Document
 
+// Reference: http://www.internetke.com/effects/list_2_11.html
+
 $(function(){
 
 	//导航菜单
