@@ -86,6 +86,13 @@ class Savequestion(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 
+class Saveanswer(db.Model):
+    __tablename__ = 'saveanswer'
+    saver_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    answer_id = db.Column(db.Integer, db.ForeignKey('posts.id'), primary_key=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+
 class Follow(db.Model):
     follower_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     followed_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
@@ -150,6 +157,9 @@ class User(UserMixin, db.Model):
     # # # # save
     saved_questions = db.relationship('Savequestion', foreign_keys=[Savequestion.saver_id], backref=db.backref('saver', lazy='joined'),
                                       lazy='dynamic', cascade='all, delete-orphan')
+    aved_answers = db.relationship('Saveanswer', foreign_keys=[Saveanswer.saver_id],
+                                     backref=db.backref('saver', lazy='joined'),
+                                     lazy='dynamic', cascade='all, delete-orphan')
 
     @staticmethod
     def add_self_follows():
@@ -355,6 +365,18 @@ class User(UserMixin, db.Model):
         s = self.saved_questions.filter_by(question_id=question.id).first()
         db.session.delete(s)
 
+    def is_savinganswer(self, answer):
+        return self.saved_answers.filter_by(answer_id=answer.id).first() is not None
+
+    def saveanswer(self, answer):
+        if not self.is_savinganswer(answer):
+            s = Saveanswer(saver=self, answer=answer)
+            db.session.add(s)
+
+    def unsaveanswer(self, answer):
+        s = self.saved_answers.filter_by(answer_id=answer.id).first()
+        db.session.delete(s)
+
 
     @property
     def followed_posts(self):
@@ -443,6 +465,9 @@ class Post(db.Model):
     question_id = db.Column(db.Integer, db.ForeignKey('questions.id'))
     liker = db.relationship('Like', back_populates='liked_post', lazy='dynamic', cascade='all')
     is_anonymous = db.Column(db.Boolean, default=False)
+    savers = db.relationship('Saveanswer', foreign_keys=[Saveanswer.answer_id],
+                             backref=db.backref('answer', lazy='joined'), lazy='dynamic',
+                             cascade='all, delete-orphan')
     # saver = db.relationship('Save_post', back_populates='saved_post', lazy='dynamic', cascade='all')
 
     def like(self, user):
