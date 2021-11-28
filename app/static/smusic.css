@@ -328,19 +328,21 @@ html, body {
 /*SMusic*/
 .grid-music-container {
     width: 520px;
-    height: 276px;
+    height: 400px;
     padding: 20px;
     position: relative;
     background-color: rgba(255, 255, 255, .7);
     font-family: "Microsoft Yahei", "微软雅黑", "Helvetica Neue", "Hiragino Sans GB", Helvetica, Tahoma, sans-serif;
     text-shadow: 1px 0 0 rgba(255, 255, 255, .7);
     margin: 0 auto;
+    border-radius: 20px;
 }
 
 .grid-music-container .m-music-play-wrap {
     height: 150px;
     position: relative;
     padding-left: 140px;
+    z-index: 100;
 }
 
 .grid-music-container .u-cover {
@@ -541,6 +543,7 @@ html, body {
     border: 1px solid rgba(255, 255, 255, .7);
     overflow-x: hidden;
     overflow-y: auto;
+    margin-top: 40px;
 }
 
 .grid-music-container .m-music-list-wrap ul {
@@ -648,4 +651,8 @@ html, body {
 
 .u-play-btn.mode-single.current {
     background-position: -221px -80px;
+}
+
+.satic-area #middle {
+    padding-top: 10%;
 }
