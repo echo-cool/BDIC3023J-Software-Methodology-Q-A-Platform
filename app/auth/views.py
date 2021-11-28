@@ -72,6 +72,27 @@ def login():
         return render_template('auth/login.html')
 
 
+# 相册
+@auth.route('/album')
+@login_required
+def album():
+    return render_template('auth/album.html')
+
+
+# guidance
+@auth.route('/guidance')
+@login_required
+def guidance():
+    return render_template('auth/guidance.html')
+
+
+# music
+@auth.route('/music')
+@login_required
+def music():
+    return render_template('auth/music.html')
+
+
 # 登出
 @auth.route('/logout')
 @login_required
