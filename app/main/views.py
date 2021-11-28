@@ -442,7 +442,7 @@ def delete_comment(id):
         flash('The comment has been deleted.')
         return redirect(url_for('.post', id=posts.id))
     else:
-        flash('你没有删评论权限')
+        flash('You do not have the rights to delete this comment')
         return redirect(url_for('.post', id=posts.id))
 
 
@@ -465,7 +465,7 @@ def follow(username):
         flash('Invalid user.')
         return redirect(url_for('.index'))
     if current_user.is_following(user):
-        flash('You are already following this user.')
+        flash('You have already followed this user.')
         return redirect(url_for('.user', username=username))
     current_user.follow(user)
     db.session.commit()
@@ -486,7 +486,7 @@ def unfollow(username):
         return redirect(url_for('.user', username=username))
     current_user.unfollow(user)
     db.session.commit()
-    flash('You are not following %s anymore.' % username)
+    flash('You do not follow %s anymore.' % username)
     return redirect(url_for('.user', username=username))
 
 
@@ -499,39 +499,36 @@ def like(post_id):
         flash('Invalid post.')
         return redirect(url_for('.index'))
     if current_user.is_liking(post):
-        flash('You are already liking this post.')
+        flash('You have already gave a like to this post.')
         return redirect(url_for('.post', id=post_id))
     current_user.like(post)
     post.like(current_user)
     post.recent_activity = datetime.utcnow()
     db.session.commit()
-    flash('You are now liking this post')
+    flash('You give a like to this answer')
     return redirect(url_for('.index', id=post_id))
 
 
-@main.route('/AJAXlike/<post_id>',methods=['POST'], strict_slashes=False)
+@main.route('/AJAXlike/<post_id>', methods=['POST'], strict_slashes=False)
 # @login_required
 @csrf.exempt
 @permission_required(Permission.FOLLOW)
 def AJAXlike(post_id):
-    if(current_user is None):
+    if (current_user is None):
         return redirect(url_for("/"))
     post = Post.query.filter_by(id=post_id).first()
     if post is not None:
-        if(current_user.is_liking(post)):
+        if (current_user.is_liking(post)):
             current_user.dislike(post)
             post.dislike(current_user)
             db.session.commit()
-            return jsonify({'code': 200, 'like': False, 'num':post.liker.count()})
+            return jsonify({'code': 200, 'like': False, 'num': post.liker.count()})
         else:
             current_user.like(post)
             post.like(current_user)
             post.recent_activity = datetime.utcnow()
             db.session.commit()
-            return jsonify({'code': 200, 'like': True, 'num':post.liker.count()})
-
-
-
+            return jsonify({'code': 200, 'like': True, 'num': post.liker.count()})
 
 
 @main.route('/likeinpost/<post_id>')

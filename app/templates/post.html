@@ -41,7 +41,7 @@
         submit.style = "margin-left: 40px";
 
 
-            $(function () {
+        $(function () {
 
             $("#socialShare").socialShare({
                 content: '',
@@ -51,7 +51,7 @@
 
         });
 
-            $("#shareQQ").on("click", function () {
+        $("#shareQQ").on("click", function () {
             $(this).socialShare("tQQ");
         })
     </script>
@@ -73,22 +73,6 @@
                             </a>
                         </h1>
                         <div id="socialShare"></div>
-                        {#                        <script>#}
-                        {#                            $(function () {#}
-                        {##}
-                        {#                                $("#socialShare").socialShare({#}
-                        {#                                    content: '',#}
-                        {#                                    url: '',#}
-                        {#                                    titile: ''#}
-                        {#                                });#}
-                        {##}
-                        {#                            });#}
-                        {##}
-                        {#                            $("#shareQQ").on("click", function () {#}
-                        {#                                $(this).socialShare("tQQ");#}
-                        {#                            })#}
-                        {#                        </script>#}
-                        {#                正文#}
                         <div class="content" id="fancy-content" style="padding-bottom:20px;
     border-bottom: 1px solid #ddd;margin: 30px;">
                             {{ post.body_html| safe }}
@@ -168,7 +152,7 @@
 
                 {#        评论区#}
                 <div class="container col-sm-offset-1 col-sm-10 comment-cont">
-                    <h3 id="comments">Comments</h3>
+                    <h2 id="comments">Comments</h2>
                     {% include 'Posts/_comments.html' %}
                     {% if current_user.can(Permission.COMMENT) %}
                         <div class="comment-form">
