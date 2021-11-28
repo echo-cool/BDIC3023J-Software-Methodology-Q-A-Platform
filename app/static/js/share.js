@@ -4,21 +4,16 @@
  * Reference: http://www.internetke.com/effects/menu/2015/1119/1833.html
  */
 
+
 (function($, window, document, undefined) {
     //插件初始化
     function init(target, options) {
         var settings = $.extend({}, $.fn.socialShare.defaults, options);
 		//初始化各个组件
-        var $msb_main = "<a class='msb_main'><img title='分享' src='images/share_core_square.jpg'></a>";
-        var $social_group = "<div class='social_group'>"
-		+ "<a target='_blank' class='msb_network_button weixin'>weixin</a>"
-		+ "<a target='_blank' class='msb_network_button sina'>sina</a>"
-		+ "<a target='_blank' class='msb_network_button tQQ'>tQQ</a>"
-		+ "<a target='_blank' class='msb_network_button qZone'>qZone</a>"
-		+ "<a target='_blank' class='msb_network_button douban'>douban</a>"
-		+ "</div>";
-        $(target).append($msb_main);
-        $(target).append($social_group);
+        var $msbMain = "<a class='msb_main'><img title='分享' src='../Image/share_core_square.jpg'></a>";
+        var $socialGroup = "<div class='$socialGroup'>" + "<a target='_blank' class='msb_network_button weixin'>weixin</a>" + "<a target='_blank' class='msb_network_button sina'>sina</a>" + "<a target='_blank' class='msb_network_button tQQ'>tQQ</a>" + "<a target='_blank' class='msb_network_button qZone'>qZone</a>" + "<a target='_blank' class='msb_network_button douban'>douban</a>" + "</div>";
+        $(target).append($msbMain);
+        $(target).append($socialGroup);
         $(target).addClass("socialShare");
 
 
@@ -44,7 +39,7 @@
 		});
         $(document).on("click",".msb_main",function(){
 			if ($(this).hasClass("disabled")) return;
-            var e = 500;//动画时间
+             e = 500;//动画时间
             var t = 250;//延迟时间
             var r = $(this).parent().find(".msb_network_button").length;  //分享组件的个数
             var i = 60;
@@ -60,7 +55,7 @@
             if (!$(this).hasClass("active")) {
                 $(this).addClass("disabled").delay(s).queue(function(e) {
                     $(this).removeClass("disabled").addClass("active");
-                    e()
+                    e();
                 });
                 $(this).parent().find(".msb_network_button").each(function() {
                     var n = p + (p + i * o) * Math.cos(v);  //结束位置
@@ -73,21 +68,21 @@
                         left: n + "px",
                         top: r + "px"
                     }, e);
-                    o++
-                })
+                    o++;
+                });
             } else {
                 o = r;
                 $(this).addClass("disabled").delay(s).queue(function(e) {
                     $(this).removeClass("disabled").removeClass("active");
-                    e()
+                    e();
                 });
                 $(this).parent().find(".msb_network_button").each(function() {
                     $(this).stop().delay(t * o).animate({
                         left: p,
                         top: d
                     }, e);
-                    o--
-                })
+                    o--;
+                });
             }
 		});
 
@@ -96,10 +91,10 @@
     }
 
 	function replaceAPI (api,options) {
-		api = api.replace('{url}', options.url);
-		api = api.replace('{title}', options.title);
-		api = api.replace('{content}', options.content);
-		api = api.replace('{pic}', options.pic);
+		api = api.replace("{url}", options.url);
+		api = api.replace("{title}", options.title);
+		api = api.replace("{content}", options.content);
+		api = api.replace("{pic}", options.pic);
 
 		return api;
 	}
@@ -131,22 +126,22 @@
 	}
 
     $.fn.socialShare = function(options, param) {
-        if(typeof options == 'string'){
+        if(typeof options === "string"){
 		    var method = $.fn.socialShare.methods[options];
 			if(method)
 				return method(this,param);
 		}else
 			init(this,options);
-    }
+    };
 
 
     //插件默认参数
     $.fn.socialShare.defaults = {
         url: window.location.href,
         title: document.title,
-        content: '',
-        pic: ''
-    }
+        content: "",
+        pic: ""
+    };
 
 	//插件方法
 	$.fn.socialShare.methods = {
@@ -159,12 +154,12 @@
 		tQQ:function(jq,options){
 			return jq.each(function(){
 				tQQ(this,options);
-			})
+			});
 		},
 		qZone:function(jq,options){
 			return jq.each(function(){
 				qZone(this,options);
-			})
+			});
 		},
 		sinaWeibo:function(jq,options) {
 			return jq.each(function(){
@@ -181,15 +176,14 @@
 				weixinShare(this,options);
 			});
 	    }
-	}
-
+	};
 
 	//分享地址
-	var qzone = 'http://www.internetke.com/';
-	var sina = 'http://www.internetke.com/';
-	var tqq = 'http://www.internetke.com/';
-	var douban = 'http://www.internetke.com/';
-	var weixin = 'http://www.internetke.com/';
+	var qzone = 'http://baidu.com';
+	var sina = 'http://baidu.com/';
+	var tqq = 'http://baidu.com/';
+	var douban = 'http://baidu.com/';
+	var weixin = 'http://baidu.com/';
 
 
 })(jQuery, window, document);

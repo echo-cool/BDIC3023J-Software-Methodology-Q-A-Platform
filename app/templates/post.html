@@ -39,6 +39,21 @@
         var submit = document.getElementById('submit')
         submit.className = 'btn btn-primary';
         submit.style = "margin-left: 40px";
+
+
+            $(function () {
+
+            $("#socialShare").socialShare({
+                content: '',
+                url: '',
+                titile: ''
+            });
+
+        });
+
+            $("#shareQQ").on("click", function () {
+            $(this).socialShare("tQQ");
+        })
     </script>
 
 {% endblock %}
@@ -52,29 +67,27 @@
 
                     <div class="post-content col-sm-offset-1 col-sm-10">
                         {#                标题#}
-                        <h1 class="post-title text-center" style="margin: 30px">
+                        <h1 class="post-title text-center" style="margin: 30px; font-size: 35px">
                             <a href="{{ url_for('.post', id=post.id) }}">
                                 {{ post.title }}
                             </a>
-
-{#                            <div id="socialShare"></div>#}
-{#                            <script>#}
-{#                                $(function () {#}
-{##}
-{#                                    $("#socialShare").socialShare({#}
-{#                                        content: '',#}
-{#                                        url: '',#}
-{#                                        titile: ''#}
-{#                                    });#}
-{##}
-{#                                });#}
-{##}
-{#                                $("#shareQQ").on("click", function () {#}
-{#                                    $(this).socialShare("tQQ");#}
-{#                                })#}
-{#                            </script>#}
-
                         </h1>
+                        <div id="socialShare"></div>
+                        {#                        <script>#}
+                        {#                            $(function () {#}
+                        {##}
+                        {#                                $("#socialShare").socialShare({#}
+                        {#                                    content: '',#}
+                        {#                                    url: '',#}
+                        {#                                    titile: ''#}
+                        {#                                });#}
+                        {##}
+                        {#                            });#}
+                        {##}
+                        {#                            $("#shareQQ").on("click", function () {#}
+                        {#                                $(this).socialShare("tQQ");#}
+                        {#                            })#}
+                        {#                        </script>#}
                         {#                正文#}
                         <div class="content" id="fancy-content" style="padding-bottom:20px;
     border-bottom: 1px solid #ddd;margin: 30px;">
