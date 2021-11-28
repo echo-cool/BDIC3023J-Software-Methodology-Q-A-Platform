@@ -415,6 +415,7 @@ def post(id):
         else:
             flash('Comment published successfully')
         return redirect(url_for('.post', id=post.id))
+    # return render_template('answer.html', posts=[post], form=form, comments=comments, pagination=pagination)
     return render_template('post.html', posts=[post], form=form, comments=comments, pagination=pagination)
 
 
@@ -443,7 +444,7 @@ def delete_comment(id):
         flash('The comment has been deleted.')
         return redirect(url_for('.post', id=posts.id))
     else:
-        flash('你没有删评论权限')
+        flash('You do not have the rights to delete this comment')
         return redirect(url_for('.post', id=posts.id))
 
 
@@ -466,7 +467,7 @@ def follow(username):
         flash('Invalid user.')
         return redirect(url_for('.index'))
     if current_user.is_following(user):
-        flash('You are already following this user.')
+        flash('You have already followed this user.')
         return redirect(url_for('.user', username=username))
     current_user.follow(user)
     db.session.commit()
@@ -487,7 +488,7 @@ def unfollow(username):
         return redirect(url_for('.user', username=username))
     current_user.unfollow(user)
     db.session.commit()
-    flash('You are not following %s anymore.' % username)
+    flash('You do not follow %s anymore.' % username)
     return redirect(url_for('.user', username=username))
 
 
@@ -500,17 +501,17 @@ def like(post_id):
         flash('Invalid post.')
         return redirect(url_for('.index'))
     if current_user.is_liking(post):
-        flash('You are already liking this post.')
+        flash('You have already gave a like to this post.')
         return redirect(url_for('.post', id=post_id))
     current_user.like(post)
     post.like(current_user)
     post.recent_activity = datetime.utcnow()
     db.session.commit()
-    flash('You are now liking this post')
+    flash('You give a like to this answer')
     return redirect(url_for('.index', id=post_id))
 
 
-@main.route('/AJAXlike/<post_id>',methods=['POST'], strict_slashes=False)
+@main.route('/AJAXlike/<post_id>', methods=['POST'], strict_slashes=False)
 # @login_required
 @csrf.exempt
 @permission_required(Permission.FOLLOW)
@@ -705,3 +706,32 @@ def new_question_md():
         return redirect(url_for('.index'))
     return render_template('new_posting/new_mdquestion.html', form=form)
 
+
+@main.route('/questions/<question_id>', methods=['GET', 'POST'])
+def view_quesiton(question_id):
+    if request.method == 'GET':
+        question = Question.query.get_or_404(question_id)
+        page1 = request.args.get('page', 1, type=int)
+        query1 = Post.query
+        pagination1 = query1.with_parent(question).order_by(Post.timestamp.asc()).paginate(
+            page1, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
+            error_out=False)
+        posts1 = pagination1.items
+        # hot
+        for item in query1:
+            item.important = 0
+            com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
+            li_num = db.session.query(func.count(Like.liker_id)).filter_by(liked_post_id=item.id).scalar()
+            item.important = 7 * com_num + 3 * li_num
+        hot = query1.order_by(Post.important.desc())
+        li = Activity.query.filter_by(is_invalid=False)
+        for item in li:
+            item.important = 0
+            li_num = db.session.query(func.count(Want.wanter_id)).filter_by(wanted_Activity_id=item.id).scalar()
+            item.important = li_num
+        hot_activity = li.order_by(Activity.important.desc())
+        return render_template('Posts/question.html', posts1=posts1, posts5=hot,
+                               pagination1=pagination1, hot_activity=hot_activity, question=question)
+    else:
+        inf = request.form["search"]
+        return redirect(url_for('.query', content=inf))

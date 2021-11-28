@@ -4,8 +4,6 @@
 
 {% block title %}Post{% endblock %}
 
-
-
 {% block styles %}
     {{ super() }}
     <link href="{{ url_for('static', filename='editormd/css/editormd.preview.min.css') }}" rel="stylesheet"/>
@@ -15,7 +13,6 @@
     <link href="{{ url_for('static', filename='comments.css') }}" rel="stylesheet"/>
 
 {% endblock %}
-
 
 {% block scripts %}
     {{ super() }}
@@ -64,6 +61,17 @@
         {% for post in posts %}
             <li class="post">
                 <div class="post-box">
+                    <div class="post-content col-sm-offset-1 col-sm-10">
+                        <h1 class="post-title text-center" style="margin: 30px; font-size: 35px">
+                            <a href="">
+                                Question
+                            </a>
+                        </h1>
+                        <div class="content" id="fancy-content" style="padding-bottom:20px;
+    border-bottom: 1px solid #ddd;margin: 30px;">
+                            This is the content.
+                        </div>
+                    </div>
 
                     <div class="post-content col-sm-offset-1 col-sm-10">
                         {#                标题#}
