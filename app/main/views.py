@@ -473,7 +473,7 @@ def send_message(username, message):
     print(check)
     if check["conclusionType"] != 1:
         data = check['data'][0]["msg"]
-        flash('Your message violated the rule of our web site. ' + data)
+        flash('Your message violated the rule of our web site. '+ message + " " + data)
         return redirect(url_for('.user', username=username))
 
     currentUserObj.send_message(user, message)
