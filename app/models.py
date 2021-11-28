@@ -79,6 +79,13 @@ class Students(db.Model):
     role_id = db.Column(db.Integer, default=1, index=True)
 
 
+class Savequestion(db.Model):
+    __tablename__ = 'savequestion'
+    saver_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), primary_key=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+
 class Follow(db.Model):
     follower_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     followed_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
@@ -141,8 +148,8 @@ class User(UserMixin, db.Model):
     collected_transaction = db.relationship('Collect', back_populates='collecter',
                                             lazy='dynamic', cascade='all, delete-orphan')
     # # # # save
-    # saved_by_post = db.relationship('Save_post', back_populates='saver', lazy='dynamic', cascade='all, delete-orphan')
-
+    saved_questions = db.relationship('Savequestion', foreign_keys=[Savequestion.saver_id], backref=db.backref('saver', lazy='joined'),
+                                      lazy='dynamic', cascade='all, delete-orphan')
 
     @staticmethod
     def add_self_follows():
@@ -336,6 +343,19 @@ class User(UserMixin, db.Model):
         return self.followers.filter_by(
             follower_id=user.id).first() is not None
 
+    def is_savingquestion(self, question):
+        return self.saved_questions.filter_by(question_id=question.id).first() is not None
+
+    def savequestion(self, question):
+        if not self.is_savingquestion(question):
+            s = Savequestion(saver=self, question=question)
+            db.session.add(s)
+
+    def unsavequestion(self, question):
+        s = self.saved_questions.filter_by(question_id=question.id).first()
+        db.session.delete(s)
+
+
     @property
     def followed_posts(self):
         return Post.query.join(Follow, Follow.followed_id == Post.author_id) \
@@ -389,6 +409,8 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+
+
 class Question(db.Model):
     __tablename__ = 'questions'
     id = db.Column(db.Integer, primary_key=True)
@@ -401,6 +423,10 @@ class Question(db.Model):
     recent_activity = db.Column(db.DateTime, index=True, default=datetime.utcnow())
     answers = db.relationship('Post', back_populates='question', cascade='all, delete-orphan', lazy='dynamic')
     is_anonymous = db.Column(db.Boolean, default=False)
+    savers = db.relationship('Savequestion', foreign_keys=[Savequestion.question_id],
+                             backref=db.backref('question', lazy='joined'), lazy='dynamic',
+                             cascade='all, delete-orphan')
+
 
 class Post(db.Model):
     __tablename__ = 'posts'
@@ -591,3 +617,6 @@ class Activity(db.Model):
             return False
         return self.wanter.filter_by(
             wanter_id=user.id).first() is not None
+
+
+
