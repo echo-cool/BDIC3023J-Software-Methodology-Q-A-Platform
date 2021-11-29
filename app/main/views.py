@@ -357,6 +357,13 @@ def edit_profile():
         return render_template('edit_profile.html', form=form)
     if request.method == 'POST':
         # 读取前端数据
+        main_image_file = form.main_image_file.data
+        print(main_image_file)
+        main_image_url = ""
+        if main_image_file.filename != "":
+            filename = str(os.urandom(30).hex()) + "." + main_image_file.filename.split(".")[-1]
+            main_image_file.save(os.path.join(current_app.static_folder, 'assets', filename))
+            main_image_url = filename
         username_find = User.query.filter_by(username=request.form["username"]).first()
         if username_find is not None and username_find != current_user:
             flash("Your new username already exists, please change your username")
@@ -818,6 +825,7 @@ def save_question(question_id):
     flash('You are now liking this post')
     return redirect(url_for('.view_question', question_id=question_id))
 
+
 @main.route('/AJAXsave_question/<question_id>', methods=['POST'], strict_slashes=False)
 # @login_required
 @csrf.exempt
@@ -828,15 +836,35 @@ def AJAXsave_question(question_id):
     question = Question.query.filter_by(id=question_id).first()
     if question is not None:
         if current_user.is_savingquestion(question):
-            print("abc")
             current_user.unsavequestion(question)
             # question.dis...(current_user)
             db.session.commit()
             return jsonify({'code': 200, 'like': False, 'num':question.savers.count()})
         else:
-            print("def")
-            current_user.savequestion(question)
+            current_user.savequestion(post)
             db.session.commit()
             return jsonify({'code': 200, 'like': True, 'num':question.savers.count()})
 
+
+@main.route('/invitelist/<user_id>')
+def invite_list(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        flash('Invalid user.')
+        return redirect(url_for('.index'))
+    page = request.args.get('page', 1, type=int)
+    pagination = user.following.paginate(
+        page, per_page=current_app.config['FLASKY_FOLLOWERS_PER_PAGE'],
+        error_out=False)
+    follows = [{'user': item.followed, 'timestamp': item.timestamp}
+               for item in pagination.items]
+    return render_template('table/invite.html', user=user, title="Followed by",
+                           endpoint='.followed_by', pagination=pagination,
+                           follows=follows)
+
+
+@main.route('/invite/<user_id>')
+def invite(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    return redirect(url_for('.index'))
 

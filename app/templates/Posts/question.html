@@ -171,10 +171,8 @@
                                     Answer</a>
                             </li>
                             <li id="btn-3">
-                                <a class="glyphicon glyphicon-user" >
-                                    Invite
-
-                        </a>
+                                <a href="{{ url_for('.invite_list', user_id=current_user.id) }}" class="glyphicon glyphicon-user">
+                                    Invite</a>
                             </li>
                         </ul>
                     </div>
