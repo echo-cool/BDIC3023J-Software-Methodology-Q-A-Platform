@@ -828,12 +828,15 @@ def AJAXsave_question(question_id):
     question = Question.query.filter_by(id=question_id).first()
     if question is not None:
         if current_user.is_savingquestion(question):
+            print("abc")
             current_user.unsavequestion(question)
             # question.dis...(current_user)
             db.session.commit()
             return jsonify({'code': 200, 'like': False, 'num':question.savers.count()})
         else:
-            current_user.savequestion(post)
+            print("def")
+            current_user.savequestion(question)
             db.session.commit()
             return jsonify({'code': 200, 'like': True, 'num':question.savers.count()})
+
 

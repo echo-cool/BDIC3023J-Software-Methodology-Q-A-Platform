@@ -125,15 +125,56 @@
                     <div class="tabbable">
                         <ul class="nav post-nav">
                             <li id="btn-1">
-                                <a href="{{ url_for('.save_question', question_id=question.id ) }}" class="glyphicon glyphicon-bookmark"> Follow</a>
+                                <a class="glyphicon glyphicon-bookmark" href="javascript:void (0);" onclick="{
+                            var csrftoken = $('meta[name=csrf-token]').attr('content');
+                            var _this=this;
+
+                            {#console.log(this.childNodes[3]);#}
+                            {#console.log(this.childElementCount);#}
+                                var sendData={
+                                  'csrf_token':csrftoken
+                              };
+
+                            $.ajax({
+                                url: '{{ url_for('.AJAXsave_question', question_id=question_id) }}',
+                                type: 'POST',
+                                {#dataType: 'json',#}
+                                {#contentType: 'application/json',#}
+                                {#data: JSON.stringify(sendData),#}
+
+                                success: function(result) {
+                                    console.log('success\n'+result);
+                                    if(result.like){
+                                        _this.innerText=' Unfollow'
+                                    }else{
+                                        _this.innerText=' Follow'
+                                }
+                                    {#span1.setAttribute('href', '{{ url_for('.dislike', post_id=post.id) }}');#}
+                                },
+                                error:function(msg){
+                                     console.log(msg);
+                                     if(msg.status===403){
+                                         window.location.href='{{ url_for('auth.login') }}'
+                                }
+                                }
+                                })
+                        }">
+                                    {% if not current_user.is_savingquestion(question) %}
+                                    Follow
+                                {% else %}
+                                    Unfollow
+                                    {% endif %}
+                                </a>
                             </li>
                             <li id="btn-2">
                                 <a href="{{ url_for('.new_answer_md',question_id=question_id )}}" class="glyphicon glyphicon-pencil">
                                     Answer</a>
                             </li>
                             <li id="btn-3">
-                                <a href="#" class="glyphicon glyphicon-user">
-                                    Invite</a>
+                                <a class="glyphicon glyphicon-user" >
+                                    Invite
+
+                        </a>
                             </li>
                         </ul>
                     </div>
