@@ -96,7 +96,6 @@
                     </li>
                 </ul>
             </div>
-
             {% if user == current_user %}
                 <div class="btn-group btn-group-sm set-info">
                     <button type="button" class="btn btn-default" href="/edit-profile">
@@ -132,6 +131,12 @@
                     {% endif %}
                     <li id="btn-5">
                         <a href="#panel-5" data-toggle="tab">WantToGo</a>
+                    </li>
+                    <li id="btn-8">
+                        <a href="#panel-8" data-toggle="tab">ConcernQuestion</a>
+                    </li>
+                    <li id="btn-9">
+                        <a href="#panel-9" data-toggle="tab">ConcernAnswer</a>
                     </li>
                 </ul>
 
@@ -178,171 +183,277 @@
                             {% endfor %}
                         </ul>
                     </div>
+                    <div class="tab-pane" id="panel-8">
+                        <ul class="activity list-unstyled">
+                            {% include 'Posts/_concernQuestionsInProfile.html' %}
+                        </ul>
+                    </div>
+                    <div class="tab-pane" id="panel-9">
+                        <ul class="activity list-unstyled">
+                            {% include 'Posts/_concernAnswersInProfile.html' %}
+                        </ul>
+                    </div>
                 </div>
             </div>
 
         </div>
     </div>
 
-    <script>function send_message() {
+    <script>
+        function send_message() {
 
-        console.log('hello');
-        $.ajax({
-            url: '/send_message/' + '{{ user.username }}' + '/' + $('#input-text-value').val(),
-            type: 'GET',
-            success: function (data) {
-                alert('Message sent successfully');
-                location.reload();
+            console.log('hello');
+            $.ajax({
+                url: '/send_message/' + '{{ user.username }}' + '/' + $('#input-text-value').val(),
+                type: 'GET',
+                success: function (data) {
+                    alert('Message sent successfully');
+                    location.reload();
+                }
+            });
+
+
+        }
+
+        var l1 = document.getElementById('btn-1')
+        var l2 = document.getElementById('btn-2')
+        var l3 = document.getElementById('btn-3')
+        var l4 = document.getElementById('btn-4')
+        var l5 = document.getElementById('btn-5')
+        var l6 = document.getElementById('btn-6')
+        var l7 = document.getElementById('btn-7')
+        var l8 = document.getElementById('btn-8')
+        var l9 = document.getElementById('btn-9')
+        var content1 = document.getElementById('panel-1')
+        var content2 = document.getElementById('panel-2')
+        var content3 = document.getElementById('panel-3')
+        var content4 = document.getElementById('panel-4')
+        var content5 = document.getElementById('panel-5')
+        var content6 = document.getElementById('panel-6')
+        var content7 = document.getElementById('panel-7')
+        var content8 = document.getElementById('panel-8')
+        var content9 = document.getElementById('panel-9')
+
+        l1.onclick = function () {
+            {#this.className = 'active'#}
+            content1.className = 'active'
+
+            l9.className = ''
+            content9.className = 'tab-pane'
+            l8.className = ''
+            content8.className = 'tab-pane'
+            l7.className = ''
+            l2.className = ''
+            l5.className = ''
+            content7.className = 'tab-pane'
+            content2.className = 'tab-pane'
+            content5.className = 'tab-pane'
+
+            {% if user.can(Permission.ACTIVITY) %}
+                l4.className = ''
+                content4.className = 'tab-pane'
+            {% else %}
+                l3.className = ''
+                content3.className = 'tab-pane'
+                l6.className = ''
+                content6.className = 'tab-pane'
+            {% endif %}
+
+        }
+
+        l8.onclick = function () {
+            {#this.className = 'active'#}
+            content8.className = 'active'
+
+            l7.className = ''
+            content7.className = 'tab-pane'
+            l9.className = ''
+            content9.className = 'tab-pane'
+
+            l1.className = ''
+            content1.className = 'tab-pane'
+            l2.className = ''
+            content2.className = 'tab-pane'
+            l5.className = ''
+            content5.className = 'tab-pane'
+
+            {% if user.can(Permission.ACTIVITY) %}
+                l4.className = ''
+                content4.className = 'tab-pane'
+            {% else %}
+                l3.className = ''
+                content3.className = 'tab-pane'
+                l6.className = ''
+                content6.className = 'tab-pane'
+            {% endif %}
+        }
+
+        l9.onclick = function () {
+            {#this.className = 'active'#}
+            content9.className = 'active'
+
+            l7.className = ''
+            content7.className = 'tab-pane'
+            l8.className = ''
+            content8.className = 'tab-pane'
+
+            l1.className = ''
+            content1.className = 'tab-pane'
+            l2.className = ''
+            content2.className = 'tab-pane'
+            l5.className = ''
+            content5.className = 'tab-pane'
+
+            {% if user.can(Permission.ACTIVITY) %}
+                l4.className = ''
+                content4.className = 'tab-pane'
+            {% else %}
+                l3.className = ''
+                content3.className = 'tab-pane'
+                l6.className = ''
+                content6.className = 'tab-pane'
+            {% endif %}
+        }
+
+        l7.onclick = function () {
+            {#this.className = 'active'#}
+            content7.className = 'active'
+
+            l9.className = ''
+            content9.className = 'tab-pane'
+            l8.className = ''
+            content8.className = 'tab-pane'
+            l1.className = ''
+            l2.className = ''
+            l5.className = ''
+            content2.className = 'tab-pane'
+            content1.className = 'tab-pane'
+            content5.className = 'tab-pane'
+
+            {% if user.can(Permission.ACTIVITY) %}
+                l4.className = ''
+                content4.className = 'tab-pane'
+            {% else %}
+                l3.className = ''
+                content3.className = 'tab-pane'
+                l6.className = ''
+                content6.className = 'tab-pane'
+            {% endif %}
+        }
+
+        l2.onclick = function () {
+            this.className = 'active'
+            content2.className = 'active'
+
+
+            l9.className = ''
+            content9.className = 'tab-pane'
+            l8.className = ''
+            content8.className = 'tab-pane'
+            l7.className = ''
+            content7.className = 'tab-pane'
+            l1.className = ''
+            content1.className = 'tab-pane'
+            l5.className = ''
+            content5.className = 'tab-pane'
+
+            {% if user.can(Permission.ACTIVITY) %}
+                l4.className = ''
+                content4.className = 'tab-pane'
+            {% else %}
+                l3.className = ''
+                content3.className = 'tab-pane'
+                l6.className = ''
+                content6.className = 'tab-pane'
+            {% endif %}
+        }
+
+        l5.onclick = function () {
+            this.className = 'active'
+            content5.className = 'active'
+
+
+            l9.className = ''
+            content9.className = 'tab-pane'
+            l8.className = ''
+            content8.className = 'tab-pane'
+            l7.className = ''
+            content7.className = 'tab-pane'
+            l1.className = ''
+            content1.className = 'tab-pane'
+            l2.className = ''
+            content2.className = 'tab-pane'
+            {% if user.can(Permission.ACTIVITY) %}
+                l4.className = ''
+                content4.className = 'tab-pane'
+            {% else %}
+                l3.className = ''
+                content3.className = 'tab-pane'
+                l6.className = ''
+                content6.className = 'tab-pane'
+            {% endif %}
+        }
+
+
+        {% if user.can(Permission.ACTIVITY) %}
+            l4.onclick = function () {
+                this.className = 'active'
+
+
+                l9.className = ''
+                content9.className = 'tab-pane'
+                l8.className = ''
+                content8.className = 'tab-pane'
+                content4.className = 'active'
+                l7.className = ''
+                content7.className = 'tab-pane'
+                l1.className = ''
+                content1.className = 'tab-pane'
+                l2.className = ''
+                content2.className = 'tab-pane'
+                l5.className = ''
+                content5.className = 'tab-pane'
             }
-        });
 
-
-    }
-
-    var l1 = document.getElementById('btn-1')
-    var l2 = document.getElementById('btn-2')
-    var l3 = document.getElementById('btn-3')
-    var l4 = document.getElementById('btn-4')
-    var l5 = document.getElementById('btn-5')
-    var l6 = document.getElementById('btn-6')
-    var l7 = document.getElementById('btn-7')
-    var content1 = document.getElementById('panel-1')
-    var content2 = document.getElementById('panel-2')
-    var content3 = document.getElementById('panel-3')
-    var content4 = document.getElementById('panel-4')
-    var content5 = document.getElementById('panel-5')
-    var content6 = document.getElementById('panel-6')
-    var content7 = document.getElementById('panel-7')
-
-    l1.onclick = function () {
-        {#this.className = 'active'#}
-        content7.className = ''
-        content1.className = 'active'
-
-        l7.className = ''
-        l2.className = ''
-        content7.className = 'tab-pane'
-        content2.className = 'tab-pane'
-        l5.className = ''
-        content5.className = 'tab-pane'
-
-        {% if user.can(Permission.ACTIVITY) %}
-            l4.className = ''
-            content4.className = 'tab-pane'
         {% else %}
-            l3.className = ''
-            content3.className = 'tab-pane'
-            l6.className = ''
-            content6.className = 'tab-pane'
+            l3.onclick = function () {
+                this.className = 'active'
+                content3.className = 'active'
+
+                l9.className = ''
+                content9.className = 'tab-pane'
+                l8.className = ''
+                content8.className = 'tab-pane'
+                l1.className = ''
+                content1.className = 'tab-pane'
+                l2.className = ''
+                content2.className = 'tab-pane'
+                l5.className = ''
+                content5.className = 'tab-pane'
+                l6.className = ''
+                content6.className = 'tab-pane'
+            }
+
+            l6.onclick = function () {
+                this.className = 'active'
+                content6.className = 'active'
+
+                l9.className = ''
+                content9.className = 'tab-pane'
+                l8.className = ''
+                content8.className = 'tab-pane'
+                l7.className = ''
+                content7.className = 'tab-pane'
+                l1.className = 'tab-pane'
+                content1.className = 'tab-pane'
+                l2.className = 'tab-pane'
+                content2.className = 'tab-pane'
+                l3.className = ''
+                content3.className = 'tab-pane'
+                l5.className = ''
+                content5.className = 'tab-pane'
+            }
         {% endif %}
-
-    }
-
-    l7.onclick = function () {
-        {#this.className = 'active'#}
-        {#content1.className=''#}
-        content7.className = 'active'
-
-        l1.className = ''
-        l2.className = ''
-        content2.className = 'tab-pane'
-        content1.className = 'tab-pane'
-        l5.className = ''
-        content5.className = 'tab-pane'
-
-        {% if user.can(Permission.ACTIVITY) %}
-            l4.className = ''
-            content4.className = 'tab-pane'
-        {% else %}
-            l3.className = ''
-            content3.className = 'tab-pane'
-            l6.className = ''
-            content6.className = 'tab-pane'
-        {% endif %}
-    }
-
-    l2.onclick = function () {
-        this.className = 'active'
-        content2.className = 'active'
-
-        l1.className = ''
-        content1.className = 'tab-pane'
-        l5.className = ''
-        content5.className = 'tab-pane'
-
-        {% if user.can(Permission.ACTIVITY) %}
-            l4.className = ''
-            content4.className = 'tab-pane'
-        {% else %}
-            l3.className = ''
-            content3.className = 'tab-pane'
-            l6.className = ''
-            content6.className = 'tab-pane'
-        {% endif %}
-    }
-
-    l5.onclick = function () {
-        this.className = 'active'
-        content5.className = 'active'
-
-        l1.className = ''
-        content1.className = 'tab-pane'
-        l2.className = ''
-        content2.className = 'tab-pane'
-        {% if user.can(Permission.ACTIVITY) %}
-            l4.className = ''
-            content4.className = 'tab-pane'
-        {% else %}
-            l3.className = ''
-            content3.className = 'tab-pane'
-            l6.className = ''
-            content6.className = 'tab-pane'
-        {% endif %}
-    }
-
-
-    {% if user.can(Permission.ACTIVITY) %}
-        l4.onclick = function () {
-            this.className = 'active'
-            content4.className = 'active'
-
-            l1.className = ''
-            content1.className = 'tab-pane'
-            l2.className = ''
-            content2.className = 'tab-pane'
-            l5.className = ''
-            content5.className = 'tab-pane'
-        }
-
-    {% else %}
-        l3.onclick = function () {
-            this.className = 'active'
-            content3.className = 'active'
-
-            l1.className = ''
-            content1.className = 'tab-pane'
-            l2.className = ''
-            content2.className = 'tab-pane'
-            l5.className = ''
-            content5.className = 'tab-pane'
-            l6.className = ''
-            content6.className = 'tab-pane'
-        }
-
-        l6.onclick = function () {
-            this.className = 'active'
-            content6.className = 'active'
-
-            l1.className = 'tab-pane'
-            content1.className = 'tab-pane'
-            l2.className = 'tab-pane'
-            content2.className = 'tab-pane'
-            l3.className = ''
-            content3.className = 'tab-pane'
-            l5.className = ''
-            content5.className = 'tab-pane'
-        }
-    {% endif %}
 
 
     </script>
