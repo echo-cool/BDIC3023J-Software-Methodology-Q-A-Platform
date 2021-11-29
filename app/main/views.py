@@ -825,6 +825,7 @@ def save_question(question_id):
     flash('You are now liking this post')
     return redirect(url_for('.view_question', question_id=question_id))
 
+
 @main.route('/AJAXsave_question/<question_id>', methods=['POST'], strict_slashes=False)
 # @login_required
 @csrf.exempt
@@ -843,4 +844,27 @@ def AJAXsave_question(question_id):
             current_user.savequestion(post)
             db.session.commit()
             return jsonify({'code': 200, 'like': True, 'num':question.savers.count()})
+
+
+@main.route('/invitelist/<user_id>')
+def invite_list(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        flash('Invalid user.')
+        return redirect(url_for('.index'))
+    page = request.args.get('page', 1, type=int)
+    pagination = user.following.paginate(
+        page, per_page=current_app.config['FLASKY_FOLLOWERS_PER_PAGE'],
+        error_out=False)
+    follows = [{'user': item.followed, 'timestamp': item.timestamp}
+               for item in pagination.items]
+    return render_template('table/invite.html', user=user, title="Followed by",
+                           endpoint='.followed_by', pagination=pagination,
+                           follows=follows)
+
+
+@main.route('/invite/<user_id>')
+def invite(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    return redirect(url_for('.index'))
 
