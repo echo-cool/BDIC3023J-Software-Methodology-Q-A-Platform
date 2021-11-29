@@ -849,7 +849,7 @@ def AJAXsave_question(question_id):
 @main.route('/invitelist/<question_id>')
 def invite_list(question_id):
     # user = User.query.filter_by(id=user_id).first()
-    user=current_user
+    user = current_user
     if user is None:
         flash('Invalid user.')
         return redirect(url_for('.index'))
@@ -865,11 +865,12 @@ def invite_list(question_id):
 
 
 @main.route('/invite/<question_id>/<user_id>')
-def invite(question_id,user_id):
-    question=Question.query.filter_by(id=question_id).first()
+def invite(question_id, user_id):
+    question = Question.query.filter_by(id=question_id).first()
     user = User.query.filter_by(id=user_id).first()
-    notification=Notification(timestamp=datetime.utcnow(),username=current_user.username,action=" has invited ", object=question.title,object_id=question_id,receiver_id=user_id)
+    notification=Notification(timestamp=datetime.utcnow(), username=current_user.username, action=" has invited ",
+                              object=question.title, object_id=question_id, receiver_id=user_id)
     db.session.add(notification)
     db.session.commit()
-    return redirect(url_for('.invite_list',question_id=question_id))
+    return redirect(url_for('.invite_list', question_id=question_id))
 
