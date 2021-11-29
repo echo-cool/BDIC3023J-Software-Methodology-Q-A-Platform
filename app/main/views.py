@@ -9,13 +9,13 @@ from werkzeug.utils import secure_filename
 
 from . import main
 from .forms import UploadPhotoForm, CommentForm, PostMdForm
-from .. import db, csrf
+from .. import db, csrf, cache
 from ..models import Permission, User, Post, Comment, Notification, Like, Transaction, Activity, Collect, Want, \
     Question, Savequestion
 from ..decorators import permission_required
 from ..util import check_text
 
-
+@cache.cached(timeout=30)
 @main.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
@@ -412,13 +412,13 @@ def post(id):
             action1 = " has replied<" + comment.body + "> to your comment<" + comment.replied.body + "> in the posting "
             n1 = Notification(receiver_id=comment.replied.author_id, timestamp=datetime.utcnow(),
                               username=username, action=action1,
-                              object=post.title, object_id=post.id)
+                              object=" answer ", object_id=post.id)
             db.session.add(n1)
             db.session.commit()
             action2 = " has commented<" + comment.body + "> on your posting"
             n2 = Notification(receiver_id=post.author_id, timestamp=datetime.utcnow(),
                               username=username, action=action2,
-                              object=post.title, object_id=post.id)
+                              object=" answer ", object_id=post.id)
             db.session.add(n2)
             db.session.commit()
         else:
@@ -426,7 +426,7 @@ def post(id):
             """传入通知信息"""
             n = Notification(receiver_id=post.author_id, timestamp=datetime.utcnow(),
                              username=username, action=action,
-                             object=post.title, object_id=post.id)
+                             object=" answer ", object_id=post.id)
             db.session.add(n)
             db.session.commit()
         db.session.add(comment)
