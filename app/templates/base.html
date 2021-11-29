@@ -13,9 +13,22 @@
             padding-top: 60px;
             background-color: #f5f5f5;
         }
+
+        .background {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1000;
+        }
     </style>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script type="application/javascript" src="{{ url_for('static',filename='js/jquery-3.6.0.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/starback.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/click_heart.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/fireworks.js') }}"></script>
 {% endblock %}
 
 
@@ -25,6 +38,27 @@
 
 
 {% block body %}
+    <div class="background">
+        <canvas id="canvas"></canvas>
+
+    </div>
+
+
+    <script>
+        const canvas = document.getElementById('canvas')
+        const starback = new Starback(canvas, {
+            width: window.screen.width,
+            height: window.screen.height,
+            speed: 5,
+            spread: 0.2,
+            backgroundColor: ["#FFFFFF"],
+            randomOpacity: true,
+            showFps: true,
+
+            // ...and the other options
+        })
+        starback.generateStar(20)
+    </script>
     {% block navbar %}
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container">
@@ -85,6 +119,7 @@
     {% endblock %}
 
     {% block content %}
+
         <div class="container">
             <!--    flash消息显示区-->
             {% for message in get_flashed_messages() %}
@@ -115,7 +150,5 @@
         {{ super() }}
         {{ moment.include_moment() }}
     {% endblock %}
-
-
 
 {% endblock %}
