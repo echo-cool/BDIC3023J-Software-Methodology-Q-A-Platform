@@ -6,12 +6,14 @@ from flask import render_template, redirect, url_for, flash, request, \
 from flask_login import login_required, current_user
 from sqlalchemy.sql.functions import func
 from werkzeug.utils import secure_filename
+
 from . import main
 from .forms import UploadPhotoForm, CommentForm, PostMdForm
 from .. import db, csrf
 from ..models import Permission, User, Post, Comment, Notification, Like, Transaction, Activity, Collect, Want, \
     Question, Savequestion
 from ..decorators import permission_required
+from ..util import check_text
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -285,6 +287,7 @@ def user(username):
     posts = user.posts.order_by(Post.timestamp.desc())
     questions=user.questions.order_by(Question.timestamp.desc())
     concernQuestions=Savequestion.query.filter_by(saver_id=user.id)
+
     liking_posts = [{'post': item.liked_post, 'timestamp': item.timestamp} for item in
                     liking.order_by(Like.timestamp.desc())]
     transactions = user.transactions.order_by(Transaction.timestamp.desc())
@@ -293,6 +296,7 @@ def user(username):
     wants = wanting.order_by(Want.timestamp.desc())
     return render_template('user.html', user=user, posts=posts, questions=questions,liking_posts=liking_posts, activities=activities,
                            transactionsInProfile=transactions, collects=collects, wants=wants, concernQuestions=concernQuestions,concernAnswers=posts )
+
 
 
 @main.route('/notification')
@@ -460,6 +464,27 @@ def delete_post_inProfile(post_id):
     return redirect(url_for('.user', username=current_user.username))
 
 
+@main.route('/send_message/<username>/<message>')
+@login_required
+def send_message(username, message):
+    currentUserObj: User = current_user
+    user: User = User.query.filter_by(username=username).first()
+    if user is None:
+        flash('Invalid user.')
+        return redirect(url_for('.index'))
+    check = check_text(message)
+    print(check)
+    if check["conclusionType"] != 1:
+        data = check['data'][0]["msg"]
+        flash('Your message violated the rule of our web site. '+ message + " " + data)
+        return redirect(url_for('.user', username=username))
+
+    currentUserObj.send_message(user, message)
+    db.session.commit()
+    flash('You have sent:' + message + " To: " + username)
+    return redirect(url_for('.user', username=username))
+
+
 @main.route('/follow/<username>')
 @login_required
 @permission_required(Permission.FOLLOW)
@@ -526,16 +551,13 @@ def AJAXlike(post_id):
             current_user.dislike(post)
             post.dislike(current_user)
             db.session.commit()
-            return jsonify({'code': 200, 'like': False, 'num':post.liker.count()})
+            return jsonify({'code': 200, 'like': False, 'num': post.liker.count()})
         else:
             current_user.like(post)
             post.like(current_user)
             post.recent_activity = datetime.utcnow()
             db.session.commit()
-            return jsonify({'code': 200, 'like': True, 'num':post.liker.count()})
-
-
-
+            return jsonify({'code': 200, 'like': True, 'num': post.liker.count()})
 
 
 @main.route('/likeinpost/<post_id>')
@@ -694,10 +716,10 @@ def new_question_md():
             return render_template('new_posting/new_mdpost.html', form=form)
         body_html = request.form['test-editormd-html-code']
         question = Question(title=title,
-                    body=body,
-                    body_html=body_html,
-                    is_anonymous=is_anonymous,
-                    author=current_user._get_current_object())
+                            body=body,
+                            body_html=body_html,
+                            is_anonymous=is_anonymous,
+                            author=current_user._get_current_object())
         question.recent_activity = datetime.utcnow()
         db.session.add(question)
         db.session.commit()
@@ -737,7 +759,7 @@ def new_answer_md(question_id):
             flash("You have just posted a posting anonymously", 'success')
         else:
             flash("You have just posted a posting", 'success')
-        return redirect(url_for('.view_question',question_id=question_id))
+        return redirect(url_for('.view_question', question_id=question_id))
     return render_template('new_posting/new_mdanswer.html', form=form)
 
 
@@ -765,7 +787,8 @@ def view_question(question_id):
             item.important = li_num
         hot_activity = li.order_by(Activity.important.desc())
         return render_template('Posts/question.html', posts1=posts1, posts5=hot,
-                               pagination1=pagination1, hot_activity=hot_activity, question=question,question_id=question_id)
+                               pagination1=pagination1, hot_activity=hot_activity, question=question,
+                               question_id=question_id)
     else:
         inf = request.form["search"]
         return redirect(url_for('.query', content=inf))
@@ -803,3 +826,4 @@ def AJAXsave_question(question_id):
             current_user.savequestion(post)
             db.session.commit()
             return jsonify({'code': 200, 'like': True, 'num':question.savers.count()})
+
