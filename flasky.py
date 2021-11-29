@@ -7,6 +7,7 @@ import requests
 from flask import Response
 from flask_admin.contrib.fileadmin import FileAdmin
 from flask_admin.contrib.sqla import ModelView
+from flask_docs import ApiDoc
 from flask_migrate import Migrate
 from app import create_app, db, admin
 from app.models import User, Role, Students, Permission, Post, Comment, Like, Notification, Transaction, Activity
@@ -16,14 +17,12 @@ from app.models import User, Role, Students, Permission, Post, Comment, Like, No
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 
+
 migrate = Migrate(app, db, render_as_batch=True)
 from geetest_config import GEETEST_ID, GEETEST_KEY, REDIS_HOST, REDIS_PORT, CYCLE_TIME, BYPASS_URL, \
     GEETEST_BYPASS_STATUS_KEY
 
 from sdk.geetest_lib import GeetestLib
-
-
-
 
 geetest_dict = {}
 
@@ -106,8 +105,14 @@ admin.add_view(ModelView(Notification, db.session, name="Notifications", endpoin
 admin.add_view(ModelView(Transaction, db.session, name="Transactions", endpoint="Transactions"))
 admin.add_view(ModelView(Activity, db.session, name="Activities", endpoint="Activities"))
 admin.add_view(FileAdmin("."))
-
-
-
+ApiDoc(
+    app,
+    title="Sample App",
+    version="1.0.0",
+    description="A simple app API",
+)
+app.config["API_DOC_MEMBER"] = ["app", "main"]
 if __name__ == '__main__':
+
     app.run(debug=True, host='0.0.0.0')
+
