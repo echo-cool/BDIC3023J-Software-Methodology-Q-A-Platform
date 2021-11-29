@@ -66,6 +66,23 @@ def index():
 
 @main.route('/trans/', methods=['GET', 'POST'])
 def index_transaction():
+    """Get all the  transactions
+
+    @@@
+    ### args
+    None
+
+    ### request
+    ```json
+    None
+    ```
+
+    ### return
+    ```json
+    HTML Page
+    ```
+    @@@
+    """
     if request.method == 'GET':
         with db.session.no_autoflush:
             query2 = Transaction.query
@@ -151,6 +168,23 @@ def index_follow():
 
 @main.route('/query/<content>', methods=['GET', 'POST'])
 def query(content):
+    """Search in the database
+
+    @@@
+    ### args
+    <content>
+
+    ### request
+    ```json
+    None
+    ```
+
+    ### return
+    ```json
+    HTML Page
+    ```
+    @@@
+    """
     if request.method == 'GET':
         print("get")
         inf = content
@@ -265,6 +299,7 @@ def query(content):
 
 @main.route('/query-user', methods=['GET', 'POST'])
 def query_user():
+
     if request.method == 'GET':
         return render_template('queryuser.html')
     if request.method == 'POST':
@@ -305,6 +340,23 @@ def query_transaction():
 
 @main.route('/user/<username>')
 def user(username):
+    """Get this user' information by username
+
+    @@@
+    ### args
+    <username>
+
+    ### request
+    ```json
+    None
+    ```
+
+    ### return
+    ```json
+    HTML Page
+    ```
+    @@@
+    """
     user = User.query.filter_by(username=username).first_or_404()
     liking = Like.query.filter_by(liker_id=user.id)
     collecting = user.collected_transaction
@@ -328,6 +380,23 @@ def user(username):
 
 @main.route('/notification')
 def notification():
+    """Get all the notifications
+
+    @@@
+    ### args
+    None
+
+    ### request
+    ```json
+    None
+    ```
+
+    ### return
+    ```json
+    HTML Page
+    ```
+    @@@
+    """
     page = request.args.get('page', 1, type=int)
     pagination = current_user.notifications.order_by(Notification.timestamp.desc()).paginate(
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
@@ -339,6 +408,23 @@ def notification():
 
 @main.route('/change_read/<int:id>')
 def change_read(id):
+    """Change the read status of a notification
+
+    @@@
+    ### args
+    <int:id> (Notification id)
+
+    ### request
+    ```json
+    None
+    ```
+
+    ### return
+    ```json
+    redirect(url_for('.notification'))
+    ```
+    @@@
+    """
     notice = Notification.query.filter_by(id=id).first()
     notice.is_read = True
     db.session.add(notice)
@@ -356,6 +442,21 @@ def allow_file(filename):
 
 @main.route('/photo', methods=['POST'])
 def uploadPhoto():
+    """Upload a image
+
+    @@@
+    ### args
+    None
+
+    ### request
+    ImageData
+
+    ### return
+    ```json
+    redirect(url_for('.edit_profile'))
+    ```
+    @@@
+    """
     form = UploadPhotoForm()
     f = form.photo.data
     if f and allow_file(f.filename):
@@ -371,6 +472,29 @@ def uploadPhoto():
 @main.route('/edit-profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
+    """Change user's profile
+
+    @@@
+    ### args
+    None
+
+    ### request
+    ```json
+    {
+    username: "",
+    collage: "",
+    grade: "",
+    aboutme: "",
+    main_image_file: ""
+    }
+    ```
+
+    ### return
+    ```json
+    redirect(url_for('.user', username=current_user.username))
+    ```
+    @@@
+    """
     form = UploadPhotoForm()
     if request.method == 'GET':
         return render_template('edit_profile.html', form=form)
