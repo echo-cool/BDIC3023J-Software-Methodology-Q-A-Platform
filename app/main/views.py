@@ -841,7 +841,7 @@ def AJAXsave_question(question_id):
             db.session.commit()
             return jsonify({'code': 200, 'like': False, 'num':question.savers.count()})
         else:
-            current_user.savequestion(post)
+            current_user.savequestion(question)
             db.session.commit()
             return jsonify({'code': 200, 'like': True, 'num':question.savers.count()})
 
