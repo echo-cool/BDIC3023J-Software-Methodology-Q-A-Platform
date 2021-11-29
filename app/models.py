@@ -573,7 +573,7 @@ class Notification(db.Model):
 
     username = db.Column(db.String(64), nullable=False)
     action = db.Column(db.Text, nullable=False)  # has followed \\ has like \\ has comment \\ has reply
-    object = db.Column(db.String(64), nullable=False)  # you \\ your posting \\ your comment
+    object = db.Column(db.String(64), nullable=False, default="answer")  # you \\ your posting \\ your comment
     object_id = db.Column(db.Integer)  # posting
 
     is_read = db.Column(db.Boolean, default=False)
