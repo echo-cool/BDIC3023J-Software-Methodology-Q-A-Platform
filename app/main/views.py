@@ -15,8 +15,8 @@ from ..models import Permission, User, Post, Comment, Notification, Like, Transa
 from ..decorators import permission_required
 from ..util import check_text
 
-@cache.cached(timeout=30)
 @main.route('/', methods=['GET', 'POST'])
+@cache.cached(timeout=30)
 def index():
     if request.method == 'GET':
         with db.session.no_autoflush:
@@ -846,9 +846,10 @@ def AJAXsave_question(question_id):
             return jsonify({'code': 200, 'like': True, 'num':question.savers.count()})
 
 
-@main.route('/invitelist/<user_id>')
-def invite_list(user_id):
-    user = User.query.filter_by(id=user_id).first()
+@main.route('/invitelist/<question_id>')
+def invite_list(question_id):
+    # user = User.query.filter_by(id=user_id).first()
+    user=current_user
     if user is None:
         flash('Invalid user.')
         return redirect(url_for('.index'))
@@ -860,11 +861,15 @@ def invite_list(user_id):
                for item in pagination.items]
     return render_template('table/invite.html', user=user, title="Followed by",
                            endpoint='.followed_by', pagination=pagination,
-                           follows=follows)
+                           follows=follows, question_id=question_id)
 
 
-@main.route('/invite/<user_id>')
-def invite(user_id):
+@main.route('/invite/<question_id>/<user_id>')
+def invite(question_id,user_id):
+    question=Question.query.filter_by(id=question_id).first()
     user = User.query.filter_by(id=user_id).first()
-    return redirect(url_for('.index'))
+    notification=Notification(timestamp=datetime.utcnow(),username=current_user.username,action=" has invited ", object=question.title,object_id=question_id,receiver_id=user_id)
+    db.session.add(notification)
+    db.session.commit()
+    return redirect(url_for('.invite_list',question_id=question_id))
 
