@@ -15,8 +15,8 @@ from ..models import Permission, User, Post, Comment, Notification, Like, Transa
 from ..decorators import permission_required
 from ..util import check_text
 
-@cache.cached(timeout=30)
 @main.route('/', methods=['GET', 'POST'])
+@cache.cached(timeout=30)
 def index():
     if request.method == 'GET':
         with db.session.no_autoflush:
