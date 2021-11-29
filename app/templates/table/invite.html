@@ -37,7 +37,7 @@
                             {{ moment(follow.timestamp).format('L') }}
                         </td>
                         <td style="padding-top: 14px;">
-                            <a href="{{ url_for('.invite', user_id=follow.user.id) }}" class="glyphicon glyphicon-user" > Invite</a>
+                            <a href="{{ url_for('.invite', user_id=follow.user.id,question_id=question_id) }}" class="glyphicon glyphicon-user" > Invite</a>
                         </td>
                     </tr>
                     {% endif %}
