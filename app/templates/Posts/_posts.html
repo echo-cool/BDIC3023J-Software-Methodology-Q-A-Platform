@@ -6,8 +6,8 @@
               <div class="post-content col-sm-12">
     {#            标题#}
                     <h3 class="post-title" style="margin-top: 7px">
-                        <a href="{{ url_for('.post', id=post.id) }}">
-                            {{ post.title }}
+                        <a href="{{ url_for('.view_question', question_id=post.question.id) }}">
+                            {{ post.question.title }}
                         </a>
                     </h3>
     {#            摘要#}
