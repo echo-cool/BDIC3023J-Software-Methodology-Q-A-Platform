@@ -15,27 +15,9 @@ from ..models import Permission, User, Post, Comment, Notification, Like, Transa
 from ..decorators import permission_required
 from ..util import check_text
 
-
 @main.route('/', methods=['GET', 'POST'])
 @cache.cached(timeout=30)
 def index():
-    """Get index page
-
-    @@@
-    ### args
-    None
-
-    ### request
-    ```json
-    None
-    ```
-
-    ### return
-    ```json
-    HTML Page
-    ```
-    @@@
-    """
     if request.method == 'GET':
         with db.session.no_autoflush:
             page1 = request.args.get('page', 1, type=int)
@@ -311,8 +293,8 @@ def user(username):
     wanting = user.wanted_Activity
 
     posts = user.posts.order_by(Post.timestamp.desc())
-    questions = user.questions.order_by(Question.timestamp.desc())
-    concernQuestions = Savequestion.query.filter_by(saver_id=user.id)
+    questions=user.questions.order_by(Question.timestamp.desc())
+    concernQuestions=Savequestion.query.filter_by(saver_id=user.id)
 
     liking_posts = [{'post': item.liked_post, 'timestamp': item.timestamp} for item in
                     liking.order_by(Like.timestamp.desc())]
@@ -320,10 +302,9 @@ def user(username):
     activities = user.activities.order_by(Activity.timestamp.desc())
     collects = collecting.order_by(Collect.timestamp.desc())
     wants = wanting.order_by(Want.timestamp.desc())
-    return render_template('user.html', user=user, posts=posts, questions=questions, liking_posts=liking_posts,
-                           activities=activities,
-                           transactionsInProfile=transactions, collects=collects, wants=wants,
-                           concernQuestions=concernQuestions, concernAnswers=posts)
+    return render_template('user.html', user=user, posts=posts, questions=questions,liking_posts=liking_posts, activities=activities,
+                           transactionsInProfile=transactions, collects=collects, wants=wants, concernQuestions=concernQuestions,concernAnswers=posts )
+
 
 
 @main.route('/notification')
@@ -510,7 +491,7 @@ def send_message(username, message):
     print(check)
     if check["conclusionType"] != 1:
         data = check['data'][0]["msg"]
-        flash('Your message violated the rule of our web site. ' + message + " " + data)
+        flash('Your message violated the rule of our web site. '+ message + " " + data)
         return redirect(url_for('.user', username=username))
 
     currentUserObj.send_message(user, message)
@@ -858,11 +839,11 @@ def AJAXsave_question(question_id):
             current_user.unsavequestion(question)
             # question.dis...(current_user)
             db.session.commit()
-            return jsonify({'code': 200, 'like': False, 'num': question.savers.count()})
+            return jsonify({'code': 200, 'like': False, 'num':question.savers.count()})
         else:
-            current_user.savequestion(post)
+            current_user.savequestion(question)
             db.session.commit()
-            return jsonify({'code': 200, 'like': True, 'num': question.savers.count()})
+            return jsonify({'code': 200, 'like': True, 'num':question.savers.count()})
 
 
 @main.route('/invitelist/<question_id>')
@@ -887,8 +868,9 @@ def invite_list(question_id):
 def invite(question_id, user_id):
     question = Question.query.filter_by(id=question_id).first()
     user = User.query.filter_by(id=user_id).first()
-    notification = Notification(timestamp=datetime.utcnow(), username=current_user.username, action=" has invited ",
-                                object=question.title, object_id=question_id, receiver_id=user_id)
+    notification=Notification(timestamp=datetime.utcnow(), username=current_user.username, action=" has invited ",
+                              object=question.title, object_id=question_id, receiver_id=user_id)
     db.session.add(notification)
     db.session.commit()
     return redirect(url_for('.invite_list', question_id=question_id))
+
