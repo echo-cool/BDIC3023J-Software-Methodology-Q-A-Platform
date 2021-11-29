@@ -79,6 +79,20 @@ class Students(db.Model):
     role_id = db.Column(db.Integer, default=1, index=True)
 
 
+class Savequestion(db.Model):
+    __tablename__ = 'savequestion'
+    saver_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), primary_key=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class Saveanswer(db.Model):
+    __tablename__ = 'saveanswer'
+    saver_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    answer_id = db.Column(db.Integer, db.ForeignKey('posts.id'), primary_key=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+
 class Follow(db.Model):
     follower_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     followed_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
@@ -140,6 +154,12 @@ class User(UserMixin, db.Model):
     # collect
     collected_transaction = db.relationship('Collect', back_populates='collecter',
                                             lazy='dynamic', cascade='all, delete-orphan')
+    # # # # save
+    saved_questions = db.relationship('Savequestion', foreign_keys=[Savequestion.saver_id], backref=db.backref('saver', lazy='joined'),
+                                      lazy='dynamic', cascade='all, delete-orphan')
+    aved_answers = db.relationship('Saveanswer', foreign_keys=[Saveanswer.saver_id],
+                                     backref=db.backref('saver', lazy='joined'),
+                                     lazy='dynamic', cascade='all, delete-orphan')
 
     @staticmethod
     def add_self_follows():
@@ -255,6 +275,13 @@ class User(UserMixin, db.Model):
         return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(
             url=url, hash=hash, size=size, default=default, rating=rating)
 
+    def send_message(self, user, message):
+        n = Notification(receiver_id=user.id, timestamp=datetime.utcnow(),
+                         username=self.username, action=" has sent you a message: " + message + " ｜ ",
+                         object="you")
+        db.session.add(n)
+        db.session.commit()
+
     def follow(self, user):
         if not self.is_following(user):
             f = Follow(follower=self, followed=user)
@@ -333,6 +360,31 @@ class User(UserMixin, db.Model):
         return self.followers.filter_by(
             follower_id=user.id).first() is not None
 
+    def is_savingquestion(self, question):
+        return self.saved_questions.filter_by(question_id=question.id).first() is not None
+
+    def savequestion(self, question):
+        if not self.is_savingquestion(question):
+            s = Savequestion(saver=self, question=question)
+            db.session.add(s)
+
+    def unsavequestion(self, question):
+        s = self.saved_questions.filter_by(question_id=question.id).first()
+        db.session.delete(s)
+
+    def is_savinganswer(self, answer):
+        return self.saved_answers.filter_by(answer_id=answer.id).first() is not None
+
+    def saveanswer(self, answer):
+        if not self.is_savinganswer(answer):
+            s = Saveanswer(saver=self, answer=answer)
+            db.session.add(s)
+
+    def unsaveanswer(self, answer):
+        s = self.saved_answers.filter_by(answer_id=answer.id).first()
+        db.session.delete(s)
+
+
     @property
     def followed_posts(self):
         return Post.query.join(Follow, Follow.followed_id == Post.author_id) \
@@ -386,6 +438,8 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+
+
 class Question(db.Model):
     __tablename__ = 'questions'
     id = db.Column(db.Integer, primary_key=True)
@@ -398,6 +452,10 @@ class Question(db.Model):
     recent_activity = db.Column(db.DateTime, index=True, default=datetime.utcnow())
     answers = db.relationship('Post', back_populates='question', cascade='all, delete-orphan', lazy='dynamic')
     is_anonymous = db.Column(db.Boolean, default=False)
+    savers = db.relationship('Savequestion', foreign_keys=[Savequestion.question_id],
+                             backref=db.backref('question', lazy='joined'), lazy='dynamic',
+                             cascade='all, delete-orphan')
+
 
 class Post(db.Model):
     __tablename__ = 'posts'
@@ -414,6 +472,10 @@ class Post(db.Model):
     question_id = db.Column(db.Integer, db.ForeignKey('questions.id'))
     liker = db.relationship('Like', back_populates='liked_post', lazy='dynamic', cascade='all')
     is_anonymous = db.Column(db.Boolean, default=False)
+    savers = db.relationship('Saveanswer', foreign_keys=[Saveanswer.answer_id],
+                             backref=db.backref('answer', lazy='joined'), lazy='dynamic',
+                             cascade='all, delete-orphan')
+    # saver = db.relationship('Save_post', back_populates='saved_post', lazy='dynamic', cascade='all')
 
     def like(self, user):
         if not self.is_liked_by(user):
@@ -477,6 +539,14 @@ class Like(db.Model):
     liker = db.relationship('User', back_populates='liked_post', lazy='joined')
     liked_post = db.relationship('Post', back_populates='liker', lazy='joined')
 
+# class Save_post(db.Model):
+#     __tablename__ = 'save_posts'
+#     save_post_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+#     save_post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), primary_key=True)
+#     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+#     saver = db.relationship('User', back_populates='saved_poster', lazy='joined')
+#     saved_post = db.relationship('Post', back_populates='saver', lazy='joined')
+# #
 
 
 class Collect(db.Model):
@@ -579,3 +649,6 @@ class Activity(db.Model):
             return False
         return self.wanter.filter_by(
             wanter_id=user.id).first() is not None
+
+
+

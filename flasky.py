@@ -22,7 +22,12 @@ from geetest_config import GEETEST_ID, GEETEST_KEY, REDIS_HOST, REDIS_PORT, CYCL
 
 from sdk.geetest_lib import GeetestLib
 
+
+
+
 geetest_dict = {}
+
+
 # 发送bypass请求，获取bypass状态并进行缓存
 def check_bypass_status():
     response = ""
@@ -41,15 +46,14 @@ def check_bypass_status():
         geetest_dict[GEETEST_BYPASS_STATUS_KEY] = bypass_status
     print("bypass状态已经获取并存入redis，当前状态为-{}".format(bypass_status))
 
+
 check_bypass_status()
+
 
 @app.shell_context_processor
 def make_shell_context():
     return dict(db=db, User=User, Role=Role, Students=Students, Permission=Permission, Post=Post,
                 Comment=Comment, Like=Like, Notification=Notification, Transaction=Transaction, Activity=Activity)
-
-
-
 
 
 # 从缓存中取出当前缓存的bypass状态(success/fail)
@@ -102,6 +106,8 @@ def favicon():
 # admin.add_view(ModelView(Transaction, db.session, name="Transactions", endpoint="Transactions"))
 # admin.add_view(ModelView(Activity, db.session, name="Activities", endpoint="Activities"))
 # admin.add_view(FileAdmin("."))
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')

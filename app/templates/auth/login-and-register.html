@@ -61,7 +61,7 @@
                     <input name="confirm_pwd" id="confirm_pwd" type="password" class="form-control" placeholder="Confirm password">
                     <p id="pwd"></p>
 
-                    <button class="btn btn-lg btn-warning btn-block chose" disabled="disabled" id="submit" type="submit">Submit</button>
+                    <button class="btn btn-lg btn-warning btn-block chose" disabled="disabled" id="submit1" type="submit">Submit</button>
                 </form>
         </div>
         <div class="form-container sign-in-container">
@@ -80,16 +80,16 @@
                     <p id="p2" class="text-danger"></p>
 
                     <div>
-{#                        <label>完成验证：</label>#}
+                        <label>完成验证：</label>
                         <div id="captcha">
-{#                            <p id="wait" class="show"></p>#}
+                            <p id="wait" class="show"></p>
                         </div>
                     </div>
                     <br>
                     <p id="notice" class="hide">请先完成验证</p>
 
 
-                    <button class="btn btn-lg btn-warning btn-block chose" id="submit" disabled="disabled"
+                    <button class="btn btn-lg btn-warning btn-block chose" id="submit0" disabled="disabled"
                             type="submit">Sign in
                     </button>
 
@@ -125,23 +125,23 @@
         var info = document.getElementById('p1');
         var pwd = document.getElementById('inputPassword');
         //学号
-        {#stuID.onblur = function () {#}
-        {#    var stuid = this.value;#}
-        {#    var reg = /[0-9]{1,4}/;#}
+        stuID.onblur = function () {
+            var stuid = this.value;
+            var reg = /[0-9]{1,4}/;
             {#var reg = /^\d{1，8}$/;#}
-        {#    // 不符合规则的话#}
-        {#    if (!reg.test(stuid)) {#}
-        {#        info.innerHTML = 'Please enter StudentID or OrganizationID';#}
-        {#        info.className = 'text-danger';#}
-        {#        document.getElementById("submit").disabled = true;#}
-        {#    } else {#}
-        {#        info.innerHTML = '';#}
-        {#        info.className = 'text-success';#}
-        {#    }#}
-        {#    if (info.className == 'text-success') {#}
-        {#        document.getElementById("submit").disabled = false;#}
-        {#    }#}
-        {#}#}
+            // 不符合规则的话
+            if (!reg.test(stuid)) {
+                info.innerHTML = 'Please enter StudentID or OrganizationID';
+                info.className = 'text-danger';
+                document.getElementById("submit0").disabled = true;
+            } else {
+                info.innerHTML = '';
+                info.className = 'text-success';
+            }
+            if (info.className == 'text-success') {
+                document.getElementById("submit0").disabled = false;
+            }
+        }
         var handler = function (captchaObj) {
             $("#submit").click(function (e) {
                 var result = captchaObj.getValidate();

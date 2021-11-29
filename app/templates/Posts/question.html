@@ -125,7 +125,7 @@
                     <div class="tabbable">
                         <ul class="nav post-nav">
                             <li id="btn-1">
-                                <a href="#" class="glyphicon glyphicon-bookmark"> Follow</a>
+                                <a href="{{ url_for('.save_question', question_id=question.id ) }}" class="glyphicon glyphicon-bookmark"> Follow</a>
                             </li>
                             <li id="btn-2">
                                 <a href="{{ url_for('.new_answer_md',question_id=question_id )}}" class="glyphicon glyphicon-pencil">
@@ -169,7 +169,7 @@
                         <div class="tab-pane active" id="panel-1">
                             <ul class="posts list-unstyled">
                                 {% for post in posts1 %}
-                                    {% include 'Posts/_posts.html' %}
+                                    {% include 'Posts/_answers.html' %}
                                 {% endfor %}
                             </ul>
                             {% if pagination1 %}
