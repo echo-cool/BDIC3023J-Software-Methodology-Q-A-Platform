@@ -19,27 +19,28 @@ from ..util import check_text
 @main.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
-        page1 = request.args.get('page', 1, type=int)
-        query1 = Post.query
-        pagination1 = query1.order_by(Post.recent_activity.desc()).paginate(
-            page1, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
-            error_out=False)
-        posts1 = pagination1.items
-        # hot
-        for item in query1:
-            item.important = 0
-            com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
-            li_num = db.session.query(func.count(Like.liker_id)).filter_by(liked_post_id=item.id).scalar()
-            item.important = 7 * com_num + 3 * li_num
-        hot = query1.order_by(Post.important.desc())
-        li = Activity.query.filter_by(is_invalid=False)
-        for item in li:
-            item.important = 0
-            li_num = db.session.query(func.count(Want.wanter_id)).filter_by(wanted_Activity_id=item.id).scalar()
-            item.important = li_num
-        hot_activity = li.order_by(Activity.important.desc())
-        return render_template('index/index_posts.html', posts1=posts1, posts5=hot,
-                               pagination1=pagination1, hot_activity=hot_activity)
+        with db.session.no_autoflush:
+            page1 = request.args.get('page', 1, type=int)
+            query1 = Post.query
+            pagination1 = query1.order_by(Post.recent_activity.desc()).paginate(
+                page1, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
+                error_out=False)
+            posts1 = pagination1.items
+            # hot
+            for item in query1:
+                item.important = 0
+                com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
+                li_num = db.session.query(func.count(Like.liker_id)).filter_by(liked_post_id=item.id).scalar()
+                item.important = 7 * com_num + 3 * li_num
+            hot = query1.order_by(Post.important.desc())
+            li = Activity.query.filter_by(is_invalid=False)
+            for item in li:
+                item.important = 0
+                li_num = db.session.query(func.count(Want.wanter_id)).filter_by(wanted_Activity_id=item.id).scalar()
+                item.important = li_num
+            hot_activity = li.order_by(Activity.important.desc())
+            return render_template('index/index_posts.html', posts1=posts1, posts5=hot,
+                                   pagination1=pagination1, hot_activity=hot_activity)
     else:
         inf = request.form["search"]
         return redirect(url_for('.query', content=inf))
@@ -48,24 +49,25 @@ def index():
 @main.route('/trans/', methods=['GET', 'POST'])
 def index_transaction():
     if request.method == 'GET':
-        query2 = Transaction.query
-        transactions = query2.order_by(Transaction.timestamp.desc())
-        # hot
-        query1 = Post.query
-        for item in query1:
-            item.important = 0
-            com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
-            li_num = db.session.query(func.count(Like.liker_id)).filter_by(liked_post_id=item.id).scalar()
-            item.important = 7 * com_num + 3 * li_num
-        hot = query1.order_by(Post.important.desc())
-        li = Activity.query.filter_by(is_invalid=False)
-        for item in li:
-            item.important = 0
-            li_num = db.session.query(func.count(Want.wanter_id)).filter_by(wanted_Activity_id=item.id).scalar()
-            item.important = li_num
-        hot_activity = li.order_by(Activity.important.desc())
-        return render_template('index/index_transactions.html', transactions=transactions, posts5=hot,
-                               hot_activity=hot_activity)
+        with db.session.no_autoflush:
+            query2 = Transaction.query
+            transactions = query2.order_by(Transaction.timestamp.desc())
+            # hot
+            query1 = Post.query
+            for item in query1:
+                item.important = 0
+                com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
+                li_num = db.session.query(func.count(Like.liker_id)).filter_by(liked_post_id=item.id).scalar()
+                item.important = 7 * com_num + 3 * li_num
+            hot = query1.order_by(Post.important.desc())
+            li = Activity.query.filter_by(is_invalid=False)
+            for item in li:
+                item.important = 0
+                li_num = db.session.query(func.count(Want.wanter_id)).filter_by(wanted_Activity_id=item.id).scalar()
+                item.important = li_num
+            hot_activity = li.order_by(Activity.important.desc())
+            return render_template('index/index_transactions.html', transactions=transactions, posts5=hot,
+                                   hot_activity=hot_activity)
     else:
         inf = request.form["search"]
         return redirect(url_for('.query', content=inf))
@@ -74,29 +76,30 @@ def index_transaction():
 @main.route('/act/', methods=['GET', 'POST'])
 def index_activity():
     if request.method == 'GET':
-        query3 = Activity.query
-        for activity in query3:
-            if activity.activity_time < datetime.utcnow():
-                activity.is_invalid = True
-                db.session.add(activity)
-                db.session.commit()
-        activities = query3.order_by(Activity.timestamp.desc())
-        # hot
-        query1 = Post.query
-        for item in query1:
-            item.important = 0
-            com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
-            li_num = db.session.query(func.count(Like.liker_id)).filter_by(liked_post_id=item.id).scalar()
-            item.important = 7 * com_num + 3 * li_num
-        hot = query1.order_by(Post.important.desc())
-        li = Activity.query.filter_by(is_invalid=False)
-        for item in li:
-            item.important = 0
-            li_num = db.session.query(func.count(Want.wanter_id)).filter_by(wanted_Activity_id=item.id).scalar()
-            item.important = li_num
-        hot_activity = li.order_by(Activity.important.desc())
-        return render_template('index/index_activities.html', activities=activities, posts5=hot,
-                               hot_activity=hot_activity)
+        with db.session.no_autoflush:
+            query3 = Activity.query
+            for activity in query3:
+                if activity.activity_time < datetime.utcnow():
+                    activity.is_invalid = True
+                    db.session.add(activity)
+                    db.session.commit()
+            activities = query3.order_by(Activity.timestamp.desc())
+            # hot
+            query1 = Post.query
+            for item in query1:
+                item.important = 0
+                com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
+                li_num = db.session.query(func.count(Like.liker_id)).filter_by(liked_post_id=item.id).scalar()
+                item.important = 7 * com_num + 3 * li_num
+            hot = query1.order_by(Post.important.desc())
+            li = Activity.query.filter_by(is_invalid=False)
+            for item in li:
+                item.important = 0
+                li_num = db.session.query(func.count(Want.wanter_id)).filter_by(wanted_Activity_id=item.id).scalar()
+                item.important = li_num
+            hot_activity = li.order_by(Activity.important.desc())
+            return render_template('index/index_activities.html', activities=activities, posts5=hot,
+                                   hot_activity=hot_activity)
     else:
         inf = request.form["search"]
         return redirect(url_for('.query', content=inf))
@@ -106,22 +109,23 @@ def index_activity():
 def index_follow():
     if request.method == 'GET':
         # hot
-        query1 = Post.query
-        for item in query1:
-            item.important = 0
-            com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
-            li_num = db.session.query(func.count(Like.liker_id)).filter_by(liked_post_id=item.id).scalar()
-            item.important = 7 * com_num + 3 * li_num
-        hot = query1.order_by(Post.important.desc())
-        query4 = current_user.followed_posts
-        posts4 = query4.order_by(Post.recent_activity.desc())
-        li = Activity.query.filter_by(is_invalid=False)
-        for item in li:
-            item.important = 0
-            li_num = db.session.query(func.count(Want.wanter_id)).filter_by(wanted_Activity_id=item.id).scalar()
-            item.important = li_num
-        hot_activity = li.order_by(Activity.important.desc())
-        return render_template('index/index_follows.html', posts4=posts4, posts5=hot, hot_activity=hot_activity)
+        with db.session.no_autoflush:
+            query1 = Post.query
+            for item in query1:
+                item.important = 0
+                com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
+                li_num = db.session.query(func.count(Like.liker_id)).filter_by(liked_post_id=item.id).scalar()
+                item.important = 7 * com_num + 3 * li_num
+            hot = query1.order_by(Post.important.desc())
+            query4 = current_user.followed_posts
+            posts4 = query4.order_by(Post.recent_activity.desc())
+            li = Activity.query.filter_by(is_invalid=False)
+            for item in li:
+                item.important = 0
+                li_num = db.session.query(func.count(Want.wanter_id)).filter_by(wanted_Activity_id=item.id).scalar()
+                item.important = li_num
+            hot_activity = li.order_by(Activity.important.desc())
+            return render_template('index/index_follows.html', posts4=posts4, posts5=hot, hot_activity=hot_activity)
     else:
         inf = request.form["search"]
         return redirect(url_for('.query', content=inf))
@@ -154,7 +158,8 @@ def query(content):
         newest = pagination2.items
         for item in result:
             item.important = 0
-            com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
+            with db.session.no_autoflush:
+                com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
             item.important = com_num
         pagination3 = result.order_by(Post.important.desc()).paginate(
             page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
@@ -168,8 +173,9 @@ def query(content):
             for y in range(len(list1)):
                 if list1[y].find(inf) != -1:
                     counts = counts + 1
-            com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
-            li_num = db.session.query(func.count(Like.liker_id)).filter_by(liked_post_id=item.id).scalar()
+            with db.session.no_autoflush:
+                com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
+                li_num = db.session.query(func.count(Like.liker_id)).filter_by(liked_post_id=item.id).scalar()
             item.important = counts * 4 + 3 * com_num + 3 * li_num
         pagination4 = result.order_by(Post.important.desc()).paginate(
             page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
@@ -208,7 +214,8 @@ def query(content):
         newest = pagination2.items
         for item in result:
             item.important = 0
-            com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
+            with db.session.no_autoflush:
+                com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
             item.important = com_num
         pagination3 = result.order_by(Post.important.desc()).paginate(
             page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
@@ -222,8 +229,9 @@ def query(content):
             for y in range(len(list1)):
                 if list1[y].find(inf) != -1:
                     counts = counts + 1
-            com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
-            li_num = db.session.query(func.count(Like.liker_id)).filter_by(liked_post_id=item.id).scalar()
+            with db.session.no_autoflush:
+                com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
+                li_num = db.session.query(func.count(Like.liker_id)).filter_by(liked_post_id=item.id).scalar()
             item.important = counts * 4 + 3 * com_num + 3 * li_num
         pagination4 = result.order_by(Post.important.desc()).paginate(
             page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
@@ -766,29 +774,31 @@ def new_answer_md(question_id):
 @main.route('/questions/<question_id>', methods=['GET', 'POST'])
 def view_question(question_id):
     if request.method == 'GET':
-        question = Question.query.get_or_404(question_id)
-        page1 = request.args.get('page', 1, type=int)
-        query1 = Post.query
-        pagination1 = query1.with_parent(question).order_by(Post.timestamp.asc()).paginate(
-            page1, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
-            error_out=False)
-        posts1 = pagination1.items
-        # hot
-        for item in query1:
-            item.important = 0
-            com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
-            li_num = db.session.query(func.count(Like.liker_id)).filter_by(liked_post_id=item.id).scalar()
-            item.important = 7 * com_num + 3 * li_num
-        hot = query1.order_by(Post.important.desc())
-        li = Activity.query.filter_by(is_invalid=False)
-        for item in li:
-            item.important = 0
-            li_num = db.session.query(func.count(Want.wanter_id)).filter_by(wanted_Activity_id=item.id).scalar()
-            item.important = li_num
-        hot_activity = li.order_by(Activity.important.desc())
-        return render_template('Posts/question.html', posts1=posts1, posts5=hot,
-                               pagination1=pagination1, hot_activity=hot_activity, question=question,
-                               question_id=question_id)
+        with db.session.no_autoflush:
+            question = Question.query.get_or_404(question_id)
+            page1 = request.args.get('page', 1, type=int)
+            query1 = Post.query
+            pagination1 = query1.with_parent(question).order_by(Post.timestamp.asc()).paginate(
+                page1, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
+                error_out=False)
+            posts1 = pagination1.items
+            # hot
+            for item in query1:
+                item.important = 0
+                with db.session.no_autoflush:
+                    com_num = db.session.query(func.count(Comment.id)).filter_by(post_id=item.id).scalar()
+                    li_num = db.session.query(func.count(Like.liker_id)).filter_by(liked_post_id=item.id).scalar()
+                item.important = 7 * com_num + 3 * li_num
+            hot = query1.order_by(Post.important.desc())
+            li = Activity.query.filter_by(is_invalid=False)
+            for item in li:
+                item.important = 0
+                li_num = db.session.query(func.count(Want.wanter_id)).filter_by(wanted_Activity_id=item.id).scalar()
+                item.important = li_num
+            hot_activity = li.order_by(Activity.important.desc())
+            return render_template('Posts/question.html', posts1=posts1, posts5=hot,
+                                   pagination1=pagination1, hot_activity=hot_activity, question=question,
+                                   question_id=question_id)
     else:
         inf = request.form["search"]
         return redirect(url_for('.query', content=inf))
