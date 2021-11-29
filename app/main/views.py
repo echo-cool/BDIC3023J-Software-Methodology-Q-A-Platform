@@ -10,7 +10,8 @@ from werkzeug.utils import secure_filename
 from . import main
 from .forms import UploadPhotoForm, CommentForm, PostMdForm
 from .. import db, csrf
-from ..models import Permission, User, Post, Comment, Notification, Like, Transaction, Activity, Collect, Want, Question
+from ..models import Permission, User, Post, Comment, Notification, Like, Transaction, Activity, Collect, Want, \
+    Question, Savequestion
 from ..decorators import permission_required
 from ..util import check_text
 
@@ -284,16 +285,18 @@ def user(username):
     wanting = user.wanted_Activity
 
     posts = user.posts.order_by(Post.timestamp.desc())
-    questions = user.questions.order_by(Question.timestamp.desc())
+    questions=user.questions.order_by(Question.timestamp.desc())
+    concernQuestions=Savequestion.query.filter_by(saver_id=user.id)
+
     liking_posts = [{'post': item.liked_post, 'timestamp': item.timestamp} for item in
                     liking.order_by(Like.timestamp.desc())]
     transactions = user.transactions.order_by(Transaction.timestamp.desc())
     activities = user.activities.order_by(Activity.timestamp.desc())
     collects = collecting.order_by(Collect.timestamp.desc())
     wants = wanting.order_by(Want.timestamp.desc())
-    return render_template('user.html', user=user, posts=posts, questions=questions, liking_posts=liking_posts,
-                           activities=activities,
-                           transactionsInProfile=transactions, collects=collects, wants=wants, )
+    return render_template('user.html', user=user, posts=posts, questions=questions,liking_posts=liking_posts, activities=activities,
+                           transactionsInProfile=transactions, collects=collects, wants=wants, concernQuestions=concernQuestions,concernAnswers=posts )
+
 
 
 @main.route('/notification')
@@ -540,11 +543,11 @@ def like(post_id):
 @csrf.exempt
 @permission_required(Permission.FOLLOW)
 def AJAXlike(post_id):
-    if (current_user is None):
+    if current_user is None:
         return redirect(url_for("/"))
     post = Post.query.filter_by(id=post_id).first()
     if post is not None:
-        if (current_user.is_liking(post)):
+        if current_user.is_liking(post):
             current_user.dislike(post)
             post.dislike(current_user)
             db.session.commit()
@@ -789,3 +792,38 @@ def view_question(question_id):
     else:
         inf = request.form["search"]
         return redirect(url_for('.query', content=inf))
+
+
+@main.route('/savequestions/<question_id>')
+def save_question(question_id):
+    question = Question.query.filter_by(id=question_id).first()
+    if question is None:
+        flash('Invalid post.')
+        return redirect(url_for('.index'))
+    if current_user.is_savingquestion(question):
+        flash('You are already liking this post.')
+        return redirect(url_for('.post', id=question_id))
+    current_user.savequestion(question)
+    db.session.commit()
+    flash('You are now liking this post')
+    return redirect(url_for('.view_question', question_id=question_id))
+
+@main.route('/AJAXsave_question/<question_id>', methods=['POST'], strict_slashes=False)
+# @login_required
+@csrf.exempt
+@permission_required(Permission.FOLLOW)
+def AJAXsave_question(question_id):
+    if current_user is None:
+        return redirect(url_for("/"))
+    question = Question.query.filter_by(id=question_id).first()
+    if question is not None:
+        if current_user.is_savingquestion(question):
+            current_user.unsavequestion(question)
+            # question.dis...(current_user)
+            db.session.commit()
+            return jsonify({'code': 200, 'like': False, 'num':question.savers.count()})
+        else:
+            current_user.savequestion(post)
+            db.session.commit()
+            return jsonify({'code': 200, 'like': True, 'num':question.savers.count()})
+
