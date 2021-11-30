@@ -32,6 +32,8 @@ test:
   stage: test
   script:
       - echo "TEST"
+      - coverage run ModelsTest.py
+      - coverage report -m
     # - python setup.py test
     # - pip install tox flake8  # you can also use tox
     # - tox -e py36,flake8
