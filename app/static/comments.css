@@ -2,7 +2,7 @@
 整体样式
  */
 .comment-content {
-    padding: 5px;
+    padding: 5px 20px;
     background-color: #fff;
     border-bottom: 1px solid #ddd;
     overflow: hidden;

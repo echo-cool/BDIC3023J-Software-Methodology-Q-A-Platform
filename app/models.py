@@ -157,7 +157,7 @@ class User(UserMixin, db.Model):
     # # # # save
     saved_questions = db.relationship('Savequestion', foreign_keys=[Savequestion.saver_id], backref=db.backref('saver', lazy='joined'),
                                       lazy='dynamic', cascade='all, delete-orphan')
-    aved_answers = db.relationship('Saveanswer', foreign_keys=[Saveanswer.saver_id],
+    saved_answers = db.relationship('Saveanswer', foreign_keys=[Saveanswer.saver_id],
                                      backref=db.backref('saver', lazy='joined'),
                                      lazy='dynamic', cascade='all, delete-orphan')
 

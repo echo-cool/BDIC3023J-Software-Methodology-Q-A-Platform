@@ -80,7 +80,7 @@
                                    {#     font-weight: 600;#}
                                         outline: none;
                                         box-shadow: none;
-                                        height: 100%;"></textarea>
+                                        height: 100%;" >{{ default_title }}</textarea>
 {#                    </label>#}
                 </div>
 
@@ -98,6 +98,10 @@
                     </div>
                     <button type="submit" class="btn btn-primary" style="width: 120px;margin-left: 20px">submit</button>
                 </div>
+            <script>
+        ts=document.getElementById("ts")
+        ts.value={{ default_body|tojson }}
+    </script>
 
             </form>
         {% endif %}
