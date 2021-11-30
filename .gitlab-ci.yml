@@ -32,6 +32,11 @@ test:
   stage: test
   script:
       - echo "TEST"
+      - python -V  # Print out python version for debugging
+      - pip install virtualenv
+      - virtualenv venv
+      - source venv/bin/activate
+      - pip install -r requirements.txt
       - coverage run ModelsTest.py
       - coverage report -m
     # - python setup.py test
