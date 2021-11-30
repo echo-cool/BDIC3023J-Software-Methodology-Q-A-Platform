@@ -55,6 +55,50 @@
             $(this).socialShare("tQQ");
         })
     </script>
+    <style>
+    .dialog{
+        position: absolute;
+        top: 10%;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        margin: auto;
+        box-shadow: 0 0 3px 3px #dddddd;
+        border-radius: 10px;
+        width: 400px;
+        height:50px;
+        background-color: white;
+        text-align: center;
+        line-height: 50px;
+        font-size: 1em;
+        vertical-align: middle;
+    }
+    </style>
+    <script>
+    function copyText(text, callback){
+        const tag = document.createElement('input');
+        tag.setAttribute('id', 'cp_hgz_input');
+        tag.value = text;
+        document.getElementsByTagName('body')[0].appendChild(tag);
+        document.getElementById('cp_hgz_input').select();
+        document.execCommand('copy');
+        document.getElementById('cp_hgz_input').remove();
+        if(callback) {callback();}}
+
+    function dialog(text){
+        div=document.createElement("div")
+        div.setAttribute("class","dialog")
+        div.innerText=text
+        div.onclick=(function () {
+            this.remove()
+        })
+        document.body.appendChild(div)
+        setTimeout( function () {
+            div.remove()
+        },2000)
+    }
+
+    </script>
 
 {% endblock %}
 
@@ -72,7 +116,11 @@
                                 {{ post.question.title }}
                             </a>
                         </h1>
-                        <div id="socialShare"></div>
+{#                        <div id="socialShare"></div>#}
+                        <a href="javascript:void (0);" class="glyphicon glyphicon-share" onclick="copyText(window.location.href,function() {
+                                  dialog('成功复制链接')
+                                })">
+                                    Share</a>
                         <div class="content" id="fancy-content" style="padding-bottom:20px;
     border-bottom: 1px solid #ddd;margin: 30px;">
                             {{ post.body_html| safe }}

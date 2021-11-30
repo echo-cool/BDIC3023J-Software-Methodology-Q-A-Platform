@@ -23,7 +23,7 @@ class Config:
     FLASKY_COMMENTS_PER_PAGE = 30
     FLASKY_LIKER_PER_PAGE = 50
     CACHE_TYPE = "simple"
-    ADMIN_EMAIL=['1148636961@qq.com','me@echo.cool','2721712688@qq.com']
+    ADMIN_EMAIL=['1148636961@qq.com','me@echo.cool','2721712688@qq.com','1635743062@qq.com']
 
 
     @staticmethod
