@@ -1,5 +1,8 @@
 import os
+import smtplib
 from datetime import datetime
+from email.header import Header
+from email.mime.text import MIMEText
 from operator import or_
 from flask import render_template, redirect, url_for, flash, request, \
     current_app, make_response, jsonify
@@ -8,8 +11,9 @@ from sqlalchemy.sql.functions import func
 from werkzeug.utils import secure_filename
 
 from . import main
-from .forms import UploadPhotoForm, CommentForm, PostMdForm
+from .forms import UploadPhotoForm, CommentForm, PostMdForm, ReportForm
 from .. import db, csrf, cache
+from ..email import send_email_text
 from ..models import Permission, User, Post, Comment, Notification, Like, Transaction, Activity, Collect, Want, \
     Question, Savequestion, Saveanswer
 from ..decorators import permission_required
@@ -976,7 +980,7 @@ def edit_answer_md(answer_id):
         else:
             is_anonymous = False
         body_html = request.form['test-editormd-html-code']
-        answer.title=title
+        answer.title = title
         answer.body = body
         answer.body_html = body_html
         answer.is_anonymous = is_anonymous
@@ -1107,3 +1111,24 @@ def invite(question_id, user_id):
     db.session.add(notification)
     db.session.commit()
     return redirect(url_for('.invite_list', question_id=question_id))
+
+
+@main.route('/report/<type>/<id>/',methods=['GET','POST'])
+def report(type, id):
+    form=ReportForm()
+    if(request.method=='POST'):
+        url = ""
+        user_url = url_for(".user", username=current_user.username)
+        if (type == "answer"):
+            url = url_for(".post", id=id)
+        elif (type == "question"):
+            url = url_for(".view_question", question_id=id)
+        try:
+            send_email_text(current_app.config["ADMIN_EMAIL"], "举报消息",'用户({})举报({}),内容如下:\n{}'.format(user_url, url,form.body.data))
+            flash("举报成功")
+            return redirect(".index")
+        except smtplib.SMTPException:
+            flash("举报失败")
+            return redirect(".index")
+    else:
+        return render_template("report.html",form=form,id=id,type=type)
