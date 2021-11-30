@@ -892,7 +892,7 @@ def new_question_md():
             is_anonymous = False
         if title == "":
             flash("Title cannot be None!")
-            return render_template('new_posting/new_mdpost.html', form=form)
+            return render_template('new_posting/new_mdpost.html', form=form,default_body="",default_title="")
         body_html = request.form['test-editormd-html-code']
         question = Question(title=title,
                             body=body,
@@ -907,7 +907,7 @@ def new_question_md():
         else:
             flash("You have just posted a posting", 'success')
         return redirect(url_for('.index'))
-    return render_template('new_posting/new_mdquestion.html', form=form)
+    return render_template('new_posting/new_mdquestion.html', form=form,default_body="",default_title="")
 
 
 @main.route('/edit_question_md/<question_id>', methods=['GET', 'POST'])
@@ -924,7 +924,8 @@ def edit_question_md(question_id):
             is_anonymous = False
         if title == "":
             flash("Title cannot be None!")
-            return render_template('new_posting/new_mdpost.html', form=form)
+            return render_template('new_posting/new_mdquestion.html', form=form,default_title=question.title,
+                           default_body=question.body)
         body_html = request.form['test-editormd-html-code']
         question.title = title
         question.body = body
@@ -971,7 +972,7 @@ def new_answer_md(question_id):
         else:
             flash("You have just posted a posting", 'success')
         return redirect(url_for('.view_question', question_id=question_id))
-    return render_template('new_posting/new_mdanswer.html', form=form)
+    return render_template('new_posting/new_mdanswer.html', form=form,default_body="")
 
 
 @main.route('/edit_answer_md/<answer_id>', methods=['GET', 'POST'])
