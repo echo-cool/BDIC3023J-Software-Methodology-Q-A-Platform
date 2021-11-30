@@ -31,6 +31,11 @@ cache:
 test:
   stage: test
   script:
+      - python -V  # Print out python version for debugging
+      - pip install virtualenv
+      - virtualenv venv
+      - source venv/bin/activate
+      - pip install -r requirements.txt
       - echo "TEST"
       - coverage run ModelsTest.py
       - coverage report -m

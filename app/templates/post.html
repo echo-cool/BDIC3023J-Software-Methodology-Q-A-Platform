@@ -235,11 +235,11 @@
                                 success: function(result) {
                                     console.log('success\n'+result);
                                     if(result.like){
-                                        _this.innerText=' Unfollow'
+                                        _this.innerText=' Unsave'
                             follow_icon.setAttribute('fill','#3688FF')
 
                                     }else{
-                                        _this.innerText=' Follow'
+                                        _this.innerText='   Save'
                             follow_icon.setAttribute('fill','#868686')
                                 }
                                     {#span1.setAttribute('href', '{{ url_for('.dislike', post_id=post.id) }}');#}
@@ -252,10 +252,11 @@
                                 }
                                 })
                         }" >
-                            <svg  viewBox="0 0 1024 1024" width="25" height="25">
-                            <path id="follow_icon" d="M 100 100 L 600 800 L 800 100 z"
-                                  fill="{% if current_user.is_authenticated %}
-                                {% if not current_user.is_savinganswer(post) %}
+                            <svg viewBox="0 0 1024 1024" width="25" height="25">
+                                <path id="follow_icon" d="M512 822.976L828.416 1024l-83.968-378.88L1024 390.208l-368.128-32.896L512 0 368.128 357.312 0 390.208l279.552 254.912L195.584 1024z"
+                                  fill="
+                                    {% if current_user.is_authenticated %}
+                                        {% if not current_user.is_savinganswer(post) %}
                                         #868686
                                         {% else %}
                                         #3688FF
@@ -263,14 +264,14 @@
                                     {% else %}
                                         #868686
                                     {% endif %}"></path></svg>
-                            <div id="follow_answer">{% if current_user.is_authenticated %}
+                            <div id="follow_answer" align="center">{% if current_user.is_authenticated %}
                                         {% if not current_user.is_savinganswer(post) %}
-                                        Follow
+                                            Save
                                         {% else %}
-                                        Unfollow
+                                            Unsave
                                         {% endif %}
                                     {% else %}
-                                        Follow
+                                        Save
                                     {% endif %}</div>
                     </a>
                 <a class="liked" href="{{ url_for('.report', id=post.id,type='answer') }}">
