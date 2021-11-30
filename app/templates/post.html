@@ -68,8 +68,8 @@
                     <div class="post-content col-sm-offset-1 col-sm-10">
                         {#                标题#}
                         <h1 class="post-title text-center" style="margin: 30px; font-size: 35px">
-                            <a href="{{ url_for('.post', id=post.id) }}">
-                                {{ post.title }}
+                            <a href="{{ url_for('.view_question', question_id=post.question.id) }}">
+                                {{ post.question.title }}
                             </a>
                         </h1>
                         <div id="socialShare"></div>

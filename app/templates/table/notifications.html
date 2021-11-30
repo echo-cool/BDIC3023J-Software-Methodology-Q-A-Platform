@@ -12,8 +12,10 @@
                             <h3 class="panel-title" style="display:inline;">Followers</h3>
                         {% elif notice.action == ' has liked your posting ' %}
                             <h3 class="panel-title" style="display:inline;">Likers</h3>
+                        {% elif notice.action == ' has invited ' %}
+                            <h3 class="panel-title" style="display:inline;">Invite</h3>
                         {% else %}
-                            <h3 class="panel-title" style="display:inline;">Comments</h3>
+                            <h3 class="panel-title" style="display:inline;">Notifications</h3>
                         {% endif %}
                     </a>
 
@@ -31,6 +33,17 @@
                         </a>
                     {% endif %}
 
+                    {% if notice.action == ' has invited ' %}
+                        <h5 style="float:left;display: inline"> {{ notice.action }} </h5>
+                    <a href="{{ url_for('.user', username = current_user.username) }}" style="float:left;display: inline;margin-left: 4px">
+                         <h5> you </h5>
+                    </a>
+                        <h5 style="float:left;display: inline">&nbspto answer </h5>
+                        <a href="{{ url_for('.view_question', question_id = notice.object_id) }}" style="float:left;display: inline;margin-left: 4px">
+                            <h5>{{ notice.object }}</h5>
+                        </a>
+                    {% else %}
+
                     <h5 style="float:left;display: inline"> {{ notice.action }} </h5>
 
                     {% if notice.object_id %}
@@ -42,6 +55,7 @@
                          <h5>{{ notice.object }}</h5>
                     </a>
                     {% endif %}
+                        {% endif %}
                 </div>
 
             </div>
