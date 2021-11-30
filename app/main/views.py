@@ -196,10 +196,10 @@ def query(content):
         result = Post.query.filter(or_(Post.title.like(search_result), Post.body.like(search_result)))
         for item in result:
             item.important = 0
-            if(item.title is None):
-                item.title=""
-            if(item.body is None):
-                item.body=""
+            if (item.title is None):
+                item.title = ""
+            if (item.body is None):
+                item.body = ""
             sentence = item.title + item.body
             counts = 0
             list1 = sentence.split(" ")
@@ -892,7 +892,7 @@ def new_question_md():
             is_anonymous = False
         if title == "":
             flash("Title cannot be None!")
-            return render_template('new_posting/new_mdpost.html', form=form,default_body="",default_title="")
+            return render_template('new_posting/new_mdpost.html', form=form, default_body="", default_title="")
         body_html = request.form['test-editormd-html-code']
         question = Question(title=title,
                             body=body,
@@ -907,7 +907,7 @@ def new_question_md():
         else:
             flash("You have just posted a posting", 'success')
         return redirect(url_for('.index'))
-    return render_template('new_posting/new_mdquestion.html', form=form,default_body="",default_title="")
+    return render_template('new_posting/new_mdquestion.html', form=form, default_body="", default_title="")
 
 
 @main.route('/edit_question_md/<question_id>', methods=['GET', 'POST'])
@@ -924,8 +924,8 @@ def edit_question_md(question_id):
             is_anonymous = False
         if title == "":
             flash("Title cannot be None!")
-            return render_template('new_posting/new_mdquestion.html', form=form,default_title=question.title,
-                           default_body=question.body)
+            return render_template('new_posting/new_mdquestion.html', form=form, default_title=question.title,
+                                   default_body=question.body)
         body_html = request.form['test-editormd-html-code']
         question.title = title
         question.body = body
@@ -972,7 +972,7 @@ def new_answer_md(question_id):
         else:
             flash("You have just posted a posting", 'success')
         return redirect(url_for('.view_question', question_id=question_id))
-    return render_template('new_posting/new_mdanswer.html', form=form,default_body="")
+    return render_template('new_posting/new_mdanswer.html', form=form, default_body="")
 
 
 @main.route('/edit_answer_md/<answer_id>', methods=['GET', 'POST'])
@@ -1121,10 +1121,10 @@ def invite(question_id, user_id):
     return redirect(url_for('.invite_list', question_id=question_id))
 
 
-@main.route('/report/<type>/<id>/',methods=['GET','POST'])
+@main.route('/report/<type>/<id>/', methods=['GET', 'POST'])
 def report(type, id):
-    form=ReportForm()
-    if(request.method=='POST'):
+    form = ReportForm()
+    if (request.method == 'POST'):
         url = ""
         user_url = url_for(".user", username=current_user.username)
         if (type == "answer"):
@@ -1132,11 +1132,12 @@ def report(type, id):
         elif (type == "question"):
             url = url_for(".view_question", question_id=id)
         try:
-            send_email_text(current_app.config["ADMIN_EMAIL"], "举报消息",'用户({})举报({}),内容如下:\n{}'.format(user_url, url,form.body.data))
+            send_email_text(current_app.config["ADMIN_EMAIL"], "举报消息",
+                            '用户({})举报({}),内容如下:\n{}'.format(user_url, url, form.body.data))
             flash("举报成功")
-            return redirect(".index")
+            return redirect(request.referrer or url_for('.index'))
         except smtplib.SMTPException:
             flash("举报失败")
-            return redirect(".index")
+            return redirect(request.referrer or url_for('.index'))
     else:
-        return render_template("report.html",form=form,id=id,type=type)
+        return render_template("report.html", form=form, id=id, type=type)
