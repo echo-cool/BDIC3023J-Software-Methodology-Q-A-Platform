@@ -196,6 +196,10 @@ def query(content):
         result = Post.query.filter(or_(Post.title.like(search_result), Post.body.like(search_result)))
         for item in result:
             item.important = 0
+            if(item.title is None):
+                item.title=""
+            if(item.body is None):
+                item.body=""
             sentence = item.title + item.body
             counts = 0
             list1 = sentence.split(" ")
