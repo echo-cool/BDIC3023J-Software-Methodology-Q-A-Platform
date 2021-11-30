@@ -508,13 +508,16 @@ def edit_profile():
         return render_template('edit_profile.html', form=form)
     if request.method == 'POST':
         # 读取前端数据
-        main_image_file = form.main_image_file.data
-        print(main_image_file)
-        main_image_url = ""
-        if main_image_file.filename != "":
-            filename = str(os.urandom(30).hex()) + "." + main_image_file.filename.split(".")[-1]
-            main_image_file.save(os.path.join(current_app.static_folder, 'assets', filename))
-            main_image_url = filename
+        try:
+            main_image_file = form.main_image_file.data
+            print(main_image_file)
+            main_image_url = ""
+            if main_image_file.filename != "":
+                filename = str(os.urandom(30).hex()) + "." + main_image_file.filename.split(".")[-1]
+                main_image_file.save(os.path.join(current_app.static_folder, 'assets', filename))
+                main_image_url = filename
+        except:
+            pass
         username_find = User.query.filter_by(username=request.form["username"]).first()
         if username_find is not None and username_find != current_user:
             flash("Your new username already exists, please change your username")
