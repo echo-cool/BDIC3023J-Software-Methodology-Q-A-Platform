@@ -1,21 +1,21 @@
 <ul class="posts list-unstyled">
         {% for post in concernAnswers %}
-        {% if post.is_anonymous==False %}
+        {% if post.answer.is_anonymous==False %}
         <li class="post">
             <div class="post-box">
 
                 <div class="post-content">
                     <h3 class="post-title">
-                        <a href="{{ url_for('.post', id=post.id) }}">{{ post.title }}</a>
+                        <a href="{{ url_for('.view_question', question_id=post.answer.question.id) }}">{{ post.answer.question.title }}</a>
                     </h3>
                     <div class="post-body">
                        <p>
-                            {% if post.body_html %}
-                                {{ post.body_html |safe|striptags|truncate(260,killwords=Flase,leeway=0) }}
+                            {% if post.answer.body_html %}
+                                {{ post.answer.body_html |safe|striptags|truncate(260,killwords=Flase,leeway=0) }}
                             {% else %}
-                                {{ post.body |truncate(200,killwords=Flase,leeway=0)}}
+                                {{ post.answer.body |truncate(200,killwords=Flase,leeway=0)}}
                             {% endif %}
-                            <small><a href="{{ url_for('.post', id=post.id) }}"><B>Read More</B></a></small>
+                            <small><a href="{{ url_for('.post', id=post.answer.id) }}"><B>Read More</B></a></small>
                        </p>
                     </div>
                     <div class="post-footer">
@@ -23,7 +23,7 @@
                             <span class="glyphicon glyphicon-time"></span>
                             {{ moment(post.timestamp).fromNow() }}
                         </span>
-                        {% if current_user == post.author %}
+                        {% if current_user == post.answer.author %}
 
                             {#            删除#}
                                 <a class="icon-btn" href="{{ url_for('main.delete_post_inProfile', post_id=post.id)}}">

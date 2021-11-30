@@ -11,7 +11,7 @@ from . import main
 from .forms import UploadPhotoForm, CommentForm, PostMdForm
 from .. import db, csrf, cache
 from ..models import Permission, User, Post, Comment, Notification, Like, Transaction, Activity, Collect, Want, \
-    Question, Savequestion
+    Question, Savequestion, Saveanswer
 from ..decorators import permission_required
 from ..util import check_text
 
@@ -299,7 +299,6 @@ def query(content):
 
 @main.route('/query-user', methods=['GET', 'POST'])
 def query_user():
-
     if request.method == 'GET':
         return render_template('queryuser.html')
     if request.method == 'POST':
@@ -365,6 +364,7 @@ def user(username):
     posts = user.posts.order_by(Post.timestamp.desc())
     questions = user.questions.order_by(Question.timestamp.desc())
     concernQuestions = Savequestion.query.filter_by(saver_id=user.id)
+    concernAnswers = Saveanswer.query.filter_by(saver_id=user.id)
 
     liking_posts = [{'post': item.liked_post, 'timestamp': item.timestamp} for item in
                     liking.order_by(Like.timestamp.desc())]
@@ -375,7 +375,7 @@ def user(username):
     return render_template('user.html', user=user, posts=posts, questions=questions, liking_posts=liking_posts,
                            activities=activities,
                            transactionsInProfile=transactions, collects=collects, wants=wants,
-                           concernQuestions=concernQuestions, concernAnswers=posts)
+                           concernQuestions=concernQuestions, concernAnswers=concernAnswers)
 
 
 @main.route('/notification')
@@ -616,6 +616,16 @@ def delete_comment(id):
 @login_required
 def delete_post_inProfile(post_id):
     post = Post.query.filter_by(id=post_id).first()
+    db.session.delete(post)
+    db.session.commit()
+    flash('The posting has been deleted.')
+    return redirect(url_for('.user', username=current_user.username))
+
+
+@main.route('/delete_question_profile/<question_id>')
+@login_required
+def delete_question_inProfile(question_id):
+    post = Question.query.filter_by(id=question_id).first()
     db.session.delete(post)
     db.session.commit()
     flash('The posting has been deleted.')
@@ -889,6 +899,38 @@ def new_question_md():
     return render_template('new_posting/new_mdquestion.html', form=form)
 
 
+@main.route('/edit_question_md/<question_id>', methods=['GET', 'POST'])
+@login_required
+def edit_question_md(question_id):
+    form = PostMdForm()
+    question = Question.query.filter_by(id=question_id).first()
+    if current_user.can(Permission.WRITE) and form.validate_on_submit():
+        title = request.form.get('title')
+        body = form.body.data
+        if request.form.get('anonymous') == "on":
+            is_anonymous = True
+        else:
+            is_anonymous = False
+        if title == "":
+            flash("Title cannot be None!")
+            return render_template('new_posting/new_mdpost.html', form=form)
+        body_html = request.form['test-editormd-html-code']
+        question.title = title
+        question.body = body
+        question.body_html = body_html
+        question.is_anonymous = is_anonymous
+        question.recent_activity = datetime.utcnow()
+        db.session.add(question)
+        db.session.commit()
+        if question.is_anonymous:
+            flash("You have just posted a posting anonymously", 'success')
+        else:
+            flash("You have just posted a posting", 'success')
+        return redirect(url_for('.index'))
+    return render_template('new_posting/new_mdquestion.html', form=form, default_title=question.title,
+                           default_body=question.body)
+
+
 @main.route('/new_answer_md/<question_id>', methods=['GET', 'POST'])
 @login_required
 def new_answer_md(question_id):
@@ -919,6 +961,35 @@ def new_answer_md(question_id):
             flash("You have just posted a posting", 'success')
         return redirect(url_for('.view_question', question_id=question_id))
     return render_template('new_posting/new_mdanswer.html', form=form)
+
+
+@main.route('/edit_answer_md/<answer_id>', methods=['GET', 'POST'])
+@login_required
+def edit_answer_md(answer_id):
+    form = PostMdForm()
+    answer = Post.query.filter_by(id=answer_id).first()
+    if current_user.can(Permission.WRITE) and form.validate_on_submit():
+        title = request.form.get('title')
+        body = form.body.data
+        if request.form.get('anonymous') == "on":
+            is_anonymous = True
+        else:
+            is_anonymous = False
+        body_html = request.form['test-editormd-html-code']
+        answer.title=title
+        answer.body = body
+        answer.body_html = body_html
+        answer.is_anonymous = is_anonymous
+        answer.recent_activity = datetime.utcnow()
+        db.session.add(answer)
+        db.session.commit()
+        if answer.is_anonymous:
+            flash("You have just posted a posting anonymously", 'success')
+        else:
+            flash("You have just posted a posting", 'success')
+        return redirect(url_for('.index'))
+    return render_template('new_posting/new_mdanswer.html', form=form,
+                           default_body=answer.body)
 
 
 @main.route('/questions/<question_id>', methods=['GET', 'POST'])
@@ -989,6 +1060,25 @@ def AJAXsave_question(question_id):
             return jsonify({'code': 200, 'like': True, 'num': question.savers.count()})
 
 
+@main.route('/AJAXsave_answer/<answer_id>', methods=['POST'], strict_slashes=False)
+# @login_required
+@csrf.exempt
+@permission_required(Permission.FOLLOW)
+def AJAXsave_answer(answer_id):
+    if current_user is None:
+        return redirect(url_for("/"))
+    answer = Post.query.filter_by(id=answer_id).first()
+    if answer is not None:
+        if current_user.is_savinganswer(answer):
+            current_user.unsaveanswer(answer)
+            db.session.commit()
+            return jsonify({'code': 200, 'like': False, 'num': answer.savers.count()})
+        else:
+            current_user.saveanswer(answer)
+            db.session.commit()
+            return jsonify({'code': 200, 'like': True, 'num': answer.savers.count()})
+
+
 @main.route('/invitelist/<question_id>')
 def invite_list(question_id):
     # user = User.query.filter_by(id=user_id).first()
@@ -1012,9 +1102,8 @@ def invite(question_id, user_id):
     question = Question.query.filter_by(id=question_id).first()
     user = User.query.filter_by(id=user_id).first()
 
-    notification=Notification(timestamp=datetime.utcnow(), username=current_user.username, action=" has invited ",
-                              object=question.title, object_id=question_id, receiver_id=user_id)
+    notification = Notification(timestamp=datetime.utcnow(), username=current_user.username, action=" has invited ",
+                                object=question.title, object_id=question_id, receiver_id=user_id)
     db.session.add(notification)
     db.session.commit()
     return redirect(url_for('.invite_list', question_id=question_id))
-

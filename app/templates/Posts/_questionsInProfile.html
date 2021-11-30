@@ -6,7 +6,7 @@
 
                 <div class="post-content">
                     <h3 class="post-title">
-                        <a href="{{ url_for('.post', id=post.id) }}">{{ post.title }}</a>
+                        <a href="{{ url_for('.view_question', question_id=post.id) }}">{{ post.title }}</a>
                     </h3>
                     <div class="post-body">
                        <p>
@@ -15,7 +15,7 @@
                             {% else %}
                                 {{ post.body |truncate(200,killwords=Flase,leeway=0)}}
                             {% endif %}
-                            <small><a href="{{ url_for('.post', id=post.id) }}"><B>Read More</B></a></small>
+{#                            <small><a href="{{ url_for('.view_question', question_id=post.id) }}"><B>Read More</B></a></small>#}
                        </p>
                     </div>
                     <div class="post-footer">
@@ -26,12 +26,12 @@
                         {% if current_user == post.author %}
 
                             {#            删除#}
-                                <a class="icon-btn" href="{{ url_for('main.delete_post_inProfile', post_id=post.id)}}">
+                                <a class="icon-btn" href="{{ url_for('main.delete_question_inProfile', question_id=post.id)}}">
                                     <span class="glyphicon glyphicon-trash"></span>
                                     <span>delete</span>
                                 </a>
                             {# 修改 #}
-                            <a class="icon-btn" href="#">
+                            <a class="icon-btn" href="{{ url_for('main.edit_question_md', question_id=post.id)}}">
                             <span class="glyphicon glyphicon-pencil"></span>
                             <span>modification</span>
                             </a>

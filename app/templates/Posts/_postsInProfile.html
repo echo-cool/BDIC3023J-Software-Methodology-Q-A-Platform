@@ -6,7 +6,7 @@
 
                 <div class="post-content">
                     <h3 class="post-title">
-                        <a href="{{ url_for('.post', id=post.id) }}">{{ post.title }}</a>
+                        <a href="{{ url_for('.view_question', question_id=post.question.id) }}">{{ post.question.title }}</a>
                     </h3>
                     <div class="post-body">
                        <p>
@@ -31,7 +31,7 @@
                                     <span>delete</span>
                                 </a>
                             {# 修改 #}
-                            <a class="icon-btn" href="#">
+                            <a class="icon-btn" href="{{ url_for('main.edit_answer_md', answer_id=post.id)}}">
                             <span class="glyphicon glyphicon-pencil"></span>
                             <span>modification</span>
                             </a>

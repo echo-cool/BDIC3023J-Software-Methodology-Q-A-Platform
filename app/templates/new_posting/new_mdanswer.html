@@ -73,8 +73,14 @@
                     </div>
                     <button type="submit" class="btn btn-primary" style="width: 120px;margin-left: 20px">submit</button>
                 </div>
+                        <script>
+        ts=document.getElementById("ts")
+        ts.value={{ default_body|tojson }}
+    </script>
 
             </form>
+
         {% endif %}
     </div>
+
 {% endblock %}
