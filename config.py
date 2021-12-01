@@ -22,7 +22,10 @@ class Config:
     FLASKY_FOLLOWERS_PER_PAGE = 50
     FLASKY_COMMENTS_PER_PAGE = 30
     FLASKY_LIKER_PER_PAGE = 50
-    CACHE_TYPE = "simple"
+    CACHE_TYPE = os.environ.get('CACHE_TYPE') or "simple"
+    REDIS_URL = os.environ.get('REDIS_URL') or ""
+    REDIS_USERNAME = os.environ.get('REDIS_USERNAME') or ""
+    REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD') or ""
 
     @staticmethod
     def init_app(app):
