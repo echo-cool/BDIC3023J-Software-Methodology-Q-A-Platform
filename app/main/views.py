@@ -684,6 +684,23 @@ def follow(username):
     flash('You are now following %s.' % username)
     return redirect(url_for('.user', username=username))
 
+@main.route('/AJAXfollow/<username>', methods=['POST'], strict_slashes=False)
+@csrf.exempt
+@permission_required(Permission.FOLLOW)
+def AJAXfollow(username):
+    if current_user is None:
+        return redirect(url_for("/"))
+    user = User.query.filter_by(username=username).first()
+    if user is not None:
+        if current_user.is_following(user):
+            current_user.unfollow(user)
+            db.session.commit()
+            return jsonify({'code': 200, 'like': False})
+        else:
+            current_user.follow(user)
+            db.session.commit()
+            return jsonify({'code': 200, 'like': True})
+
 
 @main.route('/unfollow/<username>')
 @login_required
@@ -907,9 +924,9 @@ def new_question_md():
         db.session.add(question)
         db.session.commit()
         if question.is_anonymous:
-            flash("You have just posted a posting anonymously", 'success')
+            flash("You have just posted a question anonymously", 'success')
         else:
-            flash("You have just posted a posting", 'success')
+            flash("You have just posted a question", 'success')
         return redirect(url_for('.index'))
     return render_template('new_posting/new_mdquestion.html', form=form, default_body="", default_title="")
 
@@ -939,9 +956,9 @@ def edit_question_md(question_id):
         db.session.add(question)
         db.session.commit()
         if question.is_anonymous:
-            flash("You have just posted a posting anonymously", 'success')
+            flash("You have just modified a question anonymously", 'success')
         else:
-            flash("You have just posted a posting", 'success')
+            flash("You have just modified a question", 'success')
         return redirect(url_for('.index'))
     return render_template('new_posting/new_mdquestion.html', form=form, default_title=question.title,
                            default_body=question.body)
@@ -972,9 +989,9 @@ def new_answer_md(question_id):
         db.session.add(post)
         db.session.commit()
         if post.is_anonymous:
-            flash("You have just posted a posting anonymously", 'success')
+            flash("You have just posted an answer anonymously", 'success')
         else:
-            flash("You have just posted a posting", 'success')
+            flash("You have just posted an answer", 'success')
         return redirect(url_for('.view_question', question_id=question_id))
     return render_template('new_posting/new_mdanswer.html', form=form, default_body="")
 
@@ -999,10 +1016,10 @@ def edit_answer_md(answer_id):
         answer.recent_activity = datetime.utcnow()
         db.session.add(answer)
         db.session.commit()
-        if answer.is_anonymous:
-            flash("You have just posted a posting anonymously", 'success')
+        if post.is_anonymous:
+            flash("You have just modified an answer anonymously", 'success')
         else:
-            flash("You have just posted a posting", 'success')
+            flash("You have just modified an answer", 'success')
         return redirect(url_for('.index'))
     return render_template('new_posting/new_mdanswer.html', form=form,
                            default_body=answer.body)

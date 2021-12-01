@@ -58,13 +58,50 @@
                             {% endif %}
                         </h3>
                         {% if current_user.can(Permission.FOLLOW) and user != current_user %}
-                            {% if not current_user.is_following(user) %}
-                                <a href="{{ url_for('.follow', username=user.username) }}"
-                                   class="btn btn-follow">Follow</a>
-                            {% else %}
-                                <a href="{{ url_for('.unfollow', username=user.username) }}" class="btn btn-unfollow"
-                                   id="unfollow">Followed</a>
-                            {% endif %}
+{#                            {% if not current_user.is_following(user) %}#}
+{#                                <a href="{{ url_for('.follow', username=user.username) }}"#}
+{#                                   class="btn btn-follow">Follow</a>#}
+{#                            {% else %}#}
+{#                                <a href="{{ url_for('.unfollow', username=user.username) }}" class="btn btn-unfollow"#}
+{#                                   id="unfollow">Followed</a>#}
+{#                            {% endif %}#}
+                            <a
+                                               href="javascript:void (0);"
+                                               class="{% if not current_user.is_following(user) %}btn btn-follow{% else %}btn btn-unfollow{% endif %}"  onclick="{
+                            var csrftoken = $('meta[name=csrf-token]').attr('content');
+                            var _this=this;
+                            var span1=this.childNodes[1];
+                            {#console.log(this.childNodes[3]);#}
+                            {#console.log(this.childElementCount);#}
+                                var sendData={
+                                  'csrf_token':csrftoken
+                              };
+
+                            $.ajax({
+                                url: '{{ url_for('.AJAXfollow', username=user.username) }}',
+                                type: 'POST',
+                                {#dataType: 'json',#}
+                                {#contentType: 'application/json',#}
+                                {#data: JSON.stringify(sendData),#}
+
+                                success: function(result) {
+                                    console.log('success\n'+result);
+                                    if(result.like){
+                                        _this.innerText='Unfollow'
+                                                _this.setAttribute('class','btn btn-unfollow')
+                                    }else{
+                                        _this.innerText='Follow'
+                                                _this.setAttribute('class','btn btn-follow')
+                                }
+                                },
+                                error:function(msg){
+                                     console.log(msg);
+                                     if(msg.status===403){
+                                         window.location.href='{{ url_for('auth.login') }}'
+                                }
+                                }
+                                })
+                        }">{% if not current_user.is_following(user) %}Follow{% else %}Unfollow{% endif %}</a>
                         {% endif %}
                     </li>
                     <li class="list-group-item info-box" style="color: #727070;">

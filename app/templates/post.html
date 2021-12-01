@@ -202,15 +202,52 @@
                                             &nbsp{{ post.author.college }}</h6>
                                     </div>
                                     {% if current_user.can(Permission.FOLLOW) and post.author != current_user %}
-                                        {% if not current_user.is_following(post.author) %}
-                                            <a align="center"
-                                               href="{{ url_for('.follow', username=post.author.username) }}"
-                                               class="btn btn-primary" style="margin-top: 12px">Follow</a>
-                                        {% else %}
-                                            <a align="center"
-                                               href="{{ url_for('.unfollow', username=post.author.username) }}"
-                                               class="btn btn-default" style="margin-top: 12px">Unfollow</a>
-                                        {% endif %}
+{#                                        {% if not current_user.is_following(post.author) %}#}
+{#                                            <a align="center"#}
+{#                                               href="{{ url_for('.follow', username=post.author.username) }}"#}
+{#                                               class="btn btn-primary" style="margin-top: 12px">Follow</a>#}
+{#                                        {% else %}#}
+{#                                            <a align="center"#}
+{#                                               href="{{ url_for('.unfollow', username=post.author.username) }}"#}
+{#                                               class="btn btn-default" style="margin-top: 12px">Unfollow</a>#}
+{#                                        {% endif %}#}
+                                        <a align="center"
+                                               href="javascript:void (0);"
+                                               class="{% if not current_user.is_following(post.author) %}btn btn-primary{% else %}btn btn-default{% endif %}" style="margin-top: 12px" onclick="{
+                            var csrftoken = $('meta[name=csrf-token]').attr('content');
+                            var _this=this;
+                            var span1=this.childNodes[1];
+                            {#console.log(this.childNodes[3]);#}
+                            {#console.log(this.childElementCount);#}
+                                var sendData={
+                                  'csrf_token':csrftoken
+                              };
+
+                            $.ajax({
+                                url: '{{ url_for('.AJAXfollow', username=post.author.username) }}',
+                                type: 'POST',
+                                {#dataType: 'json',#}
+                                {#contentType: 'application/json',#}
+                                {#data: JSON.stringify(sendData),#}
+
+                                success: function(result) {
+                                    console.log('success\n'+result);
+                                    if(result.like){
+                                        _this.innerText='Unfollow'
+                                                _this.setAttribute('class','btn btn-default')
+                                    }else{
+                                        _this.innerText='Follow'
+                                                _this.setAttribute('class','btn btn-primary')
+                                }
+                                },
+                                error:function(msg){
+                                     console.log(msg);
+                                     if(msg.status===403){
+                                         window.location.href='{{ url_for('auth.login') }}'
+                                }
+                                }
+                                })
+                        }">{% if not current_user.is_following(post.author) %}Follow{% else %}Unfollow{% endif %}</a>
                                     {% endif %}
                                 </div>
                             {% endif %}
@@ -265,25 +302,67 @@
                 <!--        点赞与查看点赞的人    -->
                 <div class="like-btn">
                     <!--            点赞-->
-                    {% if not current_user.is_liking(post) %}
-                        <a class="unlike" href="{{ url_for('.like_inpost', post_id=post.id) }}">
+{#                    {% if not current_user.is_liking(post) %}#}
+{#                        <a class="unlike" href="{{ url_for('.like_inpost', post_id=post.id) }}">#}
+{#                            <svg viewBox="0 0 1024 1024" width="25" height="25">#}
+{#                                <path d="M889.6 396.8 608 396.8C633.6 262.4 684.8 96 576 44.8 460.8-6.4 454.4 64 441.6 179.2c-12.8 121.6-192 249.6-192 249.6l0 563.2 608 0c83.2-38.4 134.4-377.6 160-499.2C1043.2 371.2 889.6 396.8 889.6 396.8z"#}
+{#                                      fill="#868686"></path>#}
+{#                                <path d="M0 428.8l179.2 0 0 569.6-179.2 0 0-569.6Z" fill="#868686"></path>#}
+{#                            </svg>#}
+{#                            <div>{{ post.liker.count() }} likes</div>#}
+{#                        </a>#}
+{#                    {% else %}#}
+{#                        <a class="liked" href="{{ url_for('.dislike_inpost', post_id=post.id) }}">#}
+{#                            <svg viewBox="0 0 1024 1024" width="25" height="25">#}
+{#                                <path d="M889.6 396.8 608 396.8C633.6 262.4 684.8 96 576 44.8 460.8-6.4 454.4 64 441.6 179.2c-12.8 121.6-192 249.6-192 249.6l0 563.2 608 0c83.2-38.4 134.4-377.6 160-499.2C1043.2 371.2 889.6 396.8 889.6 396.8z"#}
+{#                                      fill="#3688FF"></path>#}
+{#                                <path d="M0 428.8l179.2 0 0 569.6-179.2 0 0-569.6Z" fill="#3688FF"></path>#}
+{#                            </svg>#}
+{#                            <div>{{ post.liker.count() }} likes</div>#}
+{#                        </a>#}
+{#                    {% endif %}#}
+                    <a class="{% if not current_user.is_liking(post) %}unlike{% else %}liked{% endif %}" href="javascript:void (0);" onclick="{
+                            var csrftoken = $('meta[name=csrf-token]').attr('content');
+                            var _this=this;
+                            var fill1=document.getElementById('fill1')
+                            var fill2=document.getElementById('fill2')
+                            var span2=document.getElementById('likes_count')
+                                var sendData={
+                                  'csrf_token':csrftoken
+                              };
+
+                            $.ajax({
+                                url: '{{ url_for('.AJAXlike', post_id=post.id) }}',
+                                type: 'POST',
+
+                                success: function(result) {
+                                    console.log('success\n'+result);
+                                    if(result.like){
+                                        {#span1.setAttribute('class', 'glyphicon glyphicon-heart');#}
+                            fill1.setAttribute('fill', '#3688FF')
+                            fill2.setAttribute('fill', '#3688FF')
+                                    }else{
+                                        {#span1.setAttribute('class', 'glyphicon glyphicon-heart-empty');#}
+                            fill1.setAttribute('fill', '#868686')
+                            fill2.setAttribute('fill', '#868686')
+                                }
+                                    span2.innerText=result.num+' likes';
+                                },
+                                error:function(msg){
+                                     console.log(msg);
+                                     if(msg.status===403){
+                                         window.location.href='{{ url_for('auth.login') }}'
+                                }
+                                }
+                                })
+                        }">
                             <svg viewBox="0 0 1024 1024" width="25" height="25">
-                                <path d="M889.6 396.8 608 396.8C633.6 262.4 684.8 96 576 44.8 460.8-6.4 454.4 64 441.6 179.2c-12.8 121.6-192 249.6-192 249.6l0 563.2 608 0c83.2-38.4 134.4-377.6 160-499.2C1043.2 371.2 889.6 396.8 889.6 396.8z"
-                                      fill="#868686"></path>
-                                <path d="M0 428.8l179.2 0 0 569.6-179.2 0 0-569.6Z" fill="#868686"></path>
+                                <path id="fill1" d="M889.6 396.8 608 396.8C633.6 262.4 684.8 96 576 44.8 460.8-6.4 454.4 64 441.6 179.2c-12.8 121.6-192 249.6-192 249.6l0 563.2 608 0c83.2-38.4 134.4-377.6 160-499.2C1043.2 371.2 889.6 396.8 889.6 396.8z"
+                                      fill="{% if not current_user.is_liking(post) %}#868686{% else %}#3688FF{% endif %}"></path>
+                                <path id="fill2" d="M0 428.8l179.2 0 0 569.6-179.2 0 0-569.6Z" fill="{% if not current_user.is_liking(post) %}#868686{% else %}#3688FF{% endif %}"></path>
                             </svg>
-                            <div>{{ post.liker.count() }} likes</div>
-                        </a>
-                    {% else %}
-                        <a class="liked" href="{{ url_for('.dislike_inpost', post_id=post.id) }}">
-                            <svg viewBox="0 0 1024 1024" width="25" height="25">
-                                <path d="M889.6 396.8 608 396.8C633.6 262.4 684.8 96 576 44.8 460.8-6.4 454.4 64 441.6 179.2c-12.8 121.6-192 249.6-192 249.6l0 563.2 608 0c83.2-38.4 134.4-377.6 160-499.2C1043.2 371.2 889.6 396.8 889.6 396.8z"
-                                      fill="#3688FF"></path>
-                                <path d="M0 428.8l179.2 0 0 569.6-179.2 0 0-569.6Z" fill="#3688FF"></path>
-                            </svg>
-                            <div>{{ post.liker.count() }} likes</div>
-                        </a>
-                    {% endif %}
+                            <div id="likes_count">{{ post.liker.count() }} likes</div>
+                    </a>
                     <a class="unlike" href="javascript:void (0);" onclick="{
                             var csrftoken = $('meta[name=csrf-token]').attr('content');
                             var _this=document.getElementById('follow_answer');

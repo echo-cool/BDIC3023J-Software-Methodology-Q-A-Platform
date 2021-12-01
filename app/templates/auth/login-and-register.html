@@ -25,9 +25,20 @@
 
 {% block body %}
     <div id="onepagebg" class="onepage-bg" style="width: 100%;height: 100%;text-align: center">
+    {% with messages =get_flashed_messages() %}
+                {% if messages %}
+                <ul style="background-color: red;color: white;padding: 4px">
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <br>
+                {% endif %}
+            {% endwith %}
         <div class="mainbox" id="mainbox">
         <div class="form-container sign-up-container" style="overflow:scroll">
-        <form class="form-signin" method="post" style="margin: 75px auto 0 auto;">
+        <form class="form-signin" action="{{ url_for("auth.register") }}" method="post" style="margin: 75px auto 0 auto;">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                     <h1 class="form-signin-heading">Register</h1>
 
@@ -121,12 +132,13 @@
     <script src={{ url_for('static',filename='js/login-and-register.js') }}></script>
 
     <script>
-        var stuID = document.getElementById('inputName');
+        var stuID1 = document.getElementById('inputName');
         var info = document.getElementById('p1');
         var pwd = document.getElementById('inputPassword');
+        var captcha;
         //学号
-        stuID.onblur = function () {
-            var stuid = this.value;
+         a= function () {
+            var stuid = stuID1.value;
             var reg = /[0-9]{1,4}/;
             {#var reg = /^\d{1，8}$/;#}
             // 不符合规则的话
@@ -138,11 +150,15 @@
                 info.innerHTML = '';
                 info.className = 'text-success';
             }
-            if (info.className == 'text-success') {
+            if (info.className === 'text-success' && captcha.getValidate() !==undefined) {
+
                 document.getElementById("submit0").disabled = false;
             }
         }
+        stuID1.onblur=a
+        window.onmousemove=a
         var handler = function (captchaObj) {
+            captcha=captchaObj
             $("#submit").click(function (e) {
                 var result = captchaObj.getValidate();
                 if (!result) {
@@ -179,6 +195,160 @@
             }
         });
     </script>
+    <script>
+        // 学号
+        var stuID = document.getElementById('BJUT_id');
+        var info = document.getElementById('stuid');
+        //身份证号
+        var ID = document.getElementById('id_num');
+        var IDinfo = document.getElementById('id');
+        //用户名
+        var user = document.getElementById('user_name');
+        var userinfo = document.getElementById('user');
+        //邮箱
+        var email = document.getElementById('email');
+        var ep = document.getElementById('emailp');
+        //密码
+        var pw1 = document.getElementById('password');
+        var pw2 = document.getElementById('confirm_pwd');
+        var pwdp = document.getElementById('pwd');
+
+        //学号
+        stuID.onblur = function () {
+            var stuid = this.value;
+            var reg = /^\d{8}$/;
+            // 不符合规则的话
+            if(!reg.test(stuid)){
+                info.innerHTML = 'Please enter the 8-digit StudentID';
+                info.className = 'text-danger';
+                document.getElementById("submit1").disabled=true;
+            }
+            else{
+                info.innerHTML = '';
+                info.className = 'text-success';
+            }
+            {#当所有都满足条件#}
+            if(pwdp.className === 'text-success'){
+                if(ep.className === 'text-success'){
+                    if(IDinfo.className === 'text-success'){
+                        if(info.className === 'text-success') {
+                            if(userinfo.className === 'text-success'){
+                                document.getElementById("submit1").disabled = false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // 身份证号
+        ID.onblur = function () {
+            var id = this.value;
+            var reg = /^[1-9]([0-9]{16}|[0-9]{13})[xX0-9]$/;
+            // 不符合规则的话
+            if(!reg.test(id)){
+                IDinfo.innerHTML = 'Please enter your ID number';
+                IDinfo.className = 'text-danger';
+                document.getElementById("submit1").disabled=true;
+            }
+            else{
+                IDinfo.innerHTML = '';
+                IDinfo.className = 'text-success';
+            }
+            {#当所有都满足条件#}
+            if(pwdp.className === 'text-success'){
+                if(ep.className === 'text-success'){
+                    if(IDinfo.className === 'text-success'){
+                        if(info.className === 'text-success') {
+                            if(userinfo.className === 'text-success'){
+                                document.getElementById("submit1").disabled = false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //用户名
+        user.onblur = function () {
+            var e = this.value;
+            if(e == ''){
+                userinfo.innerHTML = 'The username cannot be empty';
+                userinfo.className = 'text-danger';
+                document.getElementById("submit1").disabled=true;
+            }
+            else{
+                userinfo.innerHTML = '';
+                userinfo.className = 'text-success';
+            }
+            {#当所有都满足条件#}
+            if(pwdp.className == 'text-success'){
+                if(ep.className == 'text-success'){
+                    if(IDinfo.className == 'text-success'){
+                        if(info.className == 'text-success') {
+                            if(userinfo.className == 'text-success'){
+                                document.getElementById("submit1").disabled = false;
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+        //邮箱
+        email.onblur = function () {
+            var e = this.value;
+            var reg = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/;
+            // 不符合规则的话
+            if(!reg.test(e)){
+                ep.innerHTML = 'Please enter the correct format of the email';
+                ep.className = 'text-danger';
+                document.getElementById("submit1").disabled=true;
+            }
+            else{
+                ep.innerHTML = '';
+                ep.className = 'text-success';
+            }
+            {#当所有都满足条件#}
+            if(pwdp.className == 'text-success'){
+                if(ep.className == 'text-success'){
+                    if(IDinfo.className == 'text-success'){
+                        if(info.className == 'text-success') {
+                            if(userinfo.className == 'text-success'){
+                                document.getElementById("submit1").disabled = false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // 确认密码相同
+        pw2.onblur = function () {
+            var pwd1 = pw1.value;
+            var pwd2 = this.value;
+            // 不符合规则的话
+            if( pwd1 != pwd2 ){
+                pwdp.innerHTML = 'Please enter the same password';
+                pwdp.className = 'text-danger';
+                document.getElementById("submit1").disabled=true;
+            }
+            else{
+                pwdp.innerHTML = '';
+                pwdp.className = 'text-success';
+            }
+            {#当所有都满足条件#}
+            if(pwdp.className == 'text-success'){
+                if(ep.className == 'text-success'){
+                    if(IDinfo.className == 'text-success'){
+                        if(info.className == 'text-success') {
+                            if(userinfo.className == 'text-success'){
+                                document.getElementById("submit1").disabled = false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+</script>
     </div>
 
 
