@@ -4,7 +4,7 @@
         <div class="comment-content col-sm-12">
 
             {% if comment.is_anonymous %}
-                <div class="comment-footer">
+                <div class="comment-footer text-left">
                         <span class="comment-thumbnail">
                             <span class="head-photo">
                                 <img class="img-rounded profile-thumbnail" src="{{ url_for('static',filename='Image/anonymous.png') }}" alt="avatar" style="width: 25px; height: 25px">
@@ -14,7 +14,7 @@
                         <span class="comment-date">{{ moment(comment.timestamp).fromNow() }}</span>
                   </div>
             {% else %}
-                 <div class="comment-footer">
+                 <div class="comment-footer text-left">
                         <span class="comment-thumbnail">
                             <a href="{{ url_for('.user', username=comment.author.username) }}">
                                 {% if comment.author.avatar_img %}
@@ -60,7 +60,7 @@
 
 
 
-                <div class="comment-body">
+                <div class="comment-body text-left">
                     {{ comment.body }}
 
                     <div class="footer">

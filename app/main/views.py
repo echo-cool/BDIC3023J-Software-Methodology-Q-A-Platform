@@ -1016,7 +1016,7 @@ def edit_answer_md(answer_id):
         answer.recent_activity = datetime.utcnow()
         db.session.add(answer)
         db.session.commit()
-        if post.is_anonymous:
+        if answer.is_anonymous:
             flash("You have just modified an answer anonymously", 'success')
         else:
             flash("You have just modified an answer", 'success')
