@@ -52,11 +52,11 @@ docker:
   - docker build -t registry.hub.docker.com/echo0821/web-methodology:latest .
   - docker push registry.hub.docker.com/echo0821/web-methodology:latest
   - docker rmi registry.hub.docker.com/echo0821/web-methodology
-sast:
-  variables:
-    SAST_EXCLUDED_PATHS: spec, test, tests, tmp, editormd
-  stage: test
-  only:
-  - master
-include:
-- template: Security/SAST.gitlab-ci.yml
+#sast:
+#  variables:
+#    SAST_EXCLUDED_PATHS: spec, test, tests, tmp, editormd
+#  stage: test
+#  only:
+#  - master
+#include:
+#- template: Security/SAST.gitlab-ci.yml
