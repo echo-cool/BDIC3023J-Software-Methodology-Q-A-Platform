@@ -32,6 +32,7 @@ class TestModels(unittest.TestCase):
         self.assertIsNotNone(self.client)
         response = app.test_client().get('/', data={})
         self.assertEqual(response.status_code, 200)
+
         response = app.test_client().get('/trans', data={})
         self.assertEqual(response.status_code, 308)
 

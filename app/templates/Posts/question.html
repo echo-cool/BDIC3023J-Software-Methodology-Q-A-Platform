@@ -9,6 +9,50 @@
     <link href="{{ url_for('static',filename='home.css') }}" rel="stylesheet">
     <link href="{{ url_for('static',filename='posts.css') }}" rel="stylesheet">
     <link href="{{ url_for('static',filename='interact.css') }}" rel="stylesheet">
+    <style>
+    .dialog{
+        position: absolute;
+        top: 10%;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        margin: auto;
+        box-shadow: 0 0 3px 3px #dddddd;
+        border-radius: 10px;
+        width: 400px;
+        height:50px;
+        background-color: white;
+        text-align: center;
+        line-height: 50px;
+        font-size: 1em;
+        vertical-align: middle;
+    }
+    </style>
+    <script>
+    function copyText(text, callback){
+        const tag = document.createElement('input');
+        tag.setAttribute('id', 'cp_hgz_input');
+        tag.value = text;
+        document.getElementsByTagName('body')[0].appendChild(tag);
+        document.getElementById('cp_hgz_input').select();
+        document.execCommand('copy');
+        document.getElementById('cp_hgz_input').remove();
+        if(callback) {callback();}}
+
+    function dialog(text){
+        div=document.createElement("div")
+        div.setAttribute("class","dialog")
+        div.innerText=text
+        div.onclick=(function () {
+            this.remove()
+        })
+        document.body.appendChild(div)
+        setTimeout( function () {
+            div.remove()
+        },2000)
+    }
+
+    </script>
 {% endblock %}
 
 {#主导航#}
@@ -111,12 +155,15 @@
                             <h2 class="post-title" style="margin-top: 12px; margin-bottom: 8px">
                                 {{ question.title }}
                             </h2>
-                            <div class="post-body" style="margin-top: 9px">
-                                <p>
-                                    {{ question.body }}
-                                </p>
+{#                            <div class="post-body" style="margin-top: 9px">#}
+{#                                <p>#}
+{#                                    {{ question.body }}#}
+{#                                </p>#}
+                                <div class="content" id="fancy-content" style="padding: 0 10px 10px;margin: 10px 0 0;box-shadow: none;border-top:1px solid #444444;border-bottom:1px solid #444444;">
+                                {{ question.body_html| safe }}
+                                </div>
 {#                                <small><a href="{{ url_for('.post', id=post.id) }}"><B>Read More</B></a></small></p>#}
-                            </div>
+{#                            </div>#}
 
                         </div>
 
@@ -181,6 +228,16 @@
                                 <a href="{{ url_for('auth.login') }}" class="glyphicon glyphicon-user">
                                     Invite</a>
                                 {% endif %}
+                            </li>
+                            <li id="btn-4">
+                                <a href="{{ url_for('.report', id=question_id,type='question') }}" class="glyphicon glyphicon-alert">
+                                    Report</a>
+                            </li>
+                            <li id="btn-5">
+                                <a href="javascript:void (0);" class="glyphicon glyphicon-share" onclick="copyText(window.location.href,function() {
+                                  dialog('成功复制链接')
+                                })">
+                                    Share</a>
                             </li>
                         </ul>
                     </div>

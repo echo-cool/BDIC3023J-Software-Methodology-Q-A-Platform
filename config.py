@@ -8,14 +8,14 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'ec94cr32ffs2123ffd3fg3dsa2r39cfc6d796ae3029594d'
 
-    MAIL_SERVER = 'smtp.qq.com'
-    MAIL_PORT = 587
+    MAIL_SERVER = 'smtp.163.com'
+    MAIL_PORT = 25
     MAIL_USE_TLS = True
     MAIL_USE_SSL = False
-    MAIL_USERNAME = '609899054@qq.com'
-    MAIL_PASSWORD = 'hnktohctbgwhbchh'
+    MAIL_USERNAME = 'xcvuadho@163.com'
+    MAIL_PASSWORD = 'PJOHSGYQYCYOZXYW'
     FLASKY_MAIL_SUBJECT_PREFIX = '[Student Exchange Forum of BJUT]'
-    FLASKY_MAIL_SENDER = '609899054@qq.com'
+    FLASKY_MAIL_SENDER = 'xcvuadho@163.com'
     FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     FLASKY_POSTS_PER_PAGE = 20
@@ -23,6 +23,8 @@ class Config:
     FLASKY_COMMENTS_PER_PAGE = 30
     FLASKY_LIKER_PER_PAGE = 50
     CACHE_TYPE = "simple"
+    ADMIN_EMAIL=['1148636961@qq.com','me@echo.cool','2721712688@qq.com','1635743062@qq.com']
+
 
     @staticmethod
     def init_app(app):
