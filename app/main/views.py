@@ -956,9 +956,9 @@ def edit_question_md(question_id):
         db.session.add(question)
         db.session.commit()
         if question.is_anonymous:
-            flash("You have just posted a posting anonymously", 'success')
+            flash("You have just modified a question anonymously", 'success')
         else:
-            flash("You have just posted a posting", 'success')
+            flash("You have just modified a question", 'success')
         return redirect(url_for('.index'))
     return render_template('new_posting/new_mdquestion.html', form=form, default_title=question.title,
                            default_body=question.body)
@@ -989,9 +989,9 @@ def new_answer_md(question_id):
         db.session.add(post)
         db.session.commit()
         if post.is_anonymous:
-            flash("You have just posted a posting anonymously", 'success')
+            flash("You have just modified an answer anonymously", 'success')
         else:
-            flash("You have just posted a posting", 'success')
+            flash("You have just modified an answer", 'success')
         return redirect(url_for('.view_question', question_id=question_id))
     return render_template('new_posting/new_mdanswer.html', form=form, default_body="")
 
