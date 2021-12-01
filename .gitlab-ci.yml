@@ -56,5 +56,7 @@ sast:
   variables:
     SAST_EXCLUDED_PATHS: spec, test, tests, tmp, editormd
   stage: test
+  only:
+  - master
 include:
 - template: Security/SAST.gitlab-ci.yml
