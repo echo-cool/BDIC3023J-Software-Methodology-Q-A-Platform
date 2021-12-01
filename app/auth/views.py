@@ -35,17 +35,17 @@ def login():
         user = User.query.filter_by(student_id=student_id).first()
         if user is None:
             flash("Your StudentID/OrganizationID has not been registered")
-            return render_template('auth/login.html')
+            return redirect(url_for('auth.login'))
         elif user.verify_password(password) is False:
             flash("StudentID/OrganizationID or password error")
-            return render_template('auth/login.html')
+            return redirect(url_for('auth.login'))
         if user is not None and user.verify_password(password):
             login_user(user, True)
             next = request.args.get('next')
             if next is None or not next.startswith('/'):
                 next = url_for('main.index')
             return redirect(next)
-        return render_template('auth/login.html')
+        return redirect(url_for('auth.login'))
 
 
 # # 登录
@@ -112,23 +112,23 @@ def register():
         is_student = Students.query.filter_by(student_id=request.form["BJUT_id"]).first()  # 学号
         if is_student is None:
             flash("Sorry, you are not a BJUT student and cannot sign up for this account.")
-            return render_template('auth/register.html')
+            return redirect(url_for('auth.login'))
         if is_student.id_number != request.form["id_num"]:
             flash("Your student ID does not match your ID number, you cannot register for this account.")
-            return render_template('auth/register.html')
+            return redirect(url_for('auth.login'))
         if is_student is not None and is_student.id_number == request.form["id_num"]:
             if is_student.confirmed:
                 flash("Your student number has been registered, you cannot register for a second SOFB account")
-                return render_template('auth/register.html')
+                return redirect(url_for('auth.login'))
             else:
                 email_find = User.query.filter_by(email=request.form["email"]).first()
                 if email_find is not None:
                     flash("Your email has been registered, please change your email")
-                    return render_template('auth/register.html')
+                    return redirect(url_for('auth.login'))
                 username_find = User.query.filter_by(username=request.form["user_name"]).first()
                 if username_find is not None:
                     flash("Your username has been registered, please change your username")
-                    return render_template('auth/register.html')
+                    return redirect(url_for('auth.login'))
                 student = Students.query.filter_by(student_id=request.form["BJUT_id"]).first()
                 user = User(email=request.form["email"],
                             ID_number=request.form["id_num"],
