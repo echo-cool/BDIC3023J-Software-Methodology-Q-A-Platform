@@ -684,6 +684,23 @@ def follow(username):
     flash('You are now following %s.' % username)
     return redirect(url_for('.user', username=username))
 
+@main.route('/AJAXfollow/<username>', methods=['POST'], strict_slashes=False)
+@csrf.exempt
+@permission_required(Permission.FOLLOW)
+def AJAXfollow(username):
+    if current_user is None:
+        return redirect(url_for("/"))
+    user = User.query.filter_by(username=username).first()
+    if user is not None:
+        if current_user.is_following(user):
+            current_user.unfollow(user)
+            db.session.commit()
+            return jsonify({'code': 200, 'like': False})
+        else:
+            current_user.follow(user)
+            db.session.commit()
+            return jsonify({'code': 200, 'like': True})
+
 
 @main.route('/unfollow/<username>')
 @login_required
