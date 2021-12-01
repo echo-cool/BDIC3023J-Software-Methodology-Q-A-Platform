@@ -94,7 +94,6 @@ a>h4{
     color: #0077e6;
 }
 .inner3 .hot-post a:hover {
-
-    text-decoration: none;
+    text-decoration: underline;
 }
 
