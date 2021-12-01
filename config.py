@@ -25,6 +25,10 @@ class Config:
     CACHE_TYPE = "simple"
     ADMIN_EMAIL=['1148636961@qq.com','me@echo.cool','2721712688@qq.com','1635743062@qq.com']
 
+    CACHE_TYPE = os.environ.get('CACHE_TYPE') or "simple"
+    REDIS_URL = os.environ.get('REDIS_URL') or ""
+    REDIS_USERNAME = os.environ.get('REDIS_USERNAME') or ""
+    REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD') or ""
 
     @staticmethod
     def init_app(app):
