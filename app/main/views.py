@@ -21,7 +21,7 @@ from ..util import check_text
 
 
 @main.route('/', methods=['GET', 'POST'])
-@cache.cached(timeout=30)
+# @cache.cached(timeout=30)
 def index():
     """Get index page
 
