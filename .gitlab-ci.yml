@@ -56,5 +56,9 @@ sast:
   variables:
     SAST_EXCLUDED_PATHS: spec, test, tests, tmp, editormd
   stage: test
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+
 include:
 - template: Security/SAST.gitlab-ci.yml
