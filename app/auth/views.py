@@ -26,7 +26,7 @@ def before_request():
 
 
 @auth.route('/login', methods=['GET', 'POST'])
-def logintest():
+def login():
     if request.method == 'GET':
         return render_template('auth/login-and-register.html')
     if request.method == 'POST':
