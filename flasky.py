@@ -14,8 +14,10 @@ from app.models import User, Role, Students, Permission, Post, Comment, Like, No
 
 # if you want to execute the program
 # please run this file
+from config import config
 
-app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+config_name = os.getenv('FLASK_CONFIG') or 'default'
+app = create_app(config_name)
 
 
 migrate = Migrate(app, db, render_as_batch=True)
@@ -94,25 +96,26 @@ def favicon():
 # app.secret_key = GeetestLib.VERSION
 
 # User, Role, Students, Permission, Post, Comment, Like, Notification, Transaction, Activity
-admin.add_view(ModelView(User, db.session, name="Users", endpoint="users"))
-admin.add_view(ModelView(Role, db.session, name="roles", endpoint="roles"))
-admin.add_view(ModelView(Students, db.session, name="Studentss", endpoint="Studentss"))
-# admin.add_view(ModelView(Permission, db.session, name="Permissions", endpoint="Permissions"))
-admin.add_view(ModelView(Post, db.session, name="Posts", endpoint="Posts"))
-admin.add_view(ModelView(Comment, db.session, name="Comments", endpoint="Comments"))
-admin.add_view(ModelView(Like, db.session, name="Likes", endpoint="Likes"))
-admin.add_view(ModelView(Notification, db.session, name="Notifications", endpoint="Notifications"))
-admin.add_view(ModelView(Transaction, db.session, name="Transactions", endpoint="Transactions"))
-admin.add_view(ModelView(Activity, db.session, name="Activities", endpoint="Activities"))
-admin.add_view(FileAdmin("."))
-ApiDoc(
-    app,
-    title="Sample App",
-    version="1.0.0",
-    description="A simple app API",
-)
-app.config["API_DOC_MEMBER"] = ["app", "main"]
+if config[config_name].DEBUG:
+    admin.add_view(ModelView(User, db.session, name="Users", endpoint="users"))
+    admin.add_view(ModelView(Role, db.session, name="roles", endpoint="roles"))
+    admin.add_view(ModelView(Students, db.session, name="Studentss", endpoint="Studentss"))
+    # admin.add_view(ModelView(Permission, db.session, name="Permissions", endpoint="Permissions"))
+    admin.add_view(ModelView(Post, db.session, name="Posts", endpoint="Posts"))
+    admin.add_view(ModelView(Comment, db.session, name="Comments", endpoint="Comments"))
+    admin.add_view(ModelView(Like, db.session, name="Likes", endpoint="Likes"))
+    admin.add_view(ModelView(Notification, db.session, name="Notifications", endpoint="Notifications"))
+    admin.add_view(ModelView(Transaction, db.session, name="Transactions", endpoint="Transactions"))
+    admin.add_view(ModelView(Activity, db.session, name="Activities", endpoint="Activities"))
+    admin.add_view(FileAdmin("."))
+    ApiDoc(
+        app,
+        title="Sample App",
+        version="1.0.0",
+        description="A simple app API",
+    )
+    app.config["API_DOC_MEMBER"] = ["app", "main"]
 if __name__ == '__main__':
 
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0', port=os.environ.get("PORT", 5000))
 

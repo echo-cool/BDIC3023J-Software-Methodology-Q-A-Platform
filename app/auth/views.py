@@ -25,8 +25,8 @@ def before_request():
             return redirect(url_for('auth.unconfirmed'))
 
 
-@auth.route('/logintest', methods=['GET', 'POST'])
-def logintest():
+@auth.route('/login', methods=['GET', 'POST'])
+def login():
     if request.method == 'GET':
         return render_template('auth/login-and-register.html')
     if request.method == 'POST':
@@ -48,28 +48,28 @@ def logintest():
         return render_template('auth/login.html')
 
 
-# 登录
-@auth.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'GET':
-        return render_template('auth/login.html')
-    if request.method == 'POST':
-        student_id = request.form["user"]
-        password = request.form["pwd"]
-        user = User.query.filter_by(student_id=student_id).first()
-        if user is None:
-            flash("Your StudentID/OrganizationID has not been registered")
-            return render_template('auth/login.html')
-        elif user.verify_password(password) is False:
-            flash("StudentID/OrganizationID or password error")
-            return render_template('auth/login.html')
-        if user is not None and user.verify_password(password):
-            login_user(user, True)
-            next = request.args.get('next')
-            if next is None or not next.startswith('/'):
-                next = url_for('main.index')
-            return redirect(next)
-        return render_template('auth/login.html')
+# # 登录
+# @auth.route('/login', methods=['GET', 'POST'])
+# def login():
+#     if request.method == 'GET':
+#         return render_template('auth/login.html')
+#     if request.method == 'POST':
+#         student_id = request.form["user"]
+#         password = request.form["pwd"]
+#         user = User.query.filter_by(student_id=student_id).first()
+#         if user is None:
+#             flash("Your StudentID/OrganizationID has not been registered")
+#             return render_template('auth/login.html')
+#         elif user.verify_password(password) is False:
+#             flash("StudentID/OrganizationID or password error")
+#             return render_template('auth/login.html')
+#         if user is not None and user.verify_password(password):
+#             login_user(user, True)
+#             next = request.args.get('next')
+#             if next is None or not next.startswith('/'):
+#                 next = url_for('main.index')
+#             return redirect(next)
+#         return render_template('auth/login.html')
 
 
 # 相册

@@ -28,5 +28,12 @@ class UploadPhotoForm(FlaskForm):
 
 
 class CommentForm(FlaskForm):
-    body = TextAreaField('Enter your comment', render_kw={"placeholder": "Enter your comment"}, validators=[DataRequired()])
+    body = TextAreaField('Enter your comment', render_kw={"placeholder": "Enter your comment"},
+                         validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+
+class ReportForm(FlaskForm):
+    body = TextAreaField('Report comment', render_kw={"placeholder": "Enter your report comment"},
+                         validators=[DataRequired()])
     submit = SubmitField('Submit')

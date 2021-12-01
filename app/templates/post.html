@@ -55,6 +55,50 @@
             $(this).socialShare("tQQ");
         })
     </script>
+    <style>
+    .dialog{
+        position: absolute;
+        top: 10%;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        margin: auto;
+        box-shadow: 0 0 3px 3px #dddddd;
+        border-radius: 10px;
+        width: 400px;
+        height:50px;
+        background-color: white;
+        text-align: center;
+        line-height: 50px;
+        font-size: 1em;
+        vertical-align: middle;
+    }
+    </style>
+    <script>
+    function copyText(text, callback){
+        const tag = document.createElement('input');
+        tag.setAttribute('id', 'cp_hgz_input');
+        tag.value = text;
+        document.getElementsByTagName('body')[0].appendChild(tag);
+        document.getElementById('cp_hgz_input').select();
+        document.execCommand('copy');
+        document.getElementById('cp_hgz_input').remove();
+        if(callback) {callback();}}
+
+    function dialog(text){
+        div=document.createElement("div")
+        div.setAttribute("class","dialog")
+        div.innerText=text
+        div.onclick=(function () {
+            this.remove()
+        })
+        document.body.appendChild(div)
+        setTimeout( function () {
+            div.remove()
+        },2000)
+    }
+
+    </script>
 
 {% endblock %}
 
@@ -72,9 +116,13 @@
                                 {{ post.question.title }}
                             </a>
                         </h1>
-                        <div id="socialShare"></div>
+{#                        <div id="socialShare"></div>#}
+                        <a href="javascript:void (0);" class="glyphicon glyphicon-share" onclick="copyText(window.location.href,function() {
+                                  dialog('成功复制链接')
+                                })">
+                                    Share</a>
                         <div class="content" id="fancy-content" style="padding-bottom:20px;
-    border-bottom: 1px solid #ddd;margin: 30px;">
+                        border-bottom: 1px solid #ddd;margin: 30px;">
                             {{ post.body_html| safe }}
                         </div>
                     </div>
@@ -114,8 +162,12 @@
                                             {% endif %}
                                         </a>
                                     </div>
-                                    <div class="col-sm-3">
-                                        <h4>
+                                    <div class="col-sm-3" style="text-align: center">
+                                        <h4 class="text-left">
+                                        <svg t="1638275834308" class="icon" viewBox="0 0 1024 1024"  width="17" height="17">
+                                        <path d="M512 512c123.776 0 224-100.224 224-224S635.776 64 512 64a223.936 223.936 0 0 0-224 224C288 411.776 388.224 512 512 512z m0 64c-149.504 0-448 85.76-448 256v128h896v-128c0-170.24-298.496-256-448-256z" fill="#262626" p-id="4157">
+                                        </path>
+                                        </svg>
                                             <a href="{{ url_for('.user', username=post.author.username) }}">
                                                 {{ post.author.username }}
                                                 {% if post.author.can(Permission.ACTIVITY) %}
@@ -127,10 +179,27 @@
                                                 {% endif %}
                                             </a>
                                         </h4>
+                                        <h4 class="text-left" style="margin-top: 5px">
+                                        <svg t="1638276469792" class="icon" viewBox="0 0 1024 1024"  width="18" height="18">
+                                        <path d="M513.92 537.216L99.968 278.592v96.96L513.92 637.44v-0.32l412.48-265.664V277.12L513.92 537.216zM0 128h1024v768H0V128z" fill="#262626" p-id="4289">
+                                        </path>
+                                        </svg>
+                                            <a href="{{ url_for('.user', username=post.author.username) }}">
+                                                {{ post.author.email }}
+                                            </a>
+                                        </h4>
                                     </div>
                                     <div class="col-sm-5">
-                                        <h6>{{ post.author.grade }}</h6>
-                                        <h6>{{ post.author.college }}</h6>
+                                        <h6 class="text-left">
+                                            <svg t="1638276824932" class="icon" viewBox="0 0 1024 1024" width="16" height="16">
+                                            <path d="M186.181818 679.563636c27.927273-18.618182 46.545455-46.545455 46.545455-74.472727 0-37.236364-18.618182-65.163636-55.854546-83.781818V409.6L512 558.545455 1024 325.818182 512 93.090909 0 325.818182l111.709091 46.545454v148.945455c-37.236364 18.618182-55.854545 46.545455-55.854546 83.781818 0 27.927273 18.618182 55.854545 46.545455 74.472727L55.854545 837.818182c-27.927273 93.090909 46.545455 93.090909 46.545455 93.090909h93.090909s74.472727 0 46.545455-93.090909L186.181818 679.563636z" p-id="6799"></path><path d="M325.818182 577.163636v27.927273c0 37.236364-18.618182 74.472727-37.236364 102.4 18.618182 37.236364 37.236364 74.472727 37.236364 130.327273v55.854545c46.545455 18.618182 111.709091 37.236364 186.181818 37.236364C744.727273 930.909091 837.818182 791.272727 837.818182 791.272727v-279.272727L512 660.945455l-186.181818-83.781819z" p-id="6800">
+                                            </path></svg>
+                                            &nbsp{{ post.author.grade }}</h6>
+                                        <h6 class="text-left" style="margin-top: 5px">
+                                            <svg t="1638277114233" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="9061" width="16" height="16">
+                                            <path d="M254.8746 854.5444 254.8746 498.187264l39.131136 0 0-44.130304L94.164992 454.05696l0 40.17152 39.12704 0 0 360.31488L254.874624 854.54336zM31.7174 414.9268c0 0 966.1348 0 967.5919 0 23.3165-10.2031 22.2751-32.0625 0.4157-46.6319C977.8668 353.7203 514.6655 19.3475 514.6655 19.3475S55.0339 353.7203 31.7174 368.2949C8.4019 382.8644 6.9448 404.7237 31.7174 414.9268zM514.6655 184.4603c38.6304 0 69.9484 31.3139 69.9484 69.9484 0 38.6304-31.317 69.9484-69.9484 69.9484-38.6345 0-69.9515-31.317-69.9515-69.9484C444.713 215.7742 476.031 184.4603 514.6655 184.4603zM55.8346 934.4993 975.188992 934.4993 975.188992 895.368192 55.834624 895.368192 55.834624 934.499328zM15.9068 1014.4543l999.213056 0 0-36.625408L15.906816 977.828892 15.906816 1014.454272zM576.3072 854.5444 576.3072 495.685632l39.12704 0 0-39.131136L415.593472 456.554496l0 37.673984 39.12704 0 0 360.31488L576.3072 854.54336zM895.234 854.5444 895.234 495.685632l39.131136 0 0-39.131136L734.52032 456.554496l0 37.673984 39.131136 0 0 360.31488L895.234048 854.54336z" p-id="9062">
+                                            </path></svg>
+                                            &nbsp{{ post.author.college }}</h6>
                                     </div>
                                     {% if current_user.can(Permission.FOLLOW) and post.author != current_user %}
                                         {% if not current_user.is_following(post.author) %}
@@ -152,7 +221,11 @@
 
                 {#        评论区#}
                 <div class="container col-sm-offset-1 col-sm-10 comment-cont">
-                    <h2 id="comments">Comments</h2>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                                <h3 class="panel-title">Comments</h3>
+                            </div>
+
                     {% include 'Posts/_comments.html' %}
                     {% if current_user.can(Permission.COMMENT) %}
                         <div class="comment-form">
@@ -180,6 +253,7 @@
                                     </div>
                                 </div>
                             </form>
+                        </div>
                         </div>
                     {% endif %}
                     {% if pagination %}
@@ -210,6 +284,69 @@
                             <div>{{ post.liker.count() }} likes</div>
                         </a>
                     {% endif %}
+                    <a class="unlike" href="javascript:void (0);" onclick="{
+                            var csrftoken = $('meta[name=csrf-token]').attr('content');
+                            var _this=document.getElementById('follow_answer');
+                            var follow_icon=document.getElementById('follow_icon');
+
+                            {#console.log(this.childNodes[3]);#}
+                            {#console.log(this.childElementCount);#}
+                                var sendData={
+                                  'csrf_token':csrftoken
+                              };
+                            $.ajax({
+                                url: '{{ url_for('.AJAXsave_answer', answer_id=post.id) }}',
+                                type: 'POST',
+                                {#dataType: 'json',#}
+                                {#contentType: 'application/json',#}
+                                {#data: JSON.stringify(sendData),#}
+
+                                success: function(result) {
+                                    console.log('success\n'+result);
+                                    if(result.like){
+                                        _this.innerText=' Unsave'
+                            follow_icon.setAttribute('fill','#3688FF')
+
+                                    }else{
+                                        _this.innerText='   Save'
+                            follow_icon.setAttribute('fill','#868686')
+                                }
+                                    {#span1.setAttribute('href', '{{ url_for('.dislike', post_id=post.id) }}');#}
+                                },
+                                error:function(msg){
+                                     console.log(msg);
+                                     if(msg.status===403){
+                                         window.location.href='{{ url_for('auth.login') }}'
+                                }
+                                }
+                                })
+                        }" >
+                            <svg viewBox="0 0 1024 1024" width="25" height="25">
+                                <path id="follow_icon" d="M512 822.976L828.416 1024l-83.968-378.88L1024 390.208l-368.128-32.896L512 0 368.128 357.312 0 390.208l279.552 254.912L195.584 1024z"
+                                  fill="
+                                    {% if current_user.is_authenticated %}
+                                        {% if not current_user.is_savinganswer(post) %}
+                                        #868686
+                                        {% else %}
+                                        #3688FF
+                                        {% endif %}
+                                    {% else %}
+                                        #868686
+                                    {% endif %}"></path></svg>
+                            <div id="follow_answer" align="center">{% if current_user.is_authenticated %}
+                                        {% if not current_user.is_savinganswer(post) %}
+                                            Save
+                                        {% else %}
+                                            Unsave
+                                        {% endif %}
+                                    {% else %}
+                                        Save
+                                    {% endif %}</div>
+                    </a>
+                <a class="liked" href="{{ url_for('.report', id=post.id,type='answer') }}">
+                            <svg class="icon" viewBox="0 0 1024 1024"  width="30" height="30"><path d="M512 1024A512 512 0 1 1 512 0a512 512 0 0 1 0 1024zM448 192v384h128V192H448z m0 512v128h128v-128H448z" fill="#868686"></path></svg>
+                            <div>report</div>
+                        </a>
                     <a class="all-liker" href="{{ url_for('.liked_by', post_id = post.id ) }}">
                         <svg viewBox="0 0 1024 1024" version="1.1" width="30" height="30">
                             <path d="M896.930909 247.156364c-4.421818-5.12-9.076364-9.774545-13.730909-14.196364a225.745455 225.745455 0 0 0-104.727273-56.552727 24.436364 24.436364 0 0 0-4.421818 0 160.349091 160.349091 0 0 0-23.272727-4.189091c-7.912727 0-16.290909-1.396364-24.436364-1.629091a226.210909 226.210909 0 0 0-65.396363 8.610909 232.727273 232.727273 0 0 0-76.8 37.701818 230.632727 230.632727 0 0 0-141.963637-46.545454c-8.378182 0-16.290909 0-23.272727 1.629091a209.454545 209.454545 0 0 0-23.272727 3.956363A230.4 230.4 0 0 0 285.090909 232.727273a156.392727 156.392727 0 0 0-13.498182 14.196363 228.072727 228.072727 0 0 0-57.250909 130.094546 269.730909 269.730909 0 0 0-1.163636 27.694545 252.974545 252.974545 0 0 0 4.421818 46.545455 136.145455 136.145455 0 0 1 71.912727 26.763636 139.636364 139.636364 0 0 1 46.545455-23.272727 128.930909 128.930909 0 0 1 39.098182-5.12 99.141818 99.141818 0 0 1 14.661818 0 72.610909 72.610909 0 0 1 14.196363 2.56 8.145455 8.145455 0 0 1 2.56 0A135.447273 135.447273 0 0 1 468.945455 488.727273c2.792727 2.792727 5.585455 5.585455 8.145454 8.610909a135.912727 135.912727 0 0 1 34.909091 76.567273 132.421818 132.421818 0 0 1 0 16.756363 170.589091 170.589091 0 0 1-10.007273 53.992727 267.636364 267.636364 0 0 1-43.054545 75.17091l-7.68 8.843636c-5.585455 6.749091-11.636364 13.032727-17.687273 19.316364a1156.189091 1156.189091 0 0 0 140.8 94.72 19.781818 19.781818 0 0 0 19.083636 0c12.567273-6.981818 36.770909-21.178182 67.025455-41.425455s60.974545-42.356364 94.952727-69.818182l14.894546-12.8 7.912727-6.981818a778.705455 778.705455 0 0 0 75.636364-76.101818l12.567272-15.127273a436.130909 436.130909 0 0 0 71.912728-125.207273 282.763636 282.763636 0 0 0 15.825454-90.530909 269.032727 269.032727 0 0 0 0-27.694545 229.236364 229.236364 0 0 0-57.250909-129.861818z"
@@ -224,6 +361,7 @@
                         <div>All Likers</div>
                     </a>
                 </div>
+{#                </div>#}
 
             </li>
         {% endfor %}
