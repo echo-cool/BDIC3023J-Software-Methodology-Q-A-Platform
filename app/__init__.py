@@ -34,6 +34,9 @@ def create_app(config_name):
 
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
+    if config[config_name].DEBUG:
+        admin.init_app(app)
+        debug_toolbar.init_app(app)
 
     bootstrap.init_app(app)
     mail.init_app(app)
@@ -43,9 +46,8 @@ def create_app(config_name):
     db.init_app(app)
     login_manager.init_app(app)
     pagedown.init_app(app)
-    debug_toolbar.init_app(app)
     flask_static_digest.init_app(app)
-    admin.init_app(app)
+
 
 
     from .main import main as main_blueprint
