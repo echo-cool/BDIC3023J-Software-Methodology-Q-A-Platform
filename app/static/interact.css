@@ -69,7 +69,27 @@
     margin: 10px auto;
     font-size: 75%;
     line-height: 1;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
+
+.not-very-hot-post{
+    margin: 10px auto;
+    font-size: 75%;
+    line-height: 1;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+a>h4{
+    margin: 0;
+    padding: 0;
+}
+
 .inner3 .hot-post a {
     color: #0077e6;
 }
