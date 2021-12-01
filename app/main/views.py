@@ -253,9 +253,13 @@ def query(content):
             flash("Search content cannot be empty.")
             return render_template('querypost.html')
         search_result = "%" + inf + "%"
-        result = Post.query.filter(or_(Post.title.like(search_result), Post.body.like(search_result)))
+        print(search_result)
+        # result = Post.query.filter(or_(Post.title.like(search_result), Post.body.like(search_result)))
+        result = Post.query.filter(Post.body.like(search_result))
         for item in result:
             item.important = 0
+            if(item.title is None):
+                item.title=""
             sentence = item.title + item.body
             counts = 0
             list1 = sentence.split(" ")

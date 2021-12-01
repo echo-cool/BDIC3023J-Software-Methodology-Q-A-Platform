@@ -69,14 +69,16 @@
                 <div class="tab-pane active" id="panel-1">
                     <ul class="posts list-unstyled">
                         {% for post in combination %}
-                            {% include 'Posts/_postsInQuery.html' %}
+{#                            {% include 'Posts/_postsInQuery.html' %}#}
+                            {% include 'Posts/_posts.html' %}
                         {% endfor %}
                     </ul>
                 </div>
                 <div class="tab-pane" id="panel-2">
                     <ul class="posts list-unstyled">
                         {% for post in newest %}
-                            {% include 'Posts/_postsInQuery.html' %}
+{#                            {% include 'Posts/_postsInQuery.html' %}#}
+                            {% include 'Posts/_posts.html' %}
                         {% endfor %}
                     </ul>
                 </div>
@@ -84,7 +86,8 @@
                 <div class="tab-pane" id="panel-3">
                     <ul class="posts list-unstyled">
                         {% for post in hottest %}
-                            {% include 'Posts/_postsInQuery.html' %}
+{#                            {% include 'Posts/_postsInQuery.html' %}#}
+                            {% include 'Posts/_posts.html' %}
                         {% endfor %}
                     </ul>
                 </div>
@@ -92,7 +95,8 @@
                 <div class="tab-pane" id="panel-4">
                     <ul class="posts list-unstyled">
                         {% for post in relevance %}
-                            {% include 'Posts/_postsInQuery.html' %}
+{#                            {% include 'Posts/_postsInQuery.html' %}#}
+                            {% include 'Posts/_posts.html' %}
                         {% endfor %}
                     </ul>
                 </div>
