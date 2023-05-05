@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  bdic3023j-software-methodology-q-a-platform:
+    image: echocool/bdic3023j-software-methodology-q-a-platform:${VERSION:-latest}
+    container_name: bdic3023j-software-methodology-q-a-platform
+    build:
+      context: .
+    ports:
+      - "28908:8080"
+    restart: on-failure
