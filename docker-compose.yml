@@ -7,5 +7,5 @@ services:
     build:
       context: .
     ports:
-      - "28908:8080"
+      - "28908:5000"
     restart: on-failure
